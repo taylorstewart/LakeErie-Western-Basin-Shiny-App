@@ -1,17 +1,14 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  titlePanel(h3("USGS Lake Erie Biological Station - Western Basin Reactive Summary")),
-  h4("Developed by: Taylor R. Stewart"),
-  h5("Email: trstewart@usgs.gov"),
+  HTML("<br><h3>Put Catchy Name Here!</h3>"),
   
   # Create a new panel for the historical time series plot and table.
-  fluidRow(),
-  titlePanel(h3("Historical Time Series")),
+  HTML("<br><h4>Historical Time Series</h4>"),
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("species2","Species Input",c("All",species_vars))
+             selectInput("species2",h5("Species Input"),c("All",species_vars))
            )
     ),
     column(9,
@@ -23,55 +20,60 @@ shinyUI(fluidPage(
   ),
   
   # Create a new panel for input selectors.
-  fluidRow(),
-  titlePanel(h3("Reactive Plots")),
+  HTML("<br><h4>Reactive Plots</h4>"),
   fluidRow(
     column(3,
-           selectInput("year",label=h4("Year Input"),year_vars,selected="2014")
+           selectInput("year",label=h5("Year Input"),year_vars,selected="2014")
            ),
     column(3,
-           selectInput("season",label=h4("Season Input"),c("Spring","Autumn"),selected="Autumn")
+           selectInput("season",label=h5("Season Input"),c("Spring","Autumn"),selected="Autumn")
            ),
     column(3,
-           selectInput("species",label=h4("Species Input"),species_vars,selected="Yellow Perch")
+           selectInput("species",label=h5("Species Input"),species_vars,selected="Yellow Perch")
     ),
     column(3,
-           selectInput("serial",label=h4("Station Input"),c("All",serial_vars),selected="All")
+           selectInput("serial",label=h5("Station Input"),c("All",serial_vars),selected="All")
     )
   ),
   
   # Create a new panel for the western basin map.
-  titlePanel(h5("Lake Erie Western Basin Map")),
+  HTML("<br><h5>Lake Erie Western Basin Map</h5>"),
   fluidRow(
     column(3,
       wellPanel(
-        radioButtons("density","Value:",
+        radioButtons("density",h5("Value:"),
                      c("Density (N/ha)" = "NperHA",
                        "Biomass (Kg/ha)" = "KgperHA")),
-        selectInput("life_stage","Life Stage",c("All Life Stages",life_vars),selected="All Life Stages")
+        selectInput("life_stage",h5("Life Stage"),c("All Life Stages",life_vars),selected="All Life Stages")
       )
     ),
     column(9,
            h5("Hover over point to display station number and detailed density value."),
-           htmlOutput("ggvis_plot2")
+           htmlOutput("ggvis_map")
     )
   ),
   
   # Create a new panel for lenght-weight plot and summarys.
-  titlePanel(h5("Length-Weight")),
+  HTML("<br><h5>Length-Weight</h5>"),
   fluidRow(
     column(3,
            wellPanel(
-             sliderInput("tl", "Length Range (mm)",0,1000,step=5,value = c(0, 1000)),
-             selectInput("xvar", "X-axis Variable", axis_vars,selected="tl"),
-             selectInput("yvar", "Y-axis Variable", axis_vars,selected="wt")
+             sliderInput("tl",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
+             selectInput("xvar",h5("X-axis Variable"), axis_vars,selected="tl"),
+             selectInput("yvar",h5("Y-axis Variable"), axis_vars,selected="wt")
              )
           ),
     column(9,
            tabsetPanel(type="tabs",
-                       tabPanel("Length-Weight Plot",htmlOutput("ggvis_plot")),
-                       tabPanel("Linear Model Summary",tableOutput("lm_call"),htmlOutput("ggvis_lm_resid")),
-                       tabPanel("Power Function Summary",tableOutput("nlm_call"),htmlOutput("ggvis_nlm_resid"))
+                       tabPanel("Length-Weight Plot",htmlOutput("ggvis_lw_plot")),
+                       tabPanel("Linear Regression Summary",
+                                withMathJax("$$\\log(W)=\\log(a)+b\\log(L)$$"),
+                                tableOutput("lm_call"),
+                                htmlOutput("ggvis_lm_resid")),
+                       tabPanel("Power Function Summary",
+                                ("$$W=aL^b$$"),
+                                tableOutput("nlm_call"),
+                                htmlOutput("ggvis_nlm_resid"))
            ),
            wellPanel(
              span("Number of individuals selected:",
@@ -82,11 +84,11 @@ shinyUI(fluidPage(
   ),
   
   # Create a new panel for the length-frequency.
-  titlePanel(h5("Length Frequency")),
+  HTML("<br><h5>Length Frequency</h5>"),
   fluidRow(
     column(3,
       wellPanel(
-        sliderInput("slider1",label="Bin Width (mm)",min=5,max=25,step=5,value=10))),
+        sliderInput("slider1",label=h5("Bin Width (mm)"),min=5,max=25,step=5,value=10))),
     column(9,
       htmlOutput("ggvis_hist"),
       wellPanel(
@@ -96,7 +98,17 @@ shinyUI(fluidPage(
       )
     )
   ),
-  fluidRow(),
-  h5("Source code available at: https://github.com/taylorstewart/lebs-western-basin")
+  
+  ## USGS Reference and Disclaimer
+  HTML("<br><br><p><i>U.S. Geological Survey</i> (USGS) Computer Program <b>XXXX</b> version 2015-01.
+    Written by Taylor R. Stewart (email: trstewart@usgs.gov),"),
+    tags$a(href="http://www.glsc.usgs.gov","USGS - Great Lakes Science Center,"),
+    HTML("Ann Arbor, Michigan, USA. Written in programming language R (R Core Team, 2015,"),
+    tags$a(href="http://www.r-project.org","www.r-project.org"), 
+    HTML(") version 3.1.2 (2014-10-31).</p>"),
+  HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
+    is made by the USGS or the United States Government as to the accuracy and functioning of the program 
+    and related program material nor shall the fact of distribution constitute any such warranty, and no 
+    responsibility is assumed by the USGS in connection therewith.</p>")
 )
 )
