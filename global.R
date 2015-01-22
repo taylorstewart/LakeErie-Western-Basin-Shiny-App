@@ -4,7 +4,7 @@ library(ggplot2)
 library(rgdal)
 library(magrittr)
 
-databaseSource <- "online"
+databaseSource <- "local"
 
 if (databaseSource=="online") {
 ## To run web-based
@@ -23,12 +23,12 @@ wb_shore <- read.csv(text=database6,header=T)
 }
 if (databaseSource == "local") {
 ## To run locally
-wb_exp <- read.csv("WB_expLengths.csv",header=T)
-catch2 <- read.csv("WB_CatchperHA.csv",header=T)
-lw <- read.csv("WB_lw.csv",header=T)
-catch <- read.csv("WB_catch.csv",header=T)
-effort <- read.csv("WB_effort.csv",header=T)
-wb_shore <- read.csv("lake_erie_western_basin_shoreline.csv",header=T)
+wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
+catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
+lw <- read.csv("data/WB_lw.csv",header=T)
+catch <- read.csv("data/WB_catch.csv",header=T)
+effort <- read.csv("data/WB_effort.csv",header=T)
+wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 }
 
 wb_exp$tl_exp <- as.numeric(wb_exp$tl_exp)
