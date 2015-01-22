@@ -6,6 +6,7 @@ shinyUI(fluidPage(
   h5("Email: trstewart@usgs.gov"),
   
   # Create a new panel for the historical time series plot and table.
+  fluidRow(),
   titlePanel(h3("Historical Time Series")),
   fluidRow(
     column(3,
@@ -22,7 +23,7 @@ shinyUI(fluidPage(
   ),
   
   # Create a new panel for input selectors.
-  titlePanel(""),
+  fluidRow(),
   titlePanel(h3("Reactive Plots")),
   fluidRow(
     column(3,
@@ -95,7 +96,7 @@ shinyUI(fluidPage(
       )
     )
   ),
-  titlePanel(""),
-  h5("Source code available at: https://github.com/taylorstewart/lebs_western_basin_shiny_app")
+  fluidRow(),
+  h5("Source code available at: https://github.com/taylorstewart/lebs-western-basin")
 )
 )

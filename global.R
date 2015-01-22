@@ -8,12 +8,12 @@ databaseSource <- "online"
 
 if (databaseSource=="online") {
 ## To run web-based
-database <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/WB_expLengths.csv")
-database2 <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/WB_CatchperHA.csv")
-database3 <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/WB_lw.csv")
-database4 <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/WB_catch.csv")
-database5 <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/WB_effort.csv")
-database6 <- getURL("https://raw.githubusercontent.com/taylorstewart/LEBS_Western_Basin_Shiny_Application/master/lake_erie_western_basin_shoreline.csv")
+database <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_expLengths.csv")
+database2 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_CatchperHA.csv")
+database3 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_lw.csv")
+database4 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_catch.csv")
+database5 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_effort.csv")
+database6 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/lake_erie_western_basin_shoreline.csv")
 wb_exp <- read.csv(text=database,header=T)
 catch2 <- read.csv(text=database2,header=T)
 lw <- read.csv(text=database3,header=T)
