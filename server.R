@@ -258,7 +258,7 @@ shinyServer(function(input, output, session) {
   output$lm_call <- renderTable({
     model <- lm(logw~logl,data=length_weight())
     results <- coef(summary(model))
-    rownames(results) <- c("Intercept","Slope")
+    rownames(results) <- c("log(a)","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
     results
   },digits=12)
@@ -291,7 +291,7 @@ shinyServer(function(input, output, session) {
   output$nlm_call <- renderTable({
     model <- nls(wt~a*tl^b,start=c(a=1,b=1),control=nls.control(maxiter=1000),data=length_weight())
     results <- coef(summary(model))
-    rownames(results) <- c("Scaling Factor","Exponent")
+    rownames(results) <- c("a","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
     results
   },digits=12)

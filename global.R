@@ -4,7 +4,7 @@ library(ggplot2)
 library(rgdal)
 library(magrittr)
 
-databaseSource <- "online"
+databaseSource <- "local"
 
 if (databaseSource=="online") {
 ## To run web-based
@@ -14,7 +14,7 @@ database3 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-wester
 database4 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_catch.csv")
 database5 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_effort.csv")
 database6 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/lake_erie_western_basin_shoreline.csv")
-database7 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/lake_erie_western_basin_shoreline.csv")
+database7 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/forage_task_group_classifications.csv")
 wb_exp <- read.csv(text=database,header=T)
 catch2 <- read.csv(text=database2,header=T)
 lw <- read.csv(text=database3,header=T)
