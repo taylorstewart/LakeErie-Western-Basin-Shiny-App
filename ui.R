@@ -1,10 +1,11 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  HTML("<br><h3>Put Catchy Name Here!</h3>"),
+  HTML("<br><h2>Put Catchy Name Here!</h2>"),
   
   # Create a new panel for the historical time series plot and table.
-  HTML("<br><h4>Historical Time Series</h4>"),
+  HTML("<br><h3>Historical Time Series</h3>"),
+  HTML("<br><h4>Total Catch</h4>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -15,12 +16,19 @@ shinyUI(fluidPage(
            htmlOutput("ggvis_time")
     )
   ),
+  #fluidRow(
+  #         dataTableOutput(outputId="table")
+  #),
+  HTML("<br><h4>Forage Density</h4>"),
   fluidRow(
-           dataTableOutput(outputId="table")
+    column(3),
+    column(9,
+           htmlOutput("ggvis_ftg")
+    )
   ),
-  
+
   # Create a new panel for input selectors.
-  HTML("<br><h4>Reactive Plots</h4>"),
+  HTML("<br><h3>Reactive Plots</h3>"),
   fluidRow(
     column(3,
            selectInput("year",label=h5("Year Input"),year_vars,selected="2014")

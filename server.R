@@ -76,6 +76,39 @@ shinyServer(function(input, output, session) {
   })
 
 ## -----------------------------------------------------------
+## Forage Task Group Data Manipulation and Plot
+## -----------------------------------------------------------
+
+  # Filter catch, returning a data frame
+  ftg_Rdata <- reactive({
+    
+    p <- ftg_data
+    
+    # Summarize total catch by year and season
+    p %<>%
+      group_by(year,class) %>%
+      summarise(NperHA=sum(NperHA)
+      )
+  })
+
+  # A reactive expression with the historical time series plot
+  ftg_bar <- reactive({
+    
+    ftg_Rdata %>% group_by(class) %>%
+    ggvis(~factor(year),~NperHA) %>%
+      layer_bars(width=0.5,prop("fill",~class)) %>%
+      add_legend("fill",title="Functional Groups") %>%
+      add_axis("x",title="Year",ticks=1,title_offset=35) %>%
+      add_axis("y",title="Number Per Hectare",title_offset=65)
+  })
+  
+  ftg_bar %>% bind_shiny("ftg")
+  
+  output$ggvis_ftg <- renderUI({
+    ggvisOutput("ftg")
+  })
+
+## -----------------------------------------------------------
 ## Density and Biomass Data Manipulation and Map
 ## -----------------------------------------------------------
 
@@ -132,24 +165,30 @@ shinyServer(function(input, output, session) {
     
     sizevar <- prop("size",as.symbol(input$density))
       
-    ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
-      layer_paths() %>%
-      layer_paths(data=filter(wb_shore,piece=="2"),~long,~lat) %>%
-      layer_paths(data=filter(wb_shore,piece=="3"),~long,~lat) %>%
-      layer_paths(data=filter(wb_shore,piece=="4"),~long,~lat) %>%
-      layer_paths(data=filter(wb_shore,piece=="5"),~long,~lat) %>%
-      layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
-      layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
-                   fillOpacity:=0.6,fillOpacity.hover:=1) %>%
-      add_tooltip(tooltip, "hover") %>%
-      scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
-      scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
-      add_legend("size",title="Value") %>%
-      add_axis("x",title="",ticks="",tick_size_end="") %>%
-      add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
-      add_axis("y",title="",ticks="",tick_size_end="") %>%
-      add_axis("y",orient="right",title="",ticks="",tick_size_end="")
-    })
+      ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
+        layer_paths() %>%
+        layer_paths(data=filter(wb_shore,piece=="2"),~long,~lat) %>%
+        layer_paths(data=filter(wb_shore,piece=="3"),~long,~lat) %>%
+        layer_paths(data=filter(wb_shore,piece=="4"),~long,~lat) %>%
+        layer_paths(data=filter(wb_shore,piece=="5"),~long,~lat) %>%
+        layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
+        layer_points(data=effort,~long_st,~lat_st,size=8,
+                    fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
+        layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
+                     fillOpacity:=0.6,fillOpacity.hover:=1) %>%
+        add_legend("size","fill",title="Value",values=c(25,50,100,250,500,1000,1500,2000),
+                   properties=legend_props(
+                     symbol=list(fill="black"))) %>%
+        #labels=list(text=c("< 25","50","100","250","500","1000","1500","2000 +")))) %>%
+        add_tooltip(tooltip, "hover") %>%
+        scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
+        scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
+        scale_numeric("size",domain=c(10,2000),range=c(10,2000),clamp=TRUE) %>%
+        add_axis("x",title="",ticks="",tick_size_end="") %>%
+        add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
+        add_axis("y",title="",ticks="",tick_size_end="") %>%
+        add_axis("y",orient="right",title="",ticks="",tick_size_end="")
+  })
     
     wb_map %>% bind_shiny("map")
     
