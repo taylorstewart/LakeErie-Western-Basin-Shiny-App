@@ -4,7 +4,7 @@ library(ggplot2)
 library(rgdal)
 library(magrittr)
 
-databaseSource <- "local"
+databaseSource <- "online"
 
 if (databaseSource=="online") {
 ## To run web-based

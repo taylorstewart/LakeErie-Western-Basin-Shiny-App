@@ -6,6 +6,9 @@
 
 # RStudio files
 .Rproj.user/
+global.R
+ui.R
+server.R
 
 # Shiny files
 shinyapps/
