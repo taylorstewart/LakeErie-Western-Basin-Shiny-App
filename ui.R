@@ -1,7 +1,11 @@
 library(shiny)
 
 shinyUI(fluidPage(
-  tags$img(src = "~/Documents/R Projects/lebs_western_basin_shiny_app/usgs_banner.tif"),
+  fluidRow(
+    column(12,
+           tags$img(src = "https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/usgs_banner.tif",height="100px",width="100%")
+           )
+    ),
   HTML("<br><h2>Put Catchy Name Here!</h2>"),
   
   # Create a new panel for the historical time series plot and table.
