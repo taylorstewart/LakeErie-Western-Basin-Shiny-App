@@ -1,30 +1,11 @@
+library(shiny)
 library(RCurl)
 library(dplyr)
 library(ggplot2)
-library(rgdal)
 library(magrittr)
+library(ggvis)
 
-databaseSource <- "online"
 
-if (databaseSource=="online") {
-## To run web-based
-database <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_expLengths.csv")
-database2 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_CatchperHA.csv")
-database3 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_lw.csv")
-database4 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_catch.csv")
-database5 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/WB_effort.csv")
-database6 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/lake_erie_western_basin_shoreline.csv")
-database7 <- getURL("https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/data/forage_task_group_classifications.csv")
-wb_exp <- read.csv(text=database,header=T)
-catch2 <- read.csv(text=database2,header=T)
-lw <- read.csv(text=database3,header=T)
-catch <- read.csv(text=database4,header=T)
-effort <- read.csv(text=database5,header=T)
-wb_shore <- read.csv(text=database6,header=T)
-ftg <- read.csv(text=database7,header=T)
-}
-if (databaseSource == "local") {
-## To run locally
 wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
 catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
 lw <- read.csv("data/WB_lw.csv",header=T)
@@ -32,7 +13,6 @@ catch <- read.csv("data/WB_catch.csv",header=T)
 effort <- read.csv("data/WB_effort.csv",header=T)
 wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
-}
 
 wb_exp$tl_exp <- as.numeric(wb_exp$tl_exp)
 lw$tl <- as.numeric(lw$tl)

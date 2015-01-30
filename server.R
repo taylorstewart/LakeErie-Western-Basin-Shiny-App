@@ -1,6 +1,3 @@
-library(ggvis)
-library(RSQLite)
-
 # Define server logic required
 shinyServer(function(input, output, session) {
   
