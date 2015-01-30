@@ -5,7 +5,6 @@ library(ggplot2)
 library(magrittr)
 library(ggvis)
 
-
 wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
 catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
 lw <- read.csv("data/WB_lw.csv",header=T)
@@ -63,5 +62,6 @@ catchHA <- catchHA %>% filter(!is.na(long_st) & long_st != "#N/A") %>%
 colnames(catchHA) <- c("species","serial","life_stage","count","NperHA","KgperHA","long","lat","year","season")
 
 ##
-ftg_data <- merge(catchHA,ftg,by.x="species",by.y="species")
-ftg_data %<>% filter(life_stage == "YOY", season == "Autumn")
+ftg_effort <- merge(catchHA,ftg,by.x="species",by.y="species")
+ftg_data <- ftg_effort %>% filter(life_stage == "YOY", season == "Autumn")
+ftg_data <-  bind_rows(filter(ftg_effort,class == "Soft-rayed"),filter(ftg_effort,species == "Alewife"),ftg_data)

@@ -173,10 +173,9 @@ shinyServer(function(input, output, session) {
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
         layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
                      fillOpacity:=0.6,fillOpacity.hover:=1) %>%
-        add_legend("size","fill",title="Value",values=c(25,50,100,250,500,1000,1500,2000),
+        add_legend("size","fill",title="Value",values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
                    properties=legend_props(
                      symbol=list(fill="black"))) %>%
-        #labels=list(text=c("< 25","50","100","250","500","1000","1500","2000 +")))) %>%
         add_tooltip(tooltip, "hover") %>%
         scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
         scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
