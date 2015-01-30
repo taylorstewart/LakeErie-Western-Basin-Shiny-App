@@ -1,7 +1,7 @@
-shinyUI(fluidPage(
+shinyUI(fluidPage(theme="bootstrap.css",
   fluidRow(
     column(12,
-           tags$img(src = "https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/www/master/usgs_banner.png",height="105px",width="100%")
+           tags$img(src = "https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/www/usgs_banner.png",height="105px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
