@@ -1,4 +1,5 @@
-shinyUI(fluidPage(theme="bootstrap.css",
+shinyUI(fluidPage(
+  tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
            tags$img(src = "https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/www/usgs_banner.png",height="105px",width="100%")
@@ -56,14 +57,16 @@ shinyUI(fluidPage(theme="bootstrap.css",
            wellPanel(
              HTML("<p>These functional groups are used by the Lake Erie Committee Forage Task Group and are inclusive of the following species:</p>"),
              HTML("<p>Clupeids: Age-0 Gizzard Shad (<i>Dorosoma cepedianum</i>) and Alewife (<i>Alosa pseudoharengus</i>)</p>
-                  <p>Soft-rayed fish: Rainbow Smelt (<i>Osmerus mordax</i>), Emerald Shiner (<i>Notropis atherinoides</i>), Spottail Shiner (<i>Notropis hudsonius</i>), Silver Chub (<i>Macrhybopsis storeriana</i>), Trout-perch (<i>Percopsis omiscomaycus</i>), Round Goby (<i>Neogobius melanostomus</i>), and other cyprinids</p>
-                  <p>Spiny-rayed fish: Age-0 for each of White Perch (<i>Morone americana</i>), White Bass (<i>Morone chrysops</i>), Yellow Perch (<i>Perca flavescens</i>), Walleye (<i>Sander vitreus</i>), and Freshwater Drum (<i>Aplodinotus grunniens</i>)</p>")
+                  <p>Soft-rayed fish: Rainbow Smelt (<i>Osmerus mordax</i>), Emerald Shiner (<i>Notropis atherinoides</i>), Spottail Shiner (<i>Notropis hudsonius</i>), 
+                  Silver Chub (<i>Macrhybopsis storeriana</i>), Trout-perch (<i>Percopsis omiscomaycus</i>), Round Goby (<i>Neogobius melanostomus</i>), and other cyprinids</p>
+                  <p>Spiny-rayed fish: Age-0 for each of White Perch (<i>Morone americana</i>), White Bass (<i>Morone chrysops</i>), Yellow Perch (<i>Perca flavescens</i>), 
+                  Walleye (<i>Sander vitreus</i>), and Freshwater Drum (<i>Aplodinotus grunniens</i>)</p>")
            )
     ),
     column(9,align="center",
            htmlOutput("ggvis_ftg"),
            HTML("Mean density of fish (number per hectare) by functional group in Ontario, Michigan, 
-                and Ohio waters in the western basin of Lake Erie.<br><br><br>")
+                and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling.<br><br><br>")
     )
   ),
 
@@ -100,9 +103,11 @@ shinyUI(fluidPage(theme="bootstrap.css",
     ),
     column(9,align="center",
            HTML("<h5>Hover over point to display station number and detailed density value.</h5>"),
-           htmlOutput("ggvis_map"),
+           ggvisOutput("map"),
+           uiOutput("ggvis_map"),
            HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
-                Hollow circles represent station localities. Values that exceed the data domain set in the legend are clamped to either the minimum or maximum range value.")
+                Hollow circles represent station localities. 
+                Values that exceed the data domain, set by the legend scale, are clamped to either the minimum or maximum scale value.")
     )
   ),
   
@@ -164,10 +169,10 @@ shinyUI(fluidPage(theme="bootstrap.css",
   ## USGS Reference and Disclaimer
   HTML("<br><br><p><i>U.S. Geological Survey</i> (USGS) Computer Program <b>XXXX</b> version 2015-01.
     Written by Taylor R. Stewart (email: trstewart@usgs.gov),"),
-    tags$a(href="http://www.glsc.usgs.gov","USGS - Great Lakes Science Center,"),
+    tags$a(href="http://www.glsc.usgs.gov",HTML(paste(tags$span(style="color:royalblue","USGS - Great Lakes Science Center"),tags$span(style="color:black",","),sep=""))),
     HTML("Ann Arbor, Michigan, USA. Written in programming language R (R Core Team, 2015,"),
-    tags$a(href="http://www.r-project.org","www.r-project.org"), 
-    HTML(") version 3.1.2 (2014-10-31).</p>"),
+    tags$a(href="http://www.r-project.org",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
+    HTML("version 3.1.2 (2014-10-31).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
     and related program material nor shall the fact of distribution constitute any such warranty, and no 

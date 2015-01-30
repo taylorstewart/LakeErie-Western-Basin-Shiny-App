@@ -20,8 +20,7 @@ lw$logl <- log(lw$tl)
 lw$logw <- log(lw$wt)
 lw %<>% select(serial,fish_id,species,size,tl,wt,logl,logw,year,season) %>%
   filter(!is.na(wt) & !is.na(tl))
-catch <- select(catch,serial,species,size,agg_wt_final,count_final,year,season)
-colnames(catch) <- c("Station","Species","Size Mode","Aggregate Weight (g)","Total Count","Year","Season")
+catch %<>% select(serial,species,size,agg_wt_final,count_final,year,season)
 
 # Variables that can be put on the x and y axes
 axis_vars <- c(
@@ -46,8 +45,7 @@ species_vars <- data.frame(unique(lw$species))
 species_vars <- as.character(species_vars[order(species_vars$unique.lw.species),])
 
 # Variables that can be selected as stations
-serial_vars <- data.frame(unique(lw$serial))
-serial_vars <- as.character(serial_vars[order(serial_vars$unique.lw.serial),])
+serial_vars <- arrange(select(distinct(lw,serial),serial),serial)
 
 ## Sum number per HA for all life stages by species
 catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
@@ -56,12 +54,12 @@ catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
             KgperHA = round(sum(KgperHA),2))
 
 ## Merge effort and catch data and rename variable names
-catchHA <- merge(effort,catch2,by.x="serial",by.y="serial")
-catchHA <- catchHA %>% filter(!is.na(long_st) & long_st != "#N/A") %>%
-  select(species,serial,life_stage,count,NperHA,KgperHA,long_st,lat_st,year,season)
-colnames(catchHA) <- c("species","serial","life_stage","count","NperHA","KgperHA","long","lat","year","season")
+catchHA <- right_join(effort,catch2,by="serial") %>%
+  filter(!is.na(long_st) & long_st != "#N/A") %>%
+  rename(species=species,serial=serial,life_stage=life_stage,count=count,NperHA=NperHA,KgperHA=KgperHA,long=long_st,lat=lat_st,year=year,season=season)
 
-##
-ftg_effort <- merge(catchHA,ftg,by.x="species",by.y="species")
-ftg_data <- ftg_effort %>% filter(life_stage == "YOY", season == "Autumn")
-ftg_data <-  bind_rows(filter(ftg_effort,class == "Soft-rayed"),filter(ftg_effort,species == "Alewife"),ftg_data)
+## Filter density values for forage task group classification
+ftg_data <- right_join(catchHA,ftg,by="species")
+ftg_data <- bind_rows(filter(ftg_data,life_stage == "YOY", season == "Autumn"),
+                   filter(ftg_data,class == "Soft-rayed",season == "Autumn"),
+                   filter(ftg_data,species == "Alewife",season == "Autumn"))

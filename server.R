@@ -8,10 +8,8 @@ shinyServer(function(input, output, session) {
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- catch
-    
-    colnames(l) <- c("serial","species","size","weight","count","year","season")
-    
+    l <- rename(catch,serial=serial,species=species,size=size,weight=agg_wt_final,count=count_final,year=year,season=season)
+        
     # Optional: filter by species
     if (!is.null(input$species2) && input$species2 != "All") {
       l <- l[l$species == input$species2,]
@@ -20,17 +18,14 @@ shinyServer(function(input, output, session) {
     # Summarize total catch by year and season
     l %<>%
       group_by(year,season) %>%
-      summarise(count=sum(count)
-      )
+      summarise(count=sum(count)) %>%
+      rename(Year=year,Season=season,Count=count)
     
-    # Rename columns for table header
-    colnames(l) <- c("Year","Season","Count")
-    
-    l <- as.data.frame(l)
+    l <- tbl_df(l)
   })
   
   # A reactive expression with the historical time series plot
-  hist_time <- reactive({
+  reactive({
     
     ggvis(data=time_data,~factor(Year),~Count) %>%
       layer_points(fill = ~Season) %>%
@@ -38,9 +33,7 @@ shinyServer(function(input, output, session) {
       layer_lines(stroke = ~Season) %>%
       add_axis("x",title="Year",ticks=1,title_offset=35) %>%
       add_axis("y",title="Total Count",title_offset=65)
-  })
-  
-  hist_time %>% bind_shiny("time")
+  }) %>% bind_shiny("time")
   
   output$ggvis_time <- renderUI({
     ggvisOutput("time")
@@ -57,19 +50,13 @@ shinyServer(function(input, output, session) {
       catch_tbl <- catch_tbl[catch_tbl$Species == input$species2,]
     }
     
-    # Rename column names to remove spaces
-    colnames(catch_tbl) <- c("Station","Species","Size","Weight","Total_Count","Year","Season")
-    
     #Summarize total count by species, year, and season
     catch_tbl %<>%
-      group_by(Species,Year,Season) %>%
-      summarise(count=round(sum(Total_Count),0)
-      )
-    
-    # Capitalize column names for table header
-    colnames(catch_tbl) <- c("Species","Year","Season","Total Count")
-    
-    catch_tbl <- as.data.frame(catch_tbl)
+      rename(species=species,count=count_final,year=year,season=season) %>%
+      group_by(species,year,season) %>%
+      summarise(count=round(sum(count),0)) %>%
+      rename(Species=species,Year=year,Season=season,Total_Count=count) %>%
+      tbl_df()
   })
 
 ## -----------------------------------------------------------
@@ -89,7 +76,7 @@ shinyServer(function(input, output, session) {
   })
 
   # A reactive expression with the historical time series plot
-  ftg_bar <- reactive({
+  reactive({
     
     ftg_Rdata %>% group_by(class) %>%
     ggvis(~factor(year),~NperHA) %>%
@@ -97,9 +84,7 @@ shinyServer(function(input, output, session) {
       add_legend("fill",title="Functional Groups") %>%
       add_axis("x",title="Year",ticks=1,title_offset=35) %>%
       add_axis("y",title="Number Per Hectare",title_offset=65)
-  })
-  
-  ftg_bar %>% bind_shiny("ftg")
+  }) %>% bind_shiny("ftg")
   
   output$ggvis_ftg <- renderUI({
     ggvisOutput("ftg")
@@ -158,11 +143,10 @@ shinyServer(function(input, output, session) {
     }
 
   # A reactive expression with the western basin map
-  wb_map <- reactive({
-    
+  observe({
     sizevar <- prop("size",as.symbol(input$density))
       
-      ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
+        ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
         layer_paths() %>%
         layer_paths(data=filter(wb_shore,piece=="2"),~long,~lat) %>%
         layer_paths(data=filter(wb_shore,piece=="3"),~long,~lat) %>%
@@ -173,7 +157,8 @@ shinyServer(function(input, output, session) {
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
         layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
                      fillOpacity:=0.6,fillOpacity.hover:=1) %>%
-        add_legend("size","fill",title="Value",values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
+        add_legend("size","fill",title="Value",
+                   values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
                    properties=legend_props(
                      symbol=list(fill="black"))) %>%
         add_tooltip(tooltip, "hover") %>%
@@ -183,14 +168,8 @@ shinyServer(function(input, output, session) {
         add_axis("x",title="",ticks="",tick_size_end="") %>%
         add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
         add_axis("y",title="",ticks="",tick_size_end="") %>%
-        add_axis("y",orient="right",title="",ticks="",tick_size_end="")
+        add_axis("y",orient="right",title="",ticks="",tick_size_end="") %>% bind_shiny("map","ggvis_map")
   })
-    
-    wb_map %>% bind_shiny("map")
-    
-    output$ggvis_map <- renderUI({
-      ggvisOutput("map")
-    })
 
 ## -----------------------------------------------------------
 ## Lenght-Weight Data Manipulation and Plot
@@ -228,7 +207,7 @@ shinyServer(function(input, output, session) {
   })
   
   # A reactive expression with the lenght-weight plot
-  vis <- reactive({
+  reactive({
     
     # Lables for axes
     xvar_name <- names(axis_vars)[axis_vars == input$xvar]
@@ -242,9 +221,7 @@ shinyServer(function(input, output, session) {
       layer_points(size := 50,fillOpacity := 0.2) %>%
       add_axis("x", title = xvar_name, title_offset = 35) %>%
       add_axis("y", title = yvar_name, title_offset = 55)
-  })
-  
-  vis %>% bind_shiny("lw_plot")
+  }) %>% bind_shiny("lw_plot")
   
   output$ggvis_lw_plot <- renderUI({
     ggvisOutput("lw_plot")
@@ -256,7 +233,6 @@ shinyServer(function(input, output, session) {
     results <- coef(summary(model))
     rownames(results) <- c("log(a)","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-    results
   },digits=12)
   
   # Calculate residuals of the linear regression
@@ -269,15 +245,13 @@ shinyServer(function(input, output, session) {
   })
   
   # A reactive expression with the linear regression residual plot
-  vis5 <- reactive({
+  reactive({
     
     ggvis(data=lm_resid,~n,~resid) %>%
       layer_points() %>%
       add_axis("x",title="Index") %>%
       add_axis("y",title="Residuals")
-  })
-  
-  vis5 %>% bind_shiny("lm_resid_plot")
+  }) %>% bind_shiny("lm_resid_plot")
   
   output$ggvis_lm_resid <- renderUI({
     ggvisOutput("lm_resid_plot")
@@ -289,7 +263,6 @@ shinyServer(function(input, output, session) {
     results <- coef(summary(model))
     rownames(results) <- c("a","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-    results
   },digits=12)
   
   # Calculate residuals of the power function
@@ -302,15 +275,13 @@ shinyServer(function(input, output, session) {
   })
   
   # A reactive expression with the power function residual plot
-  vis6 <- reactive({
+  reactive({
     
     ggvis(data=nlm_resid,~n,~resid) %>%
       layer_points() %>%
       add_axis("x",title="Index") %>%
       add_axis("y",title="Residuals")
-  })
-  
-  vis6 %>% bind_shiny("nlm_resid_plot")
+  }) %>% bind_shiny("nlm_resid_plot")
   
   output$ggvis_nlm_resid <- renderUI({
     ggvisOutput("nlm_resid_plot")
@@ -351,7 +322,7 @@ shinyServer(function(input, output, session) {
   })
   
   # A reactive expression with the length frequency plot
-  len_freq_vis <- reactive({
+  reactive({
     
     # Lables for axes
     xvar_name <- "Total Length (mm)"
@@ -362,9 +333,7 @@ shinyServer(function(input, output, session) {
       add_axis("x", title = xvar_name, title_offset = 35) %>%
       add_axis("y", title = yvar_name, title_offset = 55) %>%
       layer_histograms(width = input$slider1)
-  })
-  
-  len_freq_vis %>% bind_shiny("len_freq_plot")
+  }) %>% bind_shiny("len_freq_plot")
   
   output$ggvis_hist <- renderUI({
     ggvisOutput("len_freq_plot")
