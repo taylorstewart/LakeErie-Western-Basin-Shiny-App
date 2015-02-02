@@ -196,7 +196,7 @@ shinyServer(function(input, output, session) {
       m <- m[m$season == input$season,]
     }
     # Optional: filter by serial
-    if (!is.null(input$serial) && input$serial != "All") {
+    if (!is.null(input$serial) && input$serial != "") {
       m <- m[m$serial == input$serial,]
     }
     # Optional: filter by species
@@ -209,15 +209,17 @@ shinyServer(function(input, output, session) {
   # A reactive expression with the lenght-weight plot
   reactive({
     
-    # Lables for axes
-    xvar_name <- names(axis_vars)[axis_vars == input$xvar]
-    yvar_name <- names(axis_vars)[axis_vars == input$yvar]
-    
-    xvar <- prop("x", as.symbol(input$xvar))
-    yvar <- prop("y", as.symbol(input$yvar))
+    if (!is.null(input$datatrans) && input$datatrans != "Raw") {
+      length_weight %<>% transmute(tl=log(tl),wt=log(wt))
+      xvar_name <- names(axis_vars)[3]
+      yvar_name <- names(axis_vars)[4]
+    } else {
+      xvar_name <- names(axis_vars)[1]
+      yvar_name <- names(axis_vars)[2]
+    }
     
     length_weight %>%
-      ggvis(x = xvar, y = yvar) %>%
+      ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
       add_axis("x", title = xvar_name, title_offset = 35) %>%
       add_axis("y", title = yvar_name, title_offset = 55)
@@ -233,6 +235,7 @@ shinyServer(function(input, output, session) {
     results <- coef(summary(model))
     rownames(results) <- c("log(a)","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+    results
   },digits=12)
   
   # Calculate residuals of the linear regression
@@ -241,7 +244,7 @@ shinyServer(function(input, output, session) {
     resid <- data.frame(resid(model))
     colnames(resid) <- "resid"
     resid$n <- seq(1,nrow(resid))
-    resid <- as.data.frame(resid)
+    resid <- tbl_df(resid)
   })
   
   # A reactive expression with the linear regression residual plot
@@ -259,19 +262,24 @@ shinyServer(function(input, output, session) {
   
   # Create table for the power function parameter estimates
   output$nlm_call <- renderTable({
-    model <- nls(wt~a*tl^b,start=c(a=1,b=1),control=nls.control(maxiter=1000),data=length_weight())
+    st <- coef(lm(logw~logl,data=length_weight()))
+    names(st) <- c("a","b")
+    model <- nls(wt~a*tl^b,start=st,control=nls.control(maxiter=1000),data=length_weight())
     results <- coef(summary(model))
     rownames(results) <- c("a","b")
     colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+    results
   },digits=12)
   
   # Calculate residuals of the power function
   nlm_resid <- reactive({
-    model <- nls(wt~a*tl^b,start=c(a=1,b=1),control=nls.control(maxiter=1000),data=length_weight())
+    st <- coef(lm(logw~logl,data=length_weight()))
+    names(st) <- c("a","b")
+    model <- nls(wt~a*tl^b,start=st,control=nls.control(maxiter=1000),data=length_weight())
     resid <- data.frame(resid(model))
     colnames(resid) <- "resid"
     resid$n <- seq(1,nrow(resid))
-    resid <- as.data.frame(resid)
+    resid <- tbl_df(resid)
   })
   
   # A reactive expression with the power function residual plot
@@ -297,14 +305,7 @@ shinyServer(function(input, output, session) {
   # Filter length frequency, returning a data frame
   len_freq <- reactive({
     
-    # Filter the lengths
-    minlength <- input$tl[1]
-    maxlength <- input$tl[2]
-    
-    len <- wb_exp %>% 
-      filter(
-        tl_exp >= minlength,
-        tl_exp <= maxlength)
+    len <- wb_exp
     
     # Optional: filter by year
     if (!is.null(input$year) && input$year != "") {

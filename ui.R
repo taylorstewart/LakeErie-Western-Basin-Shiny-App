@@ -2,21 +2,21 @@ shinyUI(fluidPage(
   tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src = "https://raw.githubusercontent.com/taylorstewart/lebs-western-basin/master/www/usgs_banner.png",height="105px",width="100%")
+           tags$img(src="usgs_banner.png",height="110px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
-  HTML("BETA VERSION STATEMENT:"),
+  HTML("<i>BETA VERSION STATEMENT:"),
   HTML("This data exploration tool is intended for use by Lake Erie fisheries managers, academia, the fishing industry and the public. 
        The data presented here have been checked for accuracy, but are still considered provisional at this time. 
-       You may request a subset of these data by contacting us directly via email. We hope you will take time to send us suggestions on how to improve this tool. 
+       You may request a subset of these datasets by contacting us directly via email. We hope you will take time to send us suggestions on how to improve this tool. 
        Please send questions, comments, and error reports via email to USGS - Lake Erie Biological Station c/o Richard Kraus "),
   HTML(paste("(",tags$span(style="color:royalblue","rkraus@usgs.gov"),")",sep="")),
   HTML("and/or Taylor Stewart "),
   HTML(paste("(",tags$span(style="color:royalblue","trstewart@usgs.gov"),").",sep="")),
-  HTML("The current web location of this app is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.<br><br>"),
+  HTML("The current web location of this app is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.</i><br><br>"),
   
-  HTML("<i><p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
+  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
        LEBS is the primary federal agency for applied fisheries science excellence in Lake Erie. 
        Since 2004, LEBS has participated in a collaborative, multiagency effort to assess forage fish populations in the western basin of Lake Erie. 
        The objectives of this evaluation are to provide estimates of abundance of key forage and predator species, 
@@ -32,7 +32,7 @@ shinyUI(fluidPage(
        The cod end liner is constructed of 14 mm knotless dyneema mesh. The net is towed at a target speed of 3 knots, and wingspread estimates are obtained on each tow with an acoustic mensuration system to standardize catches per area swept. 
        Biomass was measured onboard with a motion compensating scale, and individual lengths and weights were obtained from sub-samples of each species’ size group. 
        Total counts were obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
-       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where we counted every fish, and size groups with low numbers (n<10), where each fish was measured.</p></i><br><br>"),
+       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where we counted every fish, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
   
   # Create a new panel for the historical time series plot and table.
   HTML("<h3>Historical Time Series</h3>"),
@@ -117,8 +117,11 @@ shinyUI(fluidPage(
     column(3,
            wellPanel(
              sliderInput("tl",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
-             selectInput("xvar",h5("X-axis Variable"), axis_vars,selected="tl"),
-             selectInput("yvar",h5("Y-axis Variable"), axis_vars,selected="wt")
+             radioButtons("datatrans",h5("Transformation:"),
+                          c("Raw" = "Raw",
+                          "Linear" = "Linear"))
+             #selectInput("xvar",h5("X-axis Variable"), axis_vars,selected="tl"),
+             #selectInput("yvar",h5("Y-axis Variable"), axis_vars,selected="wt")
              )
           ),
     column(9,align="center",
