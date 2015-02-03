@@ -2,7 +2,7 @@ shinyUI(fluidPage(
   tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner.png",height="110px",width="100%")
+           tags$img(src="usgs_banner_gr.png",height="110px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -28,11 +28,13 @@ shinyUI(fluidPage(
        The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. 
        Thus, we present data starting from 2013. This data presentation tool will automatically update with new data as we complete surveys in subsequent years.</p>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;The vessel used for the survey is the R/V Muskie, a 70’ aluminum mono-hull research vessel, with a double-warp trawl system. 
-       The net is a four-seam, three-bridle, bottom trawl, with a fishing circle of 200 x 12cm meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter floppy discs. 
+       The net is a four-seam, three-bridle, bottom trawl, with a fishing circle of 200 x 12 cm meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter floppy discs. 
        The cod end liner is constructed of 14 mm knotless dyneema mesh. The net is towed at a target speed of 3 knots, and wingspread estimates are obtained on each tow with an acoustic mensuration system to standardize catches per area swept. 
+       Typical net geometry is a 6 m wingspread and 3 m headline height on each tow. 
+       Typical area swept is 0.5 hectares. 
        Biomass was measured onboard with a motion compensating scale, and individual lengths and weights were obtained from sub-samples of each species’ size group. 
-       Total counts were obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
-       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where we counted every fish, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
+       Total counts are obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
+       The exceptions to this method of enumeration are percids (Yellow Perch and Walleye), where every fish is counted, and size groups with low numbers (n<10), where each fish is measured.</p><br><br>"),
   
   # Create a new panel for the historical time series plot and table.
   HTML("<h3>Historical Time Series</h3>"),
@@ -40,12 +42,12 @@ shinyUI(fluidPage(
     column(3,
            HTML("<h4>Catch</h4>"),
            wellPanel(
-             selectInput("species2",h5("Species Input"),c("All",species_vars))
+             selectInput("species2",h5("Species Input"),species_vars,selected="Yellow Perch")
            )
     ),
     column(9,align="center",
            htmlOutput("ggvis_time"),
-           HTML("<p>Historical total catch trend by season of western Lake Erie species.<br><br><br><br>")
+           HTML("<p>Historical trend in mean catch per hectare swept by season in the western basin of Lake Erie.<br><br><br><br>")
     )
   ),
   #fluidRow(
@@ -55,6 +57,10 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
+             #checkboxInput("clu",h5("Clupeids"),value=TRUE),
+             #checkboxInput("soft",h5("Soft-rayed"),value=TRUE),
+             #checkboxInput("spiny",h5("Spiny-rayed"),value=TRUE),
+             #checkboxInput("other",h5("Other Species")),
              HTML("<p>These functional groups are used by the Lake Erie Committee Forage Task Group and are inclusive of the following species:</p>"),
              HTML("<p>Clupeids: Age-0 Gizzard Shad (<i>Dorosoma cepedianum</i>) and Alewife (<i>Alosa pseudoharengus</i>)</p>
                   <p>Soft-rayed fish: Rainbow Smelt (<i>Osmerus mordax</i>), Emerald Shiner (<i>Notropis atherinoides</i>), Spottail Shiner (<i>Notropis hudsonius</i>), 
@@ -65,7 +71,7 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            htmlOutput("ggvis_ftg"),
-           HTML("Mean density of fish (number per hectare) by functional group in Ontario, Michigan, 
+           HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
                 and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling.<br><br><br>")
     )
   ),
@@ -102,12 +108,12 @@ shinyUI(fluidPage(
            )
     ),
     column(9,align="center",
-           HTML("<h5>Hover over point to display station number and detailed density value.</h5>"),
+           #HTML("<h5>Hover over point to display station number and detailed density value.</h5>"),
            ggvisOutput("map"),
            uiOutput("ggvis_map"),
            HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
                 Hollow circles represent station localities. 
-                Values that exceed the data domain, set by the legend scale, are clamped to either the minimum or maximum scale value.")
+                Symbol size categories are labeled by the upper bound in the legend, except for the largest symbol...")
     )
   ),
   
@@ -118,12 +124,10 @@ shinyUI(fluidPage(
            wellPanel(
              sliderInput("tl",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
              radioButtons("datatrans",h5("Transformation:"),
-                          c("Raw" = "Raw",
+                          c("None" = "None",
                           "Linear" = "Linear"))
-             #selectInput("xvar",h5("X-axis Variable"), axis_vars,selected="tl"),
-             #selectInput("yvar",h5("Y-axis Variable"), axis_vars,selected="wt")
-             )
-          ),
+           )
+    ),
     column(9,align="center",
            tabsetPanel(type="tabs",
                        tabPanel("Weight-Length Plot",htmlOutput("ggvis_lw_plot"),
@@ -156,6 +160,7 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
+             sliderInput("tl2",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
              sliderInput("slider1",label=h5("Bin Width (mm)"),min=5,max=25,step=5,value=10))),
     column(9,align="center",
            htmlOutput("ggvis_hist"),
@@ -170,8 +175,7 @@ shinyUI(fluidPage(
   ),
   
   ## USGS Reference and Disclaimer
-  HTML("<br><br><p><i>U.S. Geological Survey</i> (USGS) Computer Program <b>XXXX</b> version 2015-01.
-    Written by Taylor R. Stewart (email: trstewart@usgs.gov),"),
+  HTML("<br><br><p><i>Written by Taylor R. Stewart (email: trstewart@usgs.gov),"),
     tags$a(href="http://www.glsc.usgs.gov",HTML(paste(tags$span(style="color:royalblue","USGS - Great Lakes Science Center"),tags$span(style="color:black",","),sep=""))),
     HTML("Ann Arbor, Michigan, USA. Written in programming language R (R Core Team, 2015,"),
     tags$a(href="http://www.r-project.org",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 

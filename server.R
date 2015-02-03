@@ -4,35 +4,33 @@ shinyServer(function(input, output, session) {
 ## -----------------------------------------------------------
 ## Historical Time Series Data Manipulation and Plot
 ## -----------------------------------------------------------
-  
+
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- rename(catch,serial=serial,species=species,size=size,weight=agg_wt_final,count=count_final,year=year,season=season)
+    l <- rename(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
         
     # Optional: filter by species
     if (!is.null(input$species2) && input$species2 != "All") {
       l <- l[l$species == input$species2,]
     }
-    
+
     # Summarize total catch by year and season
     l %<>%
-      group_by(year,season) %>%
-      summarise(count=sum(count)) %>%
-      rename(Year=year,Season=season,Count=count)
-    
-    l <- tbl_df(l)
+      group_by(Year,Season) %>%
+      summarise(density=mean(NperHA)) %>%
+      tbl_df()
   })
   
   # A reactive expression with the historical time series plot
   reactive({
     
-    ggvis(data=time_data,~factor(Year),~Count) %>%
-      layer_points(fill = ~Season) %>%
-      group_by(Season) %>%
-      layer_lines(stroke = ~Season) %>%
+    time_data %>% group_by(Season) %>%
+    ggvis(~factor(Year),~density) %>%
+      layer_points(fill = ~Season,prop("size",80)) %>%
+      layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
       add_axis("x",title="Year",ticks=1,title_offset=35) %>%
-      add_axis("y",title="Total Count",title_offset=65)
+      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65)
   }) %>% bind_shiny("time")
   
   output$ggvis_time <- renderUI({
@@ -68,22 +66,37 @@ shinyServer(function(input, output, session) {
     
     p <- ftg_data
     
-    # Summarize total catch by year and season
+    # Summarize density by year and season
     p %<>%
       group_by(year,class) %>%
-      summarise(NperHA=sum(NperHA)
+      summarise(NperHA=round(mean(NperHA),2)
       )
   })
+
+  # Function for generating map tooltip text
+  tooltip2 <- function(x2) {
+    if (is.null(x2)) return(NULL)
+    
+    # Pick out the individual with this ID
+    wb2 <- isolate(ftg_Rdata())
+    ftg_Rdata <- wb2[wb2$class == x2$class,]
+    
+    paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$NperHA," (N/ha)","<br>")
+  }
 
   # A reactive expression with the historical time series plot
   reactive({
     
-    ftg_Rdata %>% group_by(class) %>%
-    ggvis(~factor(year),~NperHA) %>%
-      layer_bars(width=0.5,prop("fill",~class)) %>%
-      add_legend("fill",title="Functional Groups") %>%
-      add_axis("x",title="Year",ticks=1,title_offset=35) %>%
-      add_axis("y",title="Number Per Hectare",title_offset=65)
+    ftg_Rdata %<>% group_by(class) %>%
+      ggvis(~factor(year),~NperHA) %>%
+        layer_bars(width=0.5,prop("fill",~class)) %>%
+        #layer_points(prop("fill",~class),prop("size",80)) %>%
+        #layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
+        hide_legend("stroke") %>%
+        add_legend("fill",title="Functional Groups") %>%
+        add_axis("x",title="Year",ticks=1,title_offset=35) %>%
+        add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65) %>%
+        add_tooltip(tooltip2, "hover")
   }) %>% bind_shiny("ftg")
   
   output$ggvis_ftg <- renderUI({
@@ -143,7 +156,7 @@ shinyServer(function(input, output, session) {
     }
 
   # A reactive expression with the western basin map
-  observe({
+  observe(autoDestroy=TRUE, {
     sizevar <- prop("size",as.symbol(input$density))
       
         ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
@@ -153,18 +166,18 @@ shinyServer(function(input, output, session) {
         layer_paths(data=filter(wb_shore,piece=="4"),~long,~lat) %>%
         layer_paths(data=filter(wb_shore,piece=="5"),~long,~lat) %>%
         layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
-        layer_points(data=effort,~long_st,~lat_st,size=8,
+        layer_points(data=effort,~long_st,~lat_st,size=6,
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
         layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
-                     fillOpacity:=0.6,fillOpacity.hover:=1) %>%
+                     fillOpacity:=0.6) %>% #,fillOpacity.hover:=1) %>%
         add_legend("size","fill",title="Value",
                    values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
                    properties=legend_props(
                      symbol=list(fill="black"))) %>%
-        add_tooltip(tooltip, "hover") %>%
+        #add_tooltip(tooltip, "hover") %>%
         scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
         scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
-        scale_numeric("size",domain=c(10,2000),range=c(10,2000),clamp=TRUE) %>%
+        scale_numeric("size",domain=c(25,2000),range=c(25,2000),clamp=TRUE) %>%
         add_axis("x",title="",ticks="",tick_size_end="") %>%
         add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
         add_axis("y",title="",ticks="",tick_size_end="") %>%
@@ -209,7 +222,7 @@ shinyServer(function(input, output, session) {
   # A reactive expression with the lenght-weight plot
   reactive({
     
-    if (!is.null(input$datatrans) && input$datatrans != "Raw") {
+    if (!is.null(input$datatrans) && input$datatrans != "None") {
       length_weight %<>% transmute(tl=log(tl),wt=log(wt))
       xvar_name <- names(axis_vars)[3]
       yvar_name <- names(axis_vars)[4]
@@ -243,16 +256,16 @@ shinyServer(function(input, output, session) {
     model <- lm(logw~logl,data=length_weight())
     resid <- data.frame(resid(model))
     colnames(resid) <- "resid"
-    resid$n <- seq(1,nrow(resid))
-    resid <- tbl_df(resid)
+    resid <- bind_cols(length_weight(),resid) %>%
+      tbl_df()
   })
   
   # A reactive expression with the linear regression residual plot
   reactive({
     
-    ggvis(data=lm_resid,~n,~resid) %>%
+    ggvis(data=lm_resid,~tl,~resid) %>%
       layer_points() %>%
-      add_axis("x",title="Index") %>%
+      add_axis("x",title="Total Length (mm)") %>%
       add_axis("y",title="Residuals")
   }) %>% bind_shiny("lm_resid_plot")
   
@@ -278,16 +291,16 @@ shinyServer(function(input, output, session) {
     model <- nls(wt~a*tl^b,start=st,control=nls.control(maxiter=1000),data=length_weight())
     resid <- data.frame(resid(model))
     colnames(resid) <- "resid"
-    resid$n <- seq(1,nrow(resid))
-    resid <- tbl_df(resid)
+    resid <- bind_cols(length_weight(),resid) %>%
+      tbl_df()
   })
   
   # A reactive expression with the power function residual plot
   reactive({
     
-    ggvis(data=nlm_resid,~n,~resid) %>%
+    ggvis(data=nlm_resid,~tl,~resid) %>%
       layer_points() %>%
-      add_axis("x",title="Index") %>%
+      add_axis("x",title="Total Length (mm)") %>%
       add_axis("y",title="Residuals")
   }) %>% bind_shiny("nlm_resid_plot")
   
@@ -305,7 +318,14 @@ shinyServer(function(input, output, session) {
   # Filter length frequency, returning a data frame
   len_freq <- reactive({
     
-    len <- wb_exp
+    # Filter the lengths
+    minlength2 <- input$tl2[1]
+    maxlength2 <- input$tl2[2]
+    
+    len <- wb_exp %>% 
+      filter(
+        tl_exp >= minlength2,
+        tl_exp <= maxlength2)
     
     # Optional: filter by year
     if (!is.null(input$year) && input$year != "") {

@@ -59,7 +59,10 @@ catchHA <- right_join(effort,catch2,by="serial") %>%
   rename(species=species,serial=serial,life_stage=life_stage,count=count,NperHA=NperHA,KgperHA=KgperHA,long=long_st,lat=lat_st,year=year,season=season)
 
 ## Filter density values for forage task group classification
+## Turn off warning for join (different factor levels, coerces to a character vector)
+options(warn=-1)
 ftg_data <- right_join(catchHA,ftg,by="species")
 ftg_data <- bind_rows(filter(ftg_data,life_stage == "YOY", season == "Autumn"),
                    filter(ftg_data,class == "Soft-rayed",season == "Autumn"),
                    filter(ftg_data,species == "Alewife",season == "Autumn"))
+options(warn=1)
