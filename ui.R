@@ -29,11 +29,11 @@ shinyUI(fluidPage(
        The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. 
        Thus, we present data starting from 2013. This data presentation tool will automatically update with new data as we complete surveys in subsequent years.</p>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;The vessel used for the survey is the R/V Muskie, a 70’ aluminum mono-hull research vessel, with a double-warp trawl system. 
-       The net is a four-seam, three-bridle, bottom trawl, with a fishing circle of 200 x 12 cm meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter floppy discs. 
+       The net is a four-seam, three-bridle, bottom trawl, with a fishing circle of 200 x 12 cm meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter rubber discs. 
        The cod end liner is constructed of 14 mm knotless dyneema mesh. The net is towed at a target speed of 3 knots, and wingspread estimates are obtained on each tow with an acoustic mensuration system to standardize catches per area swept. 
        Typical net geometry was a 6 m wingspread and 3 m headline height on each tow. 
        Typical area swept was 0.5 hectares. 
-       Biomass was measured onboard with a motion compensating scale, and individual lengths and weights were obtained from sub-samples of each species’ size group. 
+       Individual lengths and weights were obtained from a subsample of each species’ size group. 
        Total counts were obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
        The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
   
