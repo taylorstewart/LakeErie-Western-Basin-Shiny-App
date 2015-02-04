@@ -15,15 +15,19 @@ shinyServer(function(input, output, session) {
       l <- l[l$species == input$species2,]
     }
     
+    if (length(l$NperHA) > 0) {
     l %<>% group_by(Year,Season) %>%
       summarise(density=round(mean(NperHA),2)) %>%
-      tbl_df()
-
+      tbl_df() } else {
+        l %<>% group_by(Year,Season) %>%
+          summarise(density=mean(NperHA)) %>%
+          tbl_df() }
+    
   })
 
   # Function for generating map tooltip text
   tooltip <- function(x) {
-    if (is.null(x)) return(NULL)
+    if (is.null(x)) return(NULL)    
     
     # Pick out the individual with this ID
     wb <- isolate(time_data())
