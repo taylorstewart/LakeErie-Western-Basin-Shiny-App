@@ -9,18 +9,28 @@ shinyServer(function(input, output, session) {
   time_data <- reactive({
     
     l <- rename(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
-        
+    
     # Optional: filter by species
-    if (!is.null(input$species2) && input$species2 != "All") {
+    if (!is.null(input$species2) && input$species2 != "") {
       l <- l[l$species == input$species2,]
     }
-
-    # Summarize total catch by year and season
-    l %<>%
-      group_by(Year,Season) %>%
-      summarise(density=mean(NperHA)) %>%
+    
+    l %<>% group_by(Year,Season) %>%
+      summarise(density=round(mean(NperHA),2)) %>%
       tbl_df()
+
   })
+
+  # Function for generating map tooltip text
+  tooltip <- function(x) {
+    if (is.null(x)) return(NULL)
+    
+    # Pick out the individual with this ID
+    wb <- isolate(time_data())
+    time_data <- wb[wb$Season == x$Season,]
+    
+    paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
+  }
   
   # A reactive expression with the historical time series plot
   reactive({
@@ -29,6 +39,7 @@ shinyServer(function(input, output, session) {
     ggvis(~factor(Year),~density) %>%
       layer_points(fill = ~Season,prop("size",80)) %>%
       layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
+      add_tooltip(tooltip,"hover") %>%
       add_axis("x",title="Year",ticks=1,title_offset=35) %>%
       add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65)
   }) %>% bind_shiny("time")
@@ -89,9 +100,9 @@ shinyServer(function(input, output, session) {
     
     ftg_Rdata %<>% group_by(class) %>%
       ggvis(~factor(year),~NperHA) %>%
-        layer_bars(width=0.5,prop("fill",~class)) %>%
-        #layer_points(prop("fill",~class),prop("size",80)) %>%
-        #layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
+        #layer_bars(width=0.5,prop("fill",~class)) %>%
+        layer_points(prop("fill",~class),prop("size",80)) %>%
+        layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
         hide_legend("stroke") %>%
         add_legend("fill",title="Functional Groups") %>%
         add_axis("x",title="Year",ticks=1,title_offset=35) %>%
@@ -144,13 +155,13 @@ shinyServer(function(input, output, session) {
   })
 
   # Function for generating map tooltip text
-    tooltip <- function(x) {
-      if (is.null(x)) return(NULL)
-      if (is.null(unique(x$serial))) return(NULL)
+    tooltip3 <- function(x3) {
+      if (is.null(x3)) return(NULL)
+      if (is.null(unique(x3$serial))) return(NULL)
       
     # Pick out the individual with this ID
-      wb <- isolate(map_data())
-      map_data <- wb[unique(wb$serial) == unique(x$serial),]
+      wb3 <- isolate(map_data())
+      map_data <- wb3[unique(wb3$serial) == unique(x3$serial),]
       
       paste0("<b>","Station: ",map_data$serial,"<br>","Density (N/ha): ",map_data$NperHA,"<br>","Biomass (Kg/ha): ",map_data$KgperHA)
     }
@@ -169,12 +180,12 @@ shinyServer(function(input, output, session) {
         layer_points(data=effort,~long_st,~lat_st,size=6,
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
         layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
-                     fillOpacity:=0.6) %>% #,fillOpacity.hover:=1) %>%
+                     fillOpacity:=0.6) %>% #, fillOpacity.hover:=1) %>%
         add_legend("size","fill",title="Value",
                    values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
                    properties=legend_props(
                      symbol=list(fill="black"))) %>%
-        #add_tooltip(tooltip, "hover") %>%
+        add_tooltip(tooltip3, "hover") %>%
         scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
         scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
         scale_numeric("size",domain=c(25,2000),range=c(25,2000),clamp=TRUE) %>%

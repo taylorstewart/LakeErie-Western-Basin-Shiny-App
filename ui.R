@@ -1,8 +1,9 @@
+# Define user interface required
 shinyUI(fluidPage(
   tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr.png",height="110px",width="100%")
+           tags$img(src="usgs_banner_gr.jpg",height="110px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -24,17 +25,17 @@ shinyUI(fluidPage(
        In 2012, the original vessel used since 2004, the R/V Musky II, was retired and replaced with the R/V Muskie. 
        The change in vessel neccessitated change in the net and all of the hardware needed to tow. 
        Previously, the survey also used a different catch processing protocol, which did not include measurments of biomass or length distributions of all species, and those historical datasets are not compatible with this presentation format. 
-       Under the recently revised grid sampling design, we sample 41 stations during two sampling periods that occur in June (Spring) and September (Autumn). 
+       Under the recently revised grid sampling design, we sampled 41 stations during two sampling periods that occurred in June (Spring) and September (Autumn). 
        The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. 
        Thus, we present data starting from 2013. This data presentation tool will automatically update with new data as we complete surveys in subsequent years.</p>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;The vessel used for the survey is the R/V Muskie, a 70’ aluminum mono-hull research vessel, with a double-warp trawl system. 
        The net is a four-seam, three-bridle, bottom trawl, with a fishing circle of 200 x 12 cm meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter floppy discs. 
        The cod end liner is constructed of 14 mm knotless dyneema mesh. The net is towed at a target speed of 3 knots, and wingspread estimates are obtained on each tow with an acoustic mensuration system to standardize catches per area swept. 
-       Typical net geometry is a 6 m wingspread and 3 m headline height on each tow. 
-       Typical area swept is 0.5 hectares. 
+       Typical net geometry was a 6 m wingspread and 3 m headline height on each tow. 
+       Typical area swept was 0.5 hectares. 
        Biomass was measured onboard with a motion compensating scale, and individual lengths and weights were obtained from sub-samples of each species’ size group. 
-       Total counts are obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
-       The exceptions to this method of enumeration are percids (Yellow Perch and Walleye), where every fish is counted, and size groups with low numbers (n<10), where each fish is measured.</p><br><br>"),
+       Total counts were obtained by expansions of mean individual weight by the aggregate weight (by species and size group). 
+       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
   
   # Create a new panel for the historical time series plot and table.
   HTML("<h3>Historical Time Series</h3>"),
@@ -113,7 +114,7 @@ shinyUI(fluidPage(
            uiOutput("ggvis_map"),
            HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
                 Hollow circles represent station localities. 
-                Symbol size categories are labeled by the upper bound in the legend, except for the largest symbol...")
+                Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively.")
     )
   ),
   
@@ -175,9 +176,8 @@ shinyUI(fluidPage(
   ),
   
   ## USGS Reference and Disclaimer
-  HTML("<br><br><p><i>Written by Taylor R. Stewart (email: trstewart@usgs.gov),"),
-    tags$a(href="http://www.glsc.usgs.gov",HTML(paste(tags$span(style="color:royalblue","USGS - Great Lakes Science Center"),tags$span(style="color:black",","),sep=""))),
-    HTML("Ann Arbor, Michigan, USA. Written in programming language R (R Core Team, 2015,"),
+  HTML("<br><br><p>Written by Taylor R. Stewart. U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
+       Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
     tags$a(href="http://www.r-project.org",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
     HTML("version 3.1.2 (2014-10-31).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
