@@ -13,12 +13,12 @@ wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
 
 wb_exp$tl_exp <- as.numeric(wb_exp$tl_exp)
-lw$tl <- as.numeric(lw$tl)
-lw$wt <- as.numeric(lw$wt)
-lw$logl <- log(lw$tl)
-lw$logw <- log(lw$wt)
-lw %<>% select(serial,fish_id,species,size,tl,wt,logl,logw,year,season) %>%
-  filter(!is.na(wt) & !is.na(tl))
+lw %<>% select(serial,fish_id,species,size,tl,wt,year,season) %>%
+  filter(!is.na(wt) & !is.na(tl)) %>%
+  mutate(tl = as.numeric(tl),
+         wt = as.numeric(wt),
+         logl = log(tl),
+         logw = log(wt))
 catch %<>% select(serial,species,size,agg_wt_final,count_final,year,season)
 
 # Variables that can be put on the x and y axes

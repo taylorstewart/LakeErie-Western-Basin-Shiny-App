@@ -114,7 +114,8 @@ shinyUI(fluidPage(
            uiOutput("ggvis_map"),
            HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
                 Hollow circles represent station localities. 
-                Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively.")
+                Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively.<br>"),
+           HTML("<br>Biomass values for 2014 are still being calculated. They will be added as soon as possible.")
     )
   ),
   
