@@ -15,10 +15,4 @@ shinyapps/
 .Rproj.user
 
 # Data files
-data/forage_task_group_classifications.csv
-data/lake_erie_western_basin_shoreline.csv
-data/WB_catch.csv
-data/WB_CatchperHA.csv
-data/WB_effort.csv
-data/WB_expLengths.csv
-data/WB_lw.csv
+data/
