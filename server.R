@@ -8,7 +8,7 @@ shinyServer(function(input, output, session) {
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- rename(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
+    l <- select(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
     
     # Optional: filter by species
     if (!is.null(input$species2) && input$species2 != "") {
@@ -56,30 +56,10 @@ shinyServer(function(input, output, session) {
   output$downloadCSV_1 <- downloadHandler(
     filename="catch_data",
     content=function(file) {
-      write.csv(time_data(),file)
+      write.csv(time_data(),file,row.names=FALSE)
     },
     contentType="text/csv"
   )
-
-## -----------------------------------------------------------
-## Catch Data Manipulation and Table Output
-## -----------------------------------------------------------
-  output$table <- renderDataTable(options = list(pageLength = 10),{
-    catch_tbl <- catch
-    
-    # Optional: filter by species
-    if (!is.null(input$species2) && input$species2 != "All") {
-      catch_tbl <- catch_tbl[catch_tbl$Species == input$species2,]
-    }
-    
-    #Summarize total count by species, year, and season
-    catch_tbl %<>%
-      rename(species=species,count=count_final,year=year,season=season) %>%
-      group_by(species,year,season) %>%
-      summarise(count=round(sum(count),0)) %>%
-      rename(Species=species,Year=year,Season=season,Total_Count=count) %>%
-      tbl_df()
-  })
 
 ## -----------------------------------------------------------
 ## Forage Task Group Data Manipulation and Plot
@@ -130,7 +110,7 @@ shinyServer(function(input, output, session) {
   output$downloadCSV_2 <- downloadHandler(
     filename="forage_density_data",
     content=function(file) {
-      write.csv(ftg_Rdata(),file)
+      write.csv(ftg_Rdata(),file,row.names=FALSE)
     },
     contentType="text/csv"
   )
@@ -220,7 +200,7 @@ shinyServer(function(input, output, session) {
   output$downloadCSV_3 <- downloadHandler(
     filename="map_data",
     content=function(file) {
-      write.csv(map_data(),file)
+      write.csv(map_data(),file,row.names=FALSE)
     },
     contentType="text/csv"
   )
@@ -264,7 +244,7 @@ shinyServer(function(input, output, session) {
   reactive({
     
     if (!is.null(input$datatrans) && input$datatrans != "None") {
-      length_weight %<>% transmute(tl=log(tl),wt=log(wt))
+      length_weight %<>% transmute(tl=logl,wt=logw)
       xvar_name <- names(axis_vars)[3]
       yvar_name <- names(axis_vars)[4]
     } else {
@@ -356,7 +336,7 @@ shinyServer(function(input, output, session) {
   output$downloadCSV_4 <- downloadHandler(
     filename="weight_length_data",
     content=function(file) {
-      write.csv(length_weight(),file)
+      write.csv(length_weight(),file,row.names=FALSE)
     },
     contentType="text/csv"
   )
@@ -417,7 +397,7 @@ shinyServer(function(input, output, session) {
   output$downloadCSV_5 <- downloadHandler(
     filename="length_frequency_data",
     content=function(file) {
-      write.csv(len_freq(),file)
+      write.csv(len_freq(),file,row.names=FALSE)
     },
     contentType="text/csv"
   )

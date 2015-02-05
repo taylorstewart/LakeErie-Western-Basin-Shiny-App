@@ -1,5 +1,4 @@
 library(shiny)
-library(RCurl)
 library(dplyr)
 library(magrittr)
 library(ggvis)
@@ -12,14 +11,14 @@ effort <- read.csv("data/WB_effort.csv",header=T)
 wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
 
-wb_exp$tl_exp <- as.numeric(wb_exp$tl_exp)
-lw %<>% select(serial,fish_id,species,size,tl,wt,year,season) %>%
+wb_exp %<>% mutate(tl_exp = as.numeric(tl_exp))
+lw %<>% select(serial,fish_id,species,tl,wt,year,season) %>%
   filter(!is.na(wt) & !is.na(tl)) %>%
   mutate(tl = as.numeric(tl),
          wt = as.numeric(wt),
          logl = log(tl),
          logw = log(wt))
-catch %<>% select(serial,species,size,agg_wt_final,count_final,year,season)
+catch %<>% select(serial,species,count_final,year,season)
 
 # Variables that can be put on the x and y axes
 axis_vars <- c(
@@ -36,15 +35,16 @@ life_vars <- c(
   "Yearling and older" = "YAO")
 
 # Variables that can be selected for years
-year_vars <- data.frame(unique(lw$year))
-year_vars <- as.character(year_vars[order(year_vars$unique.lw.year,decreasing=TRUE),])
+year_vars <- lw %>% distinct(year) %>%
+  select(year) %>%
+  arrange(desc(year))
+year_vars <- as.character(year_vars$year)
 
 # Variables that can be selected for species
-species_vars <- data.frame(unique(lw$species))
-species_vars <- as.character(species_vars[order(species_vars$unique.lw.species),])
-
-# Variables that can be selected as stations
-serial_vars <- arrange(select(distinct(lw,serial),serial),serial)
+species_vars <- lw %>% distinct(species) %>%
+  select(species) %>%
+  arrange(species)
+species_vars <- as.character(species_vars$species)
 
 ## Sum number per HA for all life stages by species
 catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
@@ -55,7 +55,7 @@ catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
 ## Merge effort and catch data and rename variable names
 catchHA <- right_join(effort,catch2,by="serial") %>%
   filter(!is.na(long_st) & long_st != "#N/A") %>%
-  rename(species=species,serial=serial,life_stage=life_stage,count=count,NperHA=NperHA,KgperHA=KgperHA,long=long_st,lat=lat_st,year=year,season=season)
+  select(species=species,serial=serial,life_stage=life_stage,NperHA=NperHA,KgperHA=KgperHA,long=long_st,lat=lat_st,year=year,season=season)
 
 ## Filter density values for forage task group classification
 ## Turn off warning for join (different factor levels, coerces to a character vector)

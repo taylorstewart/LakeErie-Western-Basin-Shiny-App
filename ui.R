@@ -11,10 +11,15 @@ shinyUI(fluidPage(
   HTML("This data exploration tool is intended for use by Lake Erie fisheries managers, academia, the fishing industry and the public. 
        The data presented here have been checked for accuracy, but are still considered provisional at this time. 
        You may request a subset of these datasets by contacting us directly via email. We hope you will take time to send us suggestions on how to improve this tool. 
-       Please send questions, comments, and error reports via email to USGS - Lake Erie Biological Station c/o Richard Kraus "),
-  HTML(paste("(",tags$span(style="color:royalblue","rkraus@usgs.gov"),")",sep="")),
-  HTML("and/or Taylor Stewart "),
-  HTML(paste("(",tags$span(style="color:royalblue","trstewart@usgs.gov"),").",sep="")),
+       Please send questions, comments, and error reports via email to USGS - Lake Erie Biological Station c/o "),
+  tags$a(href="mailto:rkraus@usgs.gov, trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
+         HTML(paste(tags$span(style="color:black","Richard Kraus ("),
+                    tags$span(style="color:royalblue","rkraus@usgs.gov"),
+                    tags$span(style="color:black",")"),
+                    tags$span(style="color:black"," and/or Taylor Stewart "),
+                    tags$span(style="color:black","("),
+                    tags$span(style="color:royalblue","trstewart@usgs.gov"),
+                    tags$span(style="color:black",")."),sep=""))), 
   HTML("The current web location of this app is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.</i><br><br>"),
   
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
@@ -53,9 +58,7 @@ shinyUI(fluidPage(
            HTML("<p>Species specific historical trend in mean catch per hectare swept by season in the western basin of Lake Erie.<br><br><br><br>")
     )
   ),
-  #fluidRow(
-  #         dataTableOutput(outputId="table")
-  #),
+
   HTML("<h4>Forage Density</h4>"),
   fluidRow(
     column(3,
@@ -186,9 +189,14 @@ shinyUI(fluidPage(
   ),
   
   ## USGS Reference and Disclaimer
-  HTML("<br><br><p>Written by Taylor R. Stewart. U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
+  HTML("<br><br><p>Written by Taylor R. Stewart"),
+  tags$a(href="mailto:trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
+         HTML(paste0(tags$span(style="color:black","("),
+                    tags$span(style="color:royalblue","trstewart@usgs.gov"),
+                    tags$span(style="color:black",")."),sep=""))),
+  HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
        Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
-    tags$a(href="http://www.r-project.org",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
+    tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
     HTML("version 3.1.2 (2014-10-31).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
