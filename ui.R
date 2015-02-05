@@ -43,12 +43,14 @@ shinyUI(fluidPage(
     column(3,
            HTML("<h4>Catch</h4>"),
            wellPanel(
-             selectInput("species2",h5("Species Input"),species_vars,selected="Yellow Perch")
+             selectInput("species2",h5("Species Input"),species_vars,selected="Yellow Perch")#,
+             #downloadButton("downloadCSV_1","Download as CSV")
            )
     ),
     column(9,align="center",
+           HTML("<h5>Hover over points to display detailed density values.</h5>"),
            htmlOutput("ggvis_time"),
-           HTML("<p>Historical trend in mean catch per hectare swept by season in the western basin of Lake Erie.<br><br><br><br>")
+           HTML("<p>Species specific historical trend in mean catch per hectare swept by season in the western basin of Lake Erie.<br><br><br><br>")
     )
   ),
   #fluidRow(
@@ -67,10 +69,12 @@ shinyUI(fluidPage(
                   <p>Soft-rayed fish: Rainbow Smelt (<i>Osmerus mordax</i>), Emerald Shiner (<i>Notropis atherinoides</i>), Spottail Shiner (<i>Notropis hudsonius</i>), 
                   Silver Chub (<i>Macrhybopsis storeriana</i>), Trout-perch (<i>Percopsis omiscomaycus</i>), Round Goby (<i>Neogobius melanostomus</i>), and other cyprinids</p>
                   <p>Spiny-rayed fish: Age-0 for each of White Perch (<i>Morone americana</i>), White Bass (<i>Morone chrysops</i>), Yellow Perch (<i>Perca flavescens</i>), 
-                  Walleye (<i>Sander vitreus</i>), and Freshwater Drum (<i>Aplodinotus grunniens</i>)</p>")
+                  Walleye (<i>Sander vitreus</i>), and Freshwater Drum (<i>Aplodinotus grunniens</i>)</p>")#,
+             #downloadButton("downloadCSV_2","Download as CSV")
            )
     ),
     column(9,align="center",
+           HTML("<h5>Hover over points to display detailed density values.</h5>"),
            htmlOutput("ggvis_ftg"),
            HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
                 and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling.<br><br><br>")
@@ -105,11 +109,12 @@ shinyUI(fluidPage(
              radioButtons("density",h5("Value:"),
                           c("Density (N/ha)" = "NperHA",
                             "Biomass (Kg/ha)" = "KgperHA")),
-             selectInput("life_stage",h5("Life Stage"),c("All Life Stages",life_vars),selected="All Life Stages")
+             selectInput("life_stage",h5("Life Stage"),c("All Life Stages",life_vars),selected="All Life Stages")#,
+             #downloadButton("downloadCSV_3","Download as CSV")
            )
     ),
     column(9,align="center",
-           #HTML("<h5>Hover over point to display station number and detailed density value.</h5>"),
+           HTML("<h5>Hover over point to display station number and detailed density and biomass values.</h5>"),
            ggvisOutput("map"),
            uiOutput("ggvis_map"),
            HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
@@ -127,7 +132,8 @@ shinyUI(fluidPage(
              sliderInput("tl",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
              radioButtons("datatrans",h5("Transformation:"),
                           c("None" = "None",
-                          "Linear" = "Linear"))
+                          "Linear" = "Linear"))#,
+             #downloadButton("downloadCSV_4","Download as CSV")
            )
     ),
     column(9,align="center",
@@ -163,10 +169,13 @@ shinyUI(fluidPage(
     column(3,
            wellPanel(
              sliderInput("tl2",h5("Length Range (mm)"),0,1000,step=5,value = c(0, 1000)),
-             sliderInput("slider1",label=h5("Bin Width (mm)"),min=5,max=25,step=5,value=10))),
+             sliderInput("slider1",label=h5("Bin Width (mm)"),min=5,max=25,step=5,value=10)#,
+             #downloadButton("downloadCSV_5","Download as CSV")
+           )
+    ),
     column(9,align="center",
            htmlOutput("ggvis_hist"),
-           HTML("Species specific length frequency from western basin of Lake Erie. 
+           HTML("Species specific length frequency from the western basin of Lake Erie. 
                 Lengths were expanded from measured total lengths collected on board the R/V Muskie.<br><br>"),
            wellPanel(
              span("Number of individuals selected:",

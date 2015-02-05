@@ -52,6 +52,15 @@ shinyServer(function(input, output, session) {
     ggvisOutput("time")
   })
 
+  # Download
+  output$downloadCSV_1 <- downloadHandler(
+    filename="catch_data",
+    content=function(file) {
+      write.csv(time_data(),file)
+    },
+    contentType="text/csv"
+  )
+
 ## -----------------------------------------------------------
 ## Catch Data Manipulation and Table Output
 ## -----------------------------------------------------------
@@ -104,7 +113,6 @@ shinyServer(function(input, output, session) {
     
     ftg_Rdata %<>% group_by(class) %>%
       ggvis(~factor(year),~NperHA) %>%
-        #layer_bars(width=0.5,prop("fill",~class)) %>%
         layer_points(prop("fill",~class),prop("size",80)) %>%
         layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
         hide_legend("stroke") %>%
@@ -117,6 +125,15 @@ shinyServer(function(input, output, session) {
   output$ggvis_ftg <- renderUI({
     ggvisOutput("ftg")
   })
+  
+  # Download
+  output$downloadCSV_2 <- downloadHandler(
+    filename="forage_density_data",
+    content=function(file) {
+      write.csv(ftg_Rdata(),file)
+    },
+    contentType="text/csv"
+  )
 
 ## -----------------------------------------------------------
 ## Density and Biomass Data Manipulation and Map
@@ -171,7 +188,7 @@ shinyServer(function(input, output, session) {
     }
 
   # A reactive expression with the western basin map
-  observe(autoDestroy=TRUE, {
+  reactive({
     sizevar <- prop("size",as.symbol(input$density))
       
         ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
@@ -196,8 +213,17 @@ shinyServer(function(input, output, session) {
         add_axis("x",title="",ticks="",tick_size_end="") %>%
         add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
         add_axis("y",title="",ticks="",tick_size_end="") %>%
-        add_axis("y",orient="right",title="",ticks="",tick_size_end="") %>% bind_shiny("map","ggvis_map")
-  })
+        add_axis("y",orient="right",title="",ticks="",tick_size_end="")
+  }) %>% bind_shiny("map","ggvis_map")
+
+  # Download
+  output$downloadCSV_3 <- downloadHandler(
+    filename="map_data",
+    content=function(file) {
+      write.csv(map_data(),file)
+    },
+    contentType="text/csv"
+  )
 
 ## -----------------------------------------------------------
 ## Lenght-Weight Data Manipulation and Plot
@@ -326,6 +352,15 @@ shinyServer(function(input, output, session) {
   # Sample size text output
   output$n_fish <- renderText({ nrow(length_weight()) })
 
+  # Download
+  output$downloadCSV_4 <- downloadHandler(
+    filename="weight_length_data",
+    content=function(file) {
+      write.csv(length_weight(),file)
+    },
+    contentType="text/csv"
+  )
+
 ## -----------------------------------------------------------
 ## Lenght Frequency Data Manipulation and Histogram
 ## -----------------------------------------------------------
@@ -377,4 +412,14 @@ shinyServer(function(input, output, session) {
   
   # Sample size text output
   output$n_size <- renderText({ nrow(len_freq()) })
+
+  # Download
+  output$downloadCSV_5 <- downloadHandler(
+    filename="length_frequency_data",
+    content=function(file) {
+      write.csv(len_freq(),file)
+    },
+    contentType="text/csv"
+  )
+
 })
