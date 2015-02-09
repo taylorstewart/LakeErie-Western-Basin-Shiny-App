@@ -19,9 +19,8 @@ shinyServer(function(input, output, session) {
     l %<>% group_by(Year,Season) %>%
       summarise(density=round(mean(NperHA),2)) %>%
       tbl_df() } else {
-        l %<>% group_by(Year,Season) %>%
-          summarise(density=mean(NperHA)) %>%
-          tbl_df() }
+        data_frame(Year = 0, Season = 0, density = 0, text = "No Data")
+      }
     
   })
 
@@ -38,15 +37,26 @@ shinyServer(function(input, output, session) {
   
   # A reactive expression with the historical time series plot
   reactive({
-    
-    time_data %>% group_by(Season) %>%
+
+    if(nrow(time_data()) > 1) {
+    time_data() %>% group_by(Season) %>%
     ggvis(~factor(Year),~density) %>%
       layer_points(fill = ~Season,prop("size",80)) %>%
       layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
       add_tooltip(tooltip,"hover") %>%
-      add_axis("x",title="Year",ticks=1,title_offset=35) %>%
-      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65)
-  }) %>% bind_shiny("time")
+      scale_numeric("y",domain=c(0,NA)) %>%
+      add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+        title=list(fontSize=13))) } else {
+          time_data() %>% ggvis(~Year,~Season) %>%
+            layer_points(~text) %>%
+            scale_numeric("y",domain=c(0,NA)) %>%
+            add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+              title=list(fontSize=13))) %>%
+            add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+              title=list(fontSize=13)))
+        } }) %>% bind_shiny("time")
   
   output$ggvis_time <- renderUI({
     ggvisOutput("time")
@@ -97,8 +107,11 @@ shinyServer(function(input, output, session) {
         layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
         hide_legend("stroke") %>%
         add_legend("fill",title="Functional Groups") %>%
-        add_axis("x",title="Year",ticks=1,title_offset=35) %>%
-        add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65) %>%
+        scale_numeric("y",domain=c(0,NA)) %>%
+        add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+          title=list(fontSize=13))) %>%
+        add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+          title=list(fontSize=13))) %>%
         add_tooltip(tooltip2, "hover")
   }) %>% bind_shiny("ftg")
   
@@ -213,8 +226,8 @@ shinyServer(function(input, output, session) {
   length_weight <- reactive({
     
     # Filter the lengths
-    minlength <- input$tl[1]
-    maxlength <- input$tl[2]
+    minlength <- input$min_val
+    maxlength <- input$max_val
     
     m <- lw %>% 
       filter(
@@ -239,7 +252,12 @@ shinyServer(function(input, output, session) {
     }
     m <- as.data.frame(m)
   })
-  
+    
+  #make dynamic slider
+  output$slider <- renderUI({
+    sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
+  })
+
   # A reactive expression with the lenght-weight plot
   reactive({
     
@@ -252,11 +270,24 @@ shinyServer(function(input, output, session) {
       yvar_name <- names(axis_vars)[2]
     }
     
+    if(nrow(length_weight()) < 1) {
+      length_weight <- data_frame(tl=0,wt=0,text="No Data")
+    }
+    
+    if(nrow(length_weight()) > 1) {
     length_weight %>%
       ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
-      add_axis("x", title = xvar_name, title_offset = 35) %>%
-      add_axis("y", title = yvar_name, title_offset = 55)
+      add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
+        title=list(fontSize=13))) } else {
+          ggvis(data=length_weight,~tl,~wt) %>%
+            layer_points(~text) %>%
+            add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
+              title=list(fontSize=13))) %>%
+            add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
+              title=list(fontSize=13)))}
   }) %>% bind_shiny("lw_plot")
   
   output$ggvis_lw_plot <- renderUI({
@@ -265,70 +296,143 @@ shinyServer(function(input, output, session) {
   
   # Create table for the linear regression parameter estimates
   output$lm_call <- renderTable({
-    model <- lm(logw~logl,data=length_weight())
-    results <- coef(summary(model))
-    rownames(results) <- c("log(a)","b")
-    colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-    results
-  },digits=12)
-  
-  # Calculate residuals of the linear regression
-  lm_resid <- reactive({
-    model <- lm(logw~logl,data=length_weight())
-    resid <- data.frame(resid(model))
-    colnames(resid) <- "resid"
-    resid <- bind_cols(length_weight(),resid) %>%
-      tbl_df()
+    result <- try({
+      model <- lm(logw~logl,data=length_weight())
+      results <- coef(summary(model))
+      rownames(results) <- c("log(a)","b")
+      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+      results
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- lm(logw~logl,data=length_weight())
+      results <- coef(summary(model))
+      rownames(results) <- c("log(a)","b")
+      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+      results
+    } else {
+      results <- data_frame(a = c(0,0))
+      rownames(results) <- c("a","b")
+      colnames(results) <- c("Model was unable to fit")
+      results
+    }
+  },digits=8)
+    
+  # Calculate fit of the power function
+  lm_fit <- reactive({
+    result <- try({
+      model <- lm(logw~logl,data=length_weight())
+      cf <- data_frame(fitted.values(model))
+      cf <- bind_cols(length_weight(),cf) %>%
+        tbl_df()
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- lm(logw~logl,data=length_weight())
+      cf <- data_frame(fitted.values(model))
+      colnames(cf) <- "fit"
+      cf <- bind_cols(length_weight(),cf) %>%
+        arrange(tl) %>%
+        tbl_df()
+    } else {
+      data_frame(logl = 0, logw = 0, text = "No Data")
+    }
   })
   
-  # A reactive expression with the linear regression residual plot
+  # A reactive expression with the power function fit plot
   reactive({
-    
-    ggvis(data=lm_resid,~tl,~resid) %>%
-      layer_points() %>%
-      add_axis("x",title="Total Length (mm)") %>%
-      add_axis("y",title="Residuals")
-  }) %>% bind_shiny("lm_resid_plot")
+    if(nrow(lm_fit()) > 1) {
+    ggvis(data=length_weight(),~logl, ~logw) %>%
+      layer_points(size := 50,fillOpacity := 0.2) %>%
+      layer_paths(data=lm_fit(),~logl,~fit) %>%
+      add_axis("x", title = "Log Length", title_offset = 35,properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_axis("y", title = "Log Weight", title_offset = 55,properties = axis_props(
+        title=list(fontSize=13))) } else {
+          ggvis(data=lm_fit(),~logl,~logw) %>%
+            layer_points(~text) %>%
+            add_axis("x", title = "Log Length", title_offset = 35,properties = axis_props(
+              title=list(fontSize=13))) %>%
+            add_axis("y", title = "Log Weight", title_offset = 55,properties = axis_props(
+              title=list(fontSize=13)))
+        }
+  }) %>% bind_shiny("lm_plot")
   
-  output$ggvis_lm_resid <- renderUI({
-    ggvisOutput("lm_resid_plot")
+  output$ggvis_lm_plot <- renderUI({
+    ggvisOutput("lm_plot")
   })
   
   # Create table for the power function parameter estimates
   output$nlm_call <- renderTable({
-    st <- coef(lm(logw~logl,data=length_weight()))
-    names(st) <- c("a","b")
-    model <- nls(wt~a*tl^b,start=st,control=nls.control(maxiter=1000),data=length_weight())
-    results <- coef(summary(model))
-    rownames(results) <- c("a","b")
-    colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-    results
-  },digits=12)
+    result <- try({
+      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
+      results <- coef(summary(model))
+      rownames(results) <- c("a","b")
+      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+      results
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
+      results <- coef(summary(model))
+      rownames(results) <- c("a","b")
+      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
+      results
+    } else {
+      results <- data_frame(a = c(0,0))
+      rownames(results) <- c("a","b")
+      colnames(results) <- c("Model was unable to fit")
+      results
+    }
+  },digits=8)
   
-  # Calculate residuals of the power function
-  nlm_resid <- reactive({
-    st <- coef(lm(logw~logl,data=length_weight()))
-    names(st) <- c("a","b")
-    model <- nls(wt~a*tl^b,start=st,control=nls.control(maxiter=1000),data=length_weight())
-    resid <- data.frame(resid(model))
-    colnames(resid) <- "resid"
-    resid <- bind_cols(length_weight(),resid) %>%
-      tbl_df()
+  # Calculate fit of the power function
+  nlm_fit <- reactive({
+    result <- try({
+      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
+      coef(model)
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
+      coef(model)
+    } else {
+     c(0,0)
+    }
   })
-  
-  # A reactive expression with the power function residual plot
+
+  # A reactive expression with the power function fit plot
   reactive({
     
-    ggvis(data=nlm_resid,~tl,~resid) %>%
-      layer_points() %>%
-      add_axis("x",title="Total Length (mm)") %>%
-      add_axis("y",title="Residuals")
-  }) %>% bind_shiny("nlm_resid_plot")
+    cf <- nlm_fit()
+    if(nrow(length_weight()) > 0) {
+      nlm <- data.frame(tl=seq(min(length_weight()$tl),max(length_weight()$tl),0.5))
+      nlm %<>% mutate(wt=cf[1]*tl^cf[2]) %>%
+        arrange(tl)
+    } else {
+      nlm <- data_frame(tl = 0, wt = 0, text = "No Data")
+    }
+    
+    if(nrow(length_weight()) > 0) {
+      ggvis(data=length_weight(),~tl, ~wt) %>%
+        layer_points(size := 50,fillOpacity := 0.2) %>%
+        layer_paths(data=nlm,~tl,~wt) %>%
+        add_axis("x", title = "Total Length (mm)", title_offset = 35,properties = axis_props(
+          title=list(fontSize=13))) %>%
+        add_axis("y", title = "Weight (g)", title_offset = 55,properties = axis_props(
+          title=list(fontSize=13))) } else {
+            ggvis(data=nlm,~tl, ~wt) %>%
+            layer_points(~text) %>%
+            add_axis("x", title = "Total Length (mm)", title_offset = 35,properties = axis_props(
+              title=list(fontSize=13))) %>%
+            add_axis("y", title = "Weight (g)", title_offset = 55,properties = axis_props(
+              title=list(fontSize=13))) }
+  }) %>% bind_shiny("nlm_plot")
   
-  output$ggvis_nlm_resid <- renderUI({
-    ggvisOutput("nlm_resid_plot")
+  output$ggvis_nlm_plot <- renderUI({
+    ggvisOutput("nlm_plot")
   })
-  
+
   # Sample size text output
   output$n_fish <- renderText({ nrow(length_weight()) })
 
@@ -349,8 +453,8 @@ shinyServer(function(input, output, session) {
   len_freq <- reactive({
     
     # Filter the lengths
-    minlength2 <- input$tl2[1]
-    maxlength2 <- input$tl2[2]
+    minlength2 <- input$min_val2
+    maxlength2 <- input$max_val2
     
     len <- wb_exp %>% 
       filter(
@@ -371,7 +475,12 @@ shinyServer(function(input, output, session) {
     }
     len <- as.data.frame(len)
   })
-  
+
+  #make dynamic slider
+  output$slider2 <- renderUI({
+    sliderInput("inSlider2", "Slider", min=input$min_val2, max=input$max_val2)
+  })
+
   # A reactive expression with the length frequency plot
   reactive({
     
@@ -379,12 +488,26 @@ shinyServer(function(input, output, session) {
     xvar_name <- "Total Length (mm)"
     yvar_name <- "Frequency"
     
+    if(nrow(len_freq()) < 1) {
+      len_freq <- data_frame(tl_exp=0,n=0,text="No Data")
+    }
+    
+    if(nrow(len_freq()) > 1) {
     len_freq %>%
       ggvis(~tl_exp) %>%
-      add_axis("x", title = xvar_name, title_offset = 35) %>%
-      add_axis("y", title = yvar_name, title_offset = 55) %>%
-      layer_histograms(width = input$slider1)
-  }) %>% bind_shiny("len_freq_plot")
+      add_axis("x", title = xvar_name, title_offset = 35, properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_axis("y", title = yvar_name, title_offset = 55, properties = axis_props(
+        title=list(fontSize=13))) %>%
+      layer_histograms(width = input$slider1) } else {
+        ggvis(data=len_freq,~tl_exp,~n) %>%
+          layer_points(~text) %>%
+          add_axis("x", title = xvar_name, title_offset = 35, properties = axis_props(
+            title=list(fontSize=13))) %>%
+          add_axis("y", title = yvar_name, title_offset = 55, properties = axis_props(
+            title=list(fontSize=13)))
+      }
+    }) %>% bind_shiny("len_freq_plot")
   
   output$ggvis_hist <- renderUI({
     ggvisOutput("len_freq_plot")
@@ -401,5 +524,4 @@ shinyServer(function(input, output, session) {
     },
     contentType="text/csv"
   )
-
 })

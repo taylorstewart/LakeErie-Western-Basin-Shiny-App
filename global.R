@@ -41,7 +41,8 @@ year_vars <- lw %>% distinct(year) %>%
 year_vars <- as.character(year_vars$year)
 
 # Variables that can be selected for species
-species_vars <- lw %>% distinct(species) %>%
+species_vars <- lw %>%
+  distinct(species) %>%
   select(species) %>%
   arrange(species)
 species_vars <- as.character(species_vars$species)

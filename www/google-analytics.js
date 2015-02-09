@@ -10,6 +10,6 @@
     ga('send', 'event', 'widget', 'select data', $(e.currentTarget).val());
   });
   
-  $(document).on('click', 'button', function() {
-    ga('send', 'event', 'button', 'plot data');
+  $(document).on('click', 'button', function(h) {
+    ga('send', 'event', 'button', 'radio data', $(h.currentTarget).val());
   });
