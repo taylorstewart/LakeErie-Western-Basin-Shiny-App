@@ -7,6 +7,12 @@ shinyServer(function(input, output) {
     tbl_species <- distinct(filter(tbl,species == input$species),species)
   })
   
+  #
+  tbl_year <- reactive({
+    tbl <- lw
+    tbl_year <- distinct(filter(tbl,year == input$year),year)
+  })
+  
   catch_species <- reactive({
     tbl <- lw
     tbl_species <- distinct(filter(tbl,species == input$species2),species)
@@ -14,7 +20,7 @@ shinyServer(function(input, output) {
   
   #
   map_value <- renderText({
-    if (input$density == "NperHA") {
+    if(input$density == "NperHA") {
       "density" } else {
         "biomass"
       }
@@ -236,7 +242,7 @@ shinyServer(function(input, output) {
     
   #
   output$map_label <- renderText({
-    paste("Spatial distribution of",tbl_species()$species,map_value(),"from bottom trawl samples in the western basin of Lake Erie. 
+    paste("Spatial distribution of",tbl_year()$year,tbl_species()$species,map_value(),"from bottom trawl samples in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
           Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
     )
@@ -347,10 +353,10 @@ shinyServer(function(input, output) {
   # Reactive label for regression plot
   output$reg_plot_label <- renderText({
     if (input$datatrans == "Linear") {
-      paste("Fitted line plot for the linear regression of natural-log transformed weight on natural-log transformed total length of",tbl_species()$species,"from western basin of Lake Erie. 
+      paste("Fitted line plot for the linear regression of natural-log transformed weight on natural-log transformed total length of",tbl_year()$year,tbl_species()$species,"from western basin of Lake Erie. 
       Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.") } 
     else {
-      paste("Fitted line plot for the standard regression of weight (g) on  total length (mm) of",tbl_species()$species,"from western basin of Lake Erie. 
+      paste("Fitted line plot for the standard regression of weight (g) on  total length (mm) of",tbl_year()$year,tbl_species()$species,"from western basin of Lake Erie. 
       Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.")
     }
   })
@@ -358,10 +364,10 @@ shinyServer(function(input, output) {
   # Reactive label for regression summary table label
   output$reg_tbl_label <- renderText({
     if (input$datatrans == "Linear") {
-      paste("Summary for the linear regression of natural-log transformed weight on natural-log transformed total length from",tbl_species()$species,"in the western basin of Lake Erie. 
+      paste("Summary for the linear regression of natural-log transformed weight on natural-log transformed total length from",tbl_year()$year,tbl_species()$species,"in the western basin of Lake Erie. 
       Standard and linearized power function equations used listed below.") } 
     else {
-      paste("Summary for the standard regression of weight (g) on  total length (mm) from",tbl_species()$species,"in the western basin of Lake Erie. 
+      paste("Summary for the standard regression of weight (g) on  total length (mm) from",tbl_year()$year,tbl_species()$species,"in the western basin of Lake Erie. 
       Standard and linearized power function equations used listed below.")
     }
   })
@@ -467,7 +473,7 @@ shinyServer(function(input, output) {
   
   #
   output$len_freq_label <- renderText({
-    paste("Length frequency of",tbl_species()$species,"from the western basin of Lake Erie. 
+    paste("Length frequency of",tbl_year()$year,tbl_species()$species,"from the western basin of Lake Erie. 
           Lengths were expanded from measured total lengths collected on board the R/V Muskie.")
   })
   
