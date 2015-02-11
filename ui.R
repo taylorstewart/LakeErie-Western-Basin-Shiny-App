@@ -91,7 +91,7 @@ shinyUI(fluidPage(
                                        selectInput("year",label=h5("Year"),year_vars,selected="2014")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Autumn")
+                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Spring")
                               ),
                               tags$div(class="col-sm-4",
                                        selectInput("species",label=h5("Species"),species_vars,selected="Yellow Perch")

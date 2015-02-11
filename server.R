@@ -309,7 +309,7 @@ shinyServer(function(input, output) {
         model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
       
-      if(class(result) != "try-error") {
+      if(class(result) != "try-error" && length(result$fitted.values) >1) {
         model <- data_frame(fitted.values(lm(logw~logl,data=length_weight())))
         colnames(model) <- "fit_wt"
         cf <- bind_cols(length_weight(),model)
@@ -327,7 +327,7 @@ shinyServer(function(input, output) {
         model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
       
-      if(class(result) != "try-error") {
+      if(class(result) != "try-error" && length(result$fitted.values) >1) {
         model <- coef(lm(logw~logl,data=length_weight()))
         nlm <- data.frame(tl=seq(min(length_weight()$tl), max(length_weight()$tl), 0.5))
         reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl^model[2], fit_tl = tl) %>%
@@ -378,7 +378,7 @@ shinyServer(function(input, output) {
       model <- lm(logw~logl,data=length_weight())
     },silent=TRUE)
     
-    if(class(result) != "try-error") {
+    if(class(result) != "try-error" && length(result$fitted.values) >1) {
       model <- coef(summary(lm(logw~logl,data=length_weight())))
       if(input$datatrans == "Linear") {
         rownames(model) <- c("log(a)","b")
@@ -391,7 +391,7 @@ shinyServer(function(input, output) {
         model
       }
     } else {
-      no_results <- data_frame(a = c(0,0))
+      no_results <- data_frame(a = c(NA,NA))
       rownames(no_results) <- c("a","b")
       colnames(no_results) <- c("Model was unable to fit")
       no_results
@@ -443,7 +443,12 @@ shinyServer(function(input, output) {
     if (!is.null(input$species) && input$species != "") {
       len <- len[len$species == input$species,]
     }
-    len <- as.data.frame(len)
+    
+    if(nrow(len) > 1) {
+      len <- as.data.frame(len)
+    } else {
+      len <- data_frame(tl_exp = 0)
+    }
   })
 
   #make dynamic slider

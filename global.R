@@ -49,8 +49,7 @@ species_vars <- as.character(species_vars$species)
 
 ## Sum number per HA for all life stages by species
 catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
-  summarise(count = round(sum(count),1),
-            NperHA = round(sum(NperHA),1),
+  summarise(NperHA = round(sum(NperHA),1),
             KgperHA = round(sum(KgperHA),2))
 
 ## Merge effort and catch data and rename variable names
