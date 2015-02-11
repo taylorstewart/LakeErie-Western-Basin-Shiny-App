@@ -55,8 +55,8 @@ shinyUI(fluidPage(
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
            htmlOutput("ggvis_time"),
-           HTML("<p>Species specific mean catch per hectare swept by season in Ontario, Michigan, 
-                and Ohio waters in the western basin of Lake Erie. <br><br><br><br>")
+           textOutput("catch_label"),
+           HTML("<br>")
     )
   ),
 
@@ -82,7 +82,7 @@ shinyUI(fluidPage(
   ),
 
   # Create a new panel for input selectors.
-  HTML("<h3>Dynamic Plots</h3><h6>Please allow adequate time for browser to update.</h6>"),
+  HTML("<h3>Dynamic Plots</h3><h6>Please allow adequate time for browser to update plots.</h6>"),
   fluidRow(
     column(12,align="center",
            wellPanel(HTML("<h4>Select Inputs for Plots Below</h4>"),
@@ -117,9 +117,8 @@ shinyUI(fluidPage(
            HTML("Hover over point to display station number and detailed density and biomass values."),
            ggvisOutput("map"),
            uiOutput("ggvis_map"),
-           HTML("Spatial distribution of species specific density or biomass from bottom trawl samples in the western basin of Lake Erie. 
-                Hollow circles represent station localities. 
-                Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively.<br>"),
+           textOutput("map_label"),
+           HTML("<br>"),
            HTML("<br>Biomass values for 2014 are still being calculated. They will be added as soon as possible.")
     )
   ),
@@ -141,15 +140,13 @@ shinyUI(fluidPage(
            )
     ),
     column(9,align="center",
-           HTML("<br><p>Species specific regression summary from the western basin of Lake Erie.</p>"),
-           withMathJax("$$W=aL^b$$"),
-           ("$$\\log(W)=\\log(a)+b\\log(L)$$"),
-           textOutput("tbl_label"),
-           tableOutput("reg_tbl"),
            htmlOutput("ggvis_lw_plot"),
-           HTML("Species specific weight-length data collected from western basin of Lake Erie. 
-                Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.<br><br>"),
-           
+           textOutput("reg_plot_label"),
+           HTML("<br>"),
+           textOutput("reg_tbl_label"),
+           withMathJax("$$W=aL^b$$"),
+           withMathJax("$$\\log(W)=\\log(a)+b\\log(L)$$"),
+           tableOutput("reg_tbl"),
            wellPanel(
              span("Number of individuals selected:",textOutput("n_fish")
              )
@@ -173,8 +170,8 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            htmlOutput("ggvis_hist"),
-           HTML("Species specific length frequency from the western basin of Lake Erie. 
-                Lengths were expanded from measured total lengths collected on board the R/V Muskie.<br><br>"),
+           textOutput("len_freq_label"),
+           HTML("<br>"),
            wellPanel(
              span("Number of individuals selected:",
                   textOutput("n_size")

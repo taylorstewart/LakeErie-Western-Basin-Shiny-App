@@ -1,5 +1,24 @@
 # Define server logic required
 shinyServer(function(input, output) {
+
+  #
+  tbl_species <- reactive({
+    tbl <- lw
+    tbl_species <- distinct(filter(tbl,species == input$species),species)
+  })
+  
+  catch_species <- reactive({
+    tbl <- lw
+    tbl_species <- distinct(filter(tbl,species == input$species2),species)
+  })
+  
+  #
+  map_value <- renderText({
+    if (input$density == "NperHA") {
+      "density" } else {
+        "biomass"
+      }
+  })
   
 ## -----------------------------------------------------------
 ## Historical Time Series Data Manipulation and Plot
@@ -62,7 +81,13 @@ shinyServer(function(input, output) {
     ggvisOutput("time")
   })
 
-  # Download
+  #
+  output$catch_label <- renderText({
+    paste("Mean catch per hectare swept of",catch_species()$species,"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
+    )
+  })
+  
+    # Download
   output$downloadCSV_1 <- downloadHandler(
     filename="catch_data",
     content=function(file) {
@@ -208,7 +233,15 @@ shinyServer(function(input, output) {
         add_axis("y",title="",ticks="",tick_size_end="") %>%
         add_axis("y",orient="right",title="",ticks="",tick_size_end="")
   }) %>% bind_shiny("map","ggvis_map")
-
+    
+  #
+  output$map_label <- renderText({
+    paste("Spatial distribution of",tbl_species()$species,map_value(),"from bottom trawl samples in the western basin of Lake Erie. 
+          Hollow circles represent station localities. 
+          Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
+    )
+  })
+  
   # Download
   output$downloadCSV_3 <- downloadHandler(
     filename="map_data",
@@ -256,40 +289,6 @@ shinyServer(function(input, output) {
   # Make a dynamic slider
   output$slider <- renderUI({
     sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
-  })
-
-  #  
-  output$reg_tbl <- renderTable({
-    result <- try({
-      model <- lm(logw~logl,data=length_weight())
-    },silent=TRUE)
-    
-    if(class(result) != "try-error") {
-      model <- coef(summary(lm(logw~logl,data=length_weight())))
-      if(input$datatrans == "Linear") {
-        rownames(model) <- c("log(a)","b")
-        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
-        model
-      } else {
-        model[1,1] <- exp(model[1,1])
-        rownames(model) <- c("a","b")
-        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
-        model
-      }
-    } else {
-      no_results <- data_frame(a = c(0,0))
-      rownames(no_results) <- c("a","b")
-      colnames(no_results) <- c("Model was unable to fit")
-      no_results
-    }
-  },digits=8)
-
-  #
-  output$tbl_label <- renderText({
-    if (input$datatrans == "Linear") {
-      "Linear" } else {
-        "Standard"
-      }
   })
   
   # A reactive expression with the lenght-weight plot
@@ -344,9 +343,62 @@ shinyServer(function(input, output) {
   output$ggvis_lw_plot <- renderUI({
     ggvisOutput("lw_plot")
   })
+  
+  # Reactive label for regression plot
+  output$reg_plot_label <- renderText({
+    if (input$datatrans == "Linear") {
+      paste("Fitted line plot for the linear regression of natural-log transformed weight on natural-log transformed total length of",tbl_species()$species,"from western basin of Lake Erie. 
+      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.") } 
+    else {
+      paste("Fitted line plot for the standard regression of weight (g) on  total length (mm) of",tbl_species()$species,"from western basin of Lake Erie. 
+      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.")
+    }
+  })
+  
+  # Reactive label for regression summary table label
+  output$reg_tbl_label <- renderText({
+    if (input$datatrans == "Linear") {
+      paste("Summary for the linear regression of natural-log transformed weight on natural-log transformed total length from",tbl_species()$species,"in the western basin of Lake Erie. 
+      Standard and linearized power function equations used listed below.") } 
+    else {
+      paste("Summary for the standard regression of weight (g) on  total length (mm) from",tbl_species()$species,"in the western basin of Lake Erie. 
+      Standard and linearized power function equations used listed below.")
+    }
+  })
+  
+  #  Reactive regression summary table
+  output$reg_tbl <- renderTable({
+    result <- try({
+      model <- lm(logw~logl,data=length_weight())
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- coef(summary(lm(logw~logl,data=length_weight())))
+      if(input$datatrans == "Linear") {
+        rownames(model) <- c("log(a)","b")
+        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
+        model
+      } else {
+        model[1,1] <- exp(model[1,1])
+        rownames(model) <- c("a","b")
+        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
+        model
+      }
+    } else {
+      no_results <- data_frame(a = c(0,0))
+      rownames(no_results) <- c("a","b")
+      colnames(no_results) <- c("Model was unable to fit")
+      no_results
+    }
+  },digits=8)
 
   # Sample size text output
-  output$n_fish <- renderText({ nrow(length_weight()) })
+  output$n_fish <- renderText({ if(nrow(length_weight()) > 0) {
+    nrow(length_weight())
+    } else {
+      "No Data - Consider Revising Inputs"
+    }
+  })
 
   # Download
   output$downloadCSV_4 <- downloadHandler(
@@ -400,33 +452,32 @@ shinyServer(function(input, output) {
     xvar_name <- "Total Length (mm)"
     yvar_name <- "Frequency"
     
-    if(nrow(len_freq()) < 1) {
-      len_freq <- data_frame(tl_exp=0,n=0,text="No Data")
-    }
-    
-    if(nrow(len_freq()) > 1) {
     len_freq %>%
       ggvis(~tl_exp) %>%
       add_axis("x", title = xvar_name, title_offset = 35, properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y", title = yvar_name, title_offset = 55, properties = axis_props(
         title=list(fontSize=13))) %>%
-      layer_histograms(width = input$slider1) } else {
-        ggvis(data=len_freq,~tl_exp,~n) %>%
-          layer_points(~text) %>%
-          add_axis("x", title = xvar_name, title_offset = 35, properties = axis_props(
-            title=list(fontSize=13))) %>%
-          add_axis("y", title = yvar_name, title_offset = 55, properties = axis_props(
-            title=list(fontSize=13)))
-      }
+      layer_histograms(width = input$slider1)
     }) %>% bind_shiny("len_freq_plot")
   
   output$ggvis_hist <- renderUI({
     ggvisOutput("len_freq_plot")
   })
   
+  #
+  output$len_freq_label <- renderText({
+    paste("Length frequency of",tbl_species()$species,"from the western basin of Lake Erie. 
+          Lengths were expanded from measured total lengths collected on board the R/V Muskie.")
+  })
+  
   # Sample size text output
-  output$n_size <- renderText({ nrow(len_freq()) })
+  output$n_size <- renderText({ if(nrow(len_freq()) > 0) {
+    nrow(len_freq())
+    } else {
+      "No Data - Consider Revising Inputs"
+    }
+  })
 
   # Download
   output$downloadCSV_5 <- downloadHandler(
