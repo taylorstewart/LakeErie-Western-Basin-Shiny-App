@@ -142,7 +142,7 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            tabsetPanel(type="tabs",
-                       tabPanel("Weight-Length Plot",htmlOutput("ggvis_lw_plot"),
+                       tabPanel("Weight-Length Plot",table("regression_table"),htmlOutput("ggvis_lw_plot"),
                                 HTML("Species specific weight-length data collected from western basin of Lake Erie. 
                                      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.<br><br>")
                        ),

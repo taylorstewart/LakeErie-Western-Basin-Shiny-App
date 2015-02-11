@@ -1,5 +1,5 @@
 # Define server logic required
-shinyServer(function(input, output, session) {
+shinyServer(function(input, output) {
   
 ## -----------------------------------------------------------
 ## Historical Time Series Data Manipulation and Plot
@@ -252,8 +252,8 @@ shinyServer(function(input, output, session) {
     }
     m <- as.data.frame(m)
   })
-    
-  #make dynamic slider
+ 
+  # Make a dynamic slider
   output$slider <- renderUI({
     sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
   })
@@ -262,33 +262,49 @@ shinyServer(function(input, output, session) {
   reactive({
     
     if (!is.null(input$datatrans) && input$datatrans != "None") {
-      length_weight %<>% transmute(tl=logl,wt=logw)
+      length_weight() %<>% transmute(tl=logl,wt=logw)
       xvar_name <- names(axis_vars)[3]
       yvar_name <- names(axis_vars)[4]
+      
+      result <- try({
+        model <- lm(logw~logl,data=length_weight())
+      },silent=TRUE)
+      
+      if(class(result) != "try-error") {
+        model <- data_frame(fitted.values(lm(logw~logl,data=length_weight())))
+        colnames(model) <- "fit_wt"
+        cf <- bind_cols(length_weight(),model)
+        reg_fit <- cf %>% mutate(fit_tl = logl) %>%
+          arrange(fit_tl)
+      } else {
+        reg_fit <- data_frame(fit_tl = 0, fit_wt = 0)
+      }
     } else {
       xvar_name <- names(axis_vars)[1]
       yvar_name <- names(axis_vars)[2]
+      
+      result <- try({
+        model <- (lm(logw~logl,data=length_weight()))
+      },silent=TRUE)
+      
+      if(class(result) != "try-error") {
+        model <- coef(lm(logw~logl,data=length_weight()))
+        nlm <- data.frame(tl=seq(min(length_weight()$tl),max(length_weight()$tl),0.5))
+        reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl^model[2], fit_tl = tl) %>%
+          arrange(fit_tl)
+      } else {
+        reg_fit <- data_frame(fit_tl = 0, fit_wt = 0)
+      } 
     }
     
-    if(nrow(length_weight()) < 1) {
-      length_weight <- data_frame(tl=0,wt=0,text="No Data")
-    }
-    
-    if(nrow(length_weight()) > 1) {
     length_weight %>%
       ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
+      layer_paths(data=reg_fit,~fit_tl,~fit_wt) %>%
       add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
-        title=list(fontSize=13))) } else {
-          ggvis(data=length_weight,~tl,~wt) %>%
-            layer_points(~text) %>%
-            add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
-              title=list(fontSize=13))) %>%
-            add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
-              title=list(fontSize=13)))}
-  }) %>% bind_shiny("lw_plot")
+        title=list(fontSize=13))) }) %>% bind_shiny("lw_plot")
   
   output$ggvis_lw_plot <- renderUI({
     ggvisOutput("lw_plot")
