@@ -136,31 +136,20 @@ shinyUI(fluidPage(
              uiOutput("inSlider"),
              radioButtons("datatrans",h5("Transformation:"),
                           c("None" = "None",
-                          "Linear" = "Linear")),
+                            "Linear" = "Linear")),
              downloadButton("downloadCSV_4","Download Plot Data")
            )
     ),
     column(9,align="center",
-           tabsetPanel(type="tabs",
-                       tabPanel("Weight-Length Plot",table("regression_table"),htmlOutput("ggvis_lw_plot"),
-                                HTML("Species specific weight-length data collected from western basin of Lake Erie. 
-                                     Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.<br><br>")
-                       ),
-                       tabPanel("Linear Regression Summary",
-                                HTML("<br><p>Species specific linear regression summary from the western basin of Lake Erie.</p>"),
-                                withMathJax("$$\\log(W)=\\log(a)+b\\log(L)$$"),
-                                tableOutput("lm_call"),
-                                htmlOutput("ggvis_lm_plot"),
-                                HTML("<br><p>Species specific fitted line plot for the regression of natural-log transformed weight on natural-log transformed total length from the western basin of Lake Erie.</p>")
-                       ),
-                       tabPanel("Power Function Summary",
-                                HTML("<br><p>Species specific power function summary from the western basin of Lake Erie.</p>"),
-                                ("$$W=aL^b$$"),
-                                tableOutput("nlm_call"),
-                                htmlOutput("ggvis_nlm_plot"),
-                                HTML("<br><p>Species specific fitted line plot for the regression of weight on total length from the western basin of Lake Erie.</p>")
-                       )
-           ),
+           HTML("<br><p>Species specific regression summary from the western basin of Lake Erie.</p>"),
+           withMathJax("$$W=aL^b$$"),
+           ("$$\\log(W)=\\log(a)+b\\log(L)$$"),
+           textOutput("tbl_label"),
+           tableOutput("reg_tbl"),
+           htmlOutput("ggvis_lw_plot"),
+           HTML("Species specific weight-length data collected from western basin of Lake Erie. 
+                Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.<br><br>"),
+           
            wellPanel(
              span("Number of individuals selected:",textOutput("n_fish")
              )

@@ -258,11 +258,45 @@ shinyServer(function(input, output) {
     sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
   })
 
+  #  
+  output$reg_tbl <- renderTable({
+    result <- try({
+      model <- lm(logw~logl,data=length_weight())
+    },silent=TRUE)
+    
+    if(class(result) != "try-error") {
+      model <- coef(summary(lm(logw~logl,data=length_weight())))
+      if(input$datatrans == "Linear") {
+        rownames(model) <- c("log(a)","b")
+        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
+        model
+      } else {
+        model[1,1] <- exp(model[1,1])
+        rownames(model) <- c("a","b")
+        colnames(model) <- c("Estimate","Std. Error","t-value","p-value")
+        model
+      }
+    } else {
+      no_results <- data_frame(a = c(0,0))
+      rownames(no_results) <- c("a","b")
+      colnames(no_results) <- c("Model was unable to fit")
+      no_results
+    }
+  },digits=8)
+
+  #
+  output$tbl_label <- renderText({
+    if (input$datatrans == "Linear") {
+      "Linear" } else {
+        "Standard"
+      }
+  })
+  
   # A reactive expression with the lenght-weight plot
   reactive({
     
-    if (!is.null(input$datatrans) && input$datatrans != "None") {
-      length_weight() %<>% transmute(tl=logl,wt=logw)
+    if (input$datatrans == "Linear") {
+      plot_lw <- length_weight() %>% transmute(tl=logl,wt=logw)
       xvar_name <- names(axis_vars)[3]
       yvar_name <- names(axis_vars)[4]
       
@@ -277,27 +311,28 @@ shinyServer(function(input, output) {
         reg_fit <- cf %>% mutate(fit_tl = logl) %>%
           arrange(fit_tl)
       } else {
-        reg_fit <- data_frame(fit_tl = 0, fit_wt = 0)
+        reg_fit <- data.frame(fit_tl = 0, fit_wt = 0)
       }
     } else {
+      plot_lw <- length_weight() %>% transmute(tl=tl,wt=wt)
       xvar_name <- names(axis_vars)[1]
       yvar_name <- names(axis_vars)[2]
       
       result <- try({
-        model <- (lm(logw~logl,data=length_weight()))
+        model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
       
       if(class(result) != "try-error") {
         model <- coef(lm(logw~logl,data=length_weight()))
-        nlm <- data.frame(tl=seq(min(length_weight()$tl),max(length_weight()$tl),0.5))
+        nlm <- data.frame(tl=seq(min(length_weight()$tl), max(length_weight()$tl), 0.5))
         reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl^model[2], fit_tl = tl) %>%
           arrange(fit_tl)
       } else {
-        reg_fit <- data_frame(fit_tl = 0, fit_wt = 0)
-      } 
+        reg_fit <- data.frame(fit_tl = 0, fit_wt = 0)
+      }
     }
     
-    length_weight %>%
+    plot_lw %>%
       ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
       layer_paths(data=reg_fit,~fit_tl,~fit_wt) %>%
@@ -308,145 +343,6 @@ shinyServer(function(input, output) {
   
   output$ggvis_lw_plot <- renderUI({
     ggvisOutput("lw_plot")
-  })
-  
-  # Create table for the linear regression parameter estimates
-  output$lm_call <- renderTable({
-    result <- try({
-      model <- lm(logw~logl,data=length_weight())
-      results <- coef(summary(model))
-      rownames(results) <- c("log(a)","b")
-      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-      results
-    },silent=TRUE)
-    
-    if(class(result) != "try-error") {
-      model <- lm(logw~logl,data=length_weight())
-      results <- coef(summary(model))
-      rownames(results) <- c("log(a)","b")
-      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-      results
-    } else {
-      results <- data_frame(a = c(0,0))
-      rownames(results) <- c("a","b")
-      colnames(results) <- c("Model was unable to fit")
-      results
-    }
-  },digits=8)
-    
-  # Calculate fit of the power function
-  lm_fit <- reactive({
-    result <- try({
-      model <- lm(logw~logl,data=length_weight())
-      cf <- data_frame(fitted.values(model))
-      cf <- bind_cols(length_weight(),cf) %>%
-        tbl_df()
-    },silent=TRUE)
-    
-    if(class(result) != "try-error") {
-      model <- lm(logw~logl,data=length_weight())
-      cf <- data_frame(fitted.values(model))
-      colnames(cf) <- "fit"
-      cf <- bind_cols(length_weight(),cf) %>%
-        arrange(tl) %>%
-        tbl_df()
-    } else {
-      data_frame(logl = 0, logw = 0, text = "No Data")
-    }
-  })
-  
-  # A reactive expression with the power function fit plot
-  reactive({
-    if(nrow(lm_fit()) > 1) {
-    ggvis(data=length_weight(),~logl, ~logw) %>%
-      layer_points(size := 50,fillOpacity := 0.2) %>%
-      layer_paths(data=lm_fit(),~logl,~fit) %>%
-      add_axis("x", title = "Log Length", title_offset = 35,properties = axis_props(
-        title=list(fontSize=13))) %>%
-      add_axis("y", title = "Log Weight", title_offset = 55,properties = axis_props(
-        title=list(fontSize=13))) } else {
-          ggvis(data=lm_fit(),~logl,~logw) %>%
-            layer_points(~text) %>%
-            add_axis("x", title = "Log Length", title_offset = 35,properties = axis_props(
-              title=list(fontSize=13))) %>%
-            add_axis("y", title = "Log Weight", title_offset = 55,properties = axis_props(
-              title=list(fontSize=13)))
-        }
-  }) %>% bind_shiny("lm_plot")
-  
-  output$ggvis_lm_plot <- renderUI({
-    ggvisOutput("lm_plot")
-  })
-  
-  # Create table for the power function parameter estimates
-  output$nlm_call <- renderTable({
-    result <- try({
-      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
-      results <- coef(summary(model))
-      rownames(results) <- c("a","b")
-      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-      results
-    },silent=TRUE)
-    
-    if(class(result) != "try-error") {
-      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
-      results <- coef(summary(model))
-      rownames(results) <- c("a","b")
-      colnames(results) <- c("Estimate","Std. Error","t-value","p-value")
-      results
-    } else {
-      results <- data_frame(a = c(0,0))
-      rownames(results) <- c("a","b")
-      colnames(results) <- c("Model was unable to fit")
-      results
-    }
-  },digits=8)
-  
-  # Calculate fit of the power function
-  nlm_fit <- reactive({
-    result <- try({
-      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
-      coef(model)
-    },silent=TRUE)
-    
-    if(class(result) != "try-error") {
-      model <- nls(log(wt)~log(a*tl^b),start=list(a=0.000001,b=3),data=length_weight())
-      coef(model)
-    } else {
-     c(0,0)
-    }
-  })
-
-  # A reactive expression with the power function fit plot
-  reactive({
-    
-    cf <- nlm_fit()
-    if(nrow(length_weight()) > 0) {
-      nlm <- data.frame(tl=seq(min(length_weight()$tl),max(length_weight()$tl),0.5))
-      nlm %<>% mutate(wt=cf[1]*tl^cf[2]) %>%
-        arrange(tl)
-    } else {
-      nlm <- data_frame(tl = 0, wt = 0, text = "No Data")
-    }
-    
-    if(nrow(length_weight()) > 0) {
-      ggvis(data=length_weight(),~tl, ~wt) %>%
-        layer_points(size := 50,fillOpacity := 0.2) %>%
-        layer_paths(data=nlm,~tl,~wt) %>%
-        add_axis("x", title = "Total Length (mm)", title_offset = 35,properties = axis_props(
-          title=list(fontSize=13))) %>%
-        add_axis("y", title = "Weight (g)", title_offset = 55,properties = axis_props(
-          title=list(fontSize=13))) } else {
-            ggvis(data=nlm,~tl, ~wt) %>%
-            layer_points(~text) %>%
-            add_axis("x", title = "Total Length (mm)", title_offset = 35,properties = axis_props(
-              title=list(fontSize=13))) %>%
-            add_axis("y", title = "Weight (g)", title_offset = 55,properties = axis_props(
-              title=list(fontSize=13))) }
-  }) %>% bind_shiny("nlm_plot")
-  
-  output$ggvis_nlm_plot <- renderUI({
-    ggvisOutput("nlm_plot")
   })
 
   # Sample size text output
