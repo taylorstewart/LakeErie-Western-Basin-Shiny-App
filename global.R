@@ -24,15 +24,14 @@ catch %<>% select(serial,species,count_final,year,season)
 axis_vars <- c(
   "Total Length (mm)" = "tl",
   "Weight (g)" = "wt",
-  "Log Length" = "logl",
-  "Log Weight" = "logw")
+  "Natural Log Length" = "logl",
+  "Natural Log Weight" = "logw")
 
 # Variables that can be selected for life stages
 life_vars <- c(
   "Young of the Year" = "YOY",
   "Age 1" = "Age_1",
-  "Age 2+" = "Age_2+",
-  "Yearling and older" = "YAO")
+  "Age 2+" = "Age_2+")
 
 # Variables that can be selected for years
 year_vars <- lw %>% distinct(year) %>%

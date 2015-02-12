@@ -35,11 +35,9 @@ shinyServer(function(input, output) {
     
     l <- select(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
     
-    # Optional: filter by species
-    if (!is.null(input$species2) && input$species2 != "") {
-      l <- l[l$species == input$species2,]
-    }
-    
+    # filter by species
+      l %<>% filter(species == input$species2)
+
     if (length(l$NperHA) > 0) {
     l %<>% group_by(Year,Season) %>%
       summarise(density=round(mean(NperHA),2)) %>%
@@ -89,8 +87,8 @@ shinyServer(function(input, output) {
 
   #
   output$catch_label <- renderText({
-    paste("Mean catch per hectare swept of",catch_species()$species,"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
-    )
+    HTML(paste("Mean catch per hectare swept of",tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
+    ))
   })
   
     # Download
@@ -168,23 +166,16 @@ shinyServer(function(input, output) {
     
     c <- catchHA
     
-    # Optional: filter by year
-    if (!is.null(input$year) && input$year != "") {
+    # filter by year
       c <- c[c$year == input$year,]
-    }
-    # Optional: filter by season
-    if (!is.null(input$season) && input$season != "") {
+    
+    # filter by season
       c <- c[c$season == input$season,]
-    }
-    # Optional: filter by serial 
-    if (!is.null(input$serial) && input$serial != "All") {
-      c <- c[c$serial == input$serial,]
-    }
-    # Optional: filter by species
-    if (!is.null(input$species) && input$species != "") {
+    
+    # filter by species
       c <- c[c$species == input$species,]
-    }
-    # Optional: filter by species
+    
+    # Optional: filter by life stage
     if (!is.null(input$life_stage) && input$life_stage != "All Life Stages") {
       c <- c[c$life_stage == input$life_stage,]
     }
@@ -242,10 +233,10 @@ shinyServer(function(input, output) {
     
   #
   output$map_label <- renderText({
-    paste("Spatial distribution of",tbl_year()$year,tbl_species()$species,map_value(),"from bottom trawl samples in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
           Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
-    )
+    ))
   })
   
   # Download
@@ -273,22 +264,15 @@ shinyServer(function(input, output) {
         tl >= minlength,
         tl <= maxlength)
     
-    # Optional: filter by year
-    if (!is.null(input$year) && input$year != "") {
+    # filter by year
       m <- m[m$year == input$year,]
-    }
-    # Optional: filter by season
-    if (!is.null(input$season) && input$season != "") {
+    
+    # filter by season
       m <- m[m$season == input$season,]
-    }
-    # Optional: filter by serial
-    if (!is.null(input$serial) && input$serial != "") {
-      m <- m[m$serial == input$serial,]
-    }
-    # Optional: filter by species
-    if (!is.null(input$species) && input$species != "") {
+    
+    # filter by species
       m <- m[m$species == input$species,]
-    }
+    
     m <- as.data.frame(m)
   })
  
@@ -353,22 +337,22 @@ shinyServer(function(input, output) {
   # Reactive label for regression plot
   output$reg_plot_label <- renderText({
     if (input$datatrans == "Linear") {
-      paste("Fitted line plot for the linear regression of natural-log transformed weight on natural-log transformed total length of",tbl_year()$year,tbl_species()$species,"from western basin of Lake Erie. 
-      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.") } 
-    else {
-      paste("Fitted line plot for the standard regression of weight (g) on  total length (mm) of",tbl_year()$year,tbl_species()$species,"from western basin of Lake Erie. 
-      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie.")
+      HTML(paste("Fitted line plot for the regression of natural-log transformed weight on natural-log transformed total length of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
+      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie."))
+      } else {
+      HTML(paste("Fitted line plot for the regression of weight (g) on  total length (mm) of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
+      Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie."))
     }
   })
   
   # Reactive label for regression summary table label
   output$reg_tbl_label <- renderText({
     if (input$datatrans == "Linear") {
-      paste("Summary for the linear regression of natural-log transformed weight on natural-log transformed total length from",tbl_year()$year,tbl_species()$species,"in the western basin of Lake Erie. 
-      Standard and linearized power function equations used listed below.") } 
-    else {
-      paste("Summary for the standard regression of weight (g) on  total length (mm) from",tbl_year()$year,tbl_species()$species,"in the western basin of Lake Erie. 
-      Standard and linearized power function equations used listed below.")
+      HTML(paste("Parameters for the regression of natural-log transformed weight on natural-log transformed total length from",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
+      Non-linear and log-transformed versions of the model are listed below."))
+    } else {
+      HTML(paste("Parameters for the regression of weight (g) on  total length (mm) from",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
+      Non-linear and log-transformed versions of the model are listed below."))
     }
   })
   
@@ -431,18 +415,14 @@ shinyServer(function(input, output) {
         tl_exp >= minlength2,
         tl_exp <= maxlength2)
     
-    # Optional: filter by year
-    if (!is.null(input$year) && input$year != "") {
+    # filter by year
       len <- len[len$year == input$year,]
-    }
-    # Optional: filter by season
-    if (!is.null(input$season) && input$season != "") {
+    
+    # filter by season
       len <- len[len$season == input$season,]
-    } 
-    # Optional: filter by species
-    if (!is.null(input$species) && input$species != "") {
+    
+    # filter by species
       len <- len[len$species == input$species,]
-    }
     
     if(nrow(len) > 1) {
       len <- as.data.frame(len)
@@ -478,8 +458,8 @@ shinyServer(function(input, output) {
   
   #
   output$len_freq_label <- renderText({
-    paste("Length frequency of",tbl_year()$year,tbl_species()$species,"from the western basin of Lake Erie. 
-          Lengths were expanded from measured total lengths collected on board the R/V Muskie.")
+    HTML(paste("Length frequency of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from the western basin of Lake Erie. 
+          Lengths were expanded from measured total lengths collected on board the R/V Muskie."))
   })
   
   # Sample size text output

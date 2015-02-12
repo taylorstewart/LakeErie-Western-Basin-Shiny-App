@@ -55,7 +55,7 @@ shinyUI(fluidPage(
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
            htmlOutput("ggvis_time"),
-           textOutput("catch_label"),
+           htmlOutput("catch_label"),
            HTML("<br>")
     )
   ),
@@ -117,7 +117,7 @@ shinyUI(fluidPage(
            HTML("Hover over point to display station number and detailed density and biomass values."),
            ggvisOutput("map"),
            uiOutput("ggvis_map"),
-           textOutput("map_label"),
+           htmlOutput("map_label"),
            HTML("<br>"),
            HTML("<br>Biomass values for 2014 are still being calculated. They will be added as soon as possible.")
     )
@@ -135,15 +135,15 @@ shinyUI(fluidPage(
              uiOutput("inSlider"),
              radioButtons("datatrans",h5("Transformation:"),
                           c("None" = "None",
-                            "Linear" = "Linear")),
+                            "Natural Log" = "Linear")),
              downloadButton("downloadCSV_4","Download Plot Data")
            )
     ),
     column(9,align="center",
            htmlOutput("ggvis_lw_plot"),
-           textOutput("reg_plot_label"),
+           htmlOutput("reg_plot_label"),
            HTML("<br>"),
-           textOutput("reg_tbl_label"),
+           htmlOutput("reg_tbl_label"),
            withMathJax("$$W=aL^b$$"),
            withMathJax("$$\\log(W)=\\log(a)+b\\log(L)$$"),
            tableOutput("reg_tbl"),
@@ -170,7 +170,7 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            htmlOutput("ggvis_hist"),
-           textOutput("len_freq_label"),
+           htmlOutput("len_freq_label"),
            HTML("<br>"),
            wellPanel(
              span("Number of individuals selected:",
