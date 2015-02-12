@@ -30,7 +30,7 @@ shinyUI(fluidPage(
        In 2012, the original vessel used since 2004, the R/V Musky II, was retired and replaced with the R/V Muskie. 
        The change in vessel necessitated changing the gear used to capture fish. 
        Previous surveys used a different catch processing protocol that did not include measurements of biomass or lengths of all species; thus, those historical data are not compatible with this presentation format. 
-       Under the new protocal, 41 stations were sampled during June (Spring) and September (Autumn). 
+       Under the new protocol, 41 stations were sampled during June (Spring) and September (Autumn). 
        The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. 
        Thus, we present data starting from 2013. This data presentation tool will automatically update with new data as surveys are completed in future years.</p>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;The vessel used for the survey is the R/V Muskie, a 70’ aluminum mono-hull research vessel, with a double-warp trawl system. 
@@ -46,21 +46,22 @@ shinyUI(fluidPage(
   HTML("<h3>Historical Time Series</h3>"),
   fluidRow(
     column(3,
-           HTML("<h4>Catch</h4>"),
+           HTML("<h5>Catch</h5>"),
            wellPanel(
-             selectInput("species2",h5("Select a Species"),species_vars,selected="Yellow Perch"),
+             selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
-           htmlOutput("ggvis_time"),
+           ggvisOutput("time"),
+           uiOutput("ggvis_time"),
            htmlOutput("catch_label"),
            HTML("<br>")
     )
   ),
 
-  HTML("<h4>Forage Density</h4>"),
+  HTML("<h5>Forage Density</h5>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -75,7 +76,8 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
-           htmlOutput("ggvis_ftg"),
+           ggvisOutput("ftg"),
+           uiOutput("ggvis_ftg"),
            HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
                 and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling.<br><br><br>")
     )
@@ -109,7 +111,9 @@ shinyUI(fluidPage(
              radioButtons("density",h5("Value:"),
                           c("Density (N/ha)" = "NperHA",
                             "Biomass (Kg/ha)" = "KgperHA")),
-             selectInput("life_stage",h5("Life Stage"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             htmlOutput("map_ls_label"),
+             HTML("<br>"),
              downloadButton("downloadCSV_3","Download Plot Data")
            )
     ),
@@ -140,7 +144,8 @@ shinyUI(fluidPage(
            )
     ),
     column(9,align="center",
-           htmlOutput("ggvis_lw_plot"),
+           ggvisOutput("lw_plot"),
+           uiOutput("ggvis_lw_plot"),
            htmlOutput("reg_plot_label"),
            HTML("<br>"),
            htmlOutput("reg_tbl_label"),
@@ -164,12 +169,13 @@ shinyUI(fluidPage(
              numericInput("max_val2",h5("Enter Maximum Length (mm):"),1000),
              #display dynamic UI
              uiOutput("inSlider2"),
-             sliderInput("slider1",label=h5("Bin Width (mm)"),min=5,max=25,step=5,value=10),
+             sliderInput("slider1",label=h5("Bin Width (mm):"),ticks=F,min=5,max=25,step=5,value=10),
              downloadButton("downloadCSV_5","Download Plot Data")
            )
     ),
     column(9,align="center",
-           htmlOutput("ggvis_hist"),
+           ggvisOutput("hist"),
+           uiOutput("ggvis_hist"),
            htmlOutput("len_freq_label"),
            HTML("<br>"),
            wellPanel(

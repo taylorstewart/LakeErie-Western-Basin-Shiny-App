@@ -1,24 +1,39 @@
 # Define server logic required
 shinyServer(function(input, output) {
 
-  #
+  # Reactive species input for labels
   tbl_species <- reactive({
     tbl <- lw
     tbl_species <- distinct(filter(tbl,species == input$species),species)
   })
   
-  #
+  # Reactive year input for labels
   tbl_year <- reactive({
     tbl <- lw
     tbl_year <- distinct(filter(tbl,year == input$year),year)
   })
   
+  # Reactive species input for CPE plot label
   catch_species <- reactive({
     tbl <- lw
     tbl_species <- distinct(filter(tbl,species == input$species2),species)
   })
   
-  #
+  # Reactive life stage input for label
+  map_ls <- reactive({
+    ls_vars <- distinct(filter(catchHA,species == input$species,year == input$year,season == input$season,NperHA > 0,KgperHA > 0,life_stage != "ALL"),life_stage)%>%
+      select(life_stage) %>%
+      arrange(life_stage)
+    ls_vars <- as.character(ls_vars$life_stage)
+    if(length(ls_vars) > 0) {
+      ls_vars <- paste(gsub("_"," ",ls_vars),collapse=", ")
+      ls_vars <- paste0("All Life Stages, ",ls_vars) } else {
+        ls_vars <- paste0("All Life Stages",ls_vars)
+      }
+    ls_vars <- data_frame(vars=ls_vars)
+  })
+  
+  # Reactive value input for spatial map label
   map_value <- renderText({
     if(input$density == "NperHA") {
       "density" } else {
@@ -61,7 +76,6 @@ shinyServer(function(input, output) {
   # A reactive expression with the historical time series plot
   reactive({
 
-    if(nrow(time_data()) > 1) {
     time_data() %>% group_by(Season) %>%
     ggvis(~factor(Year),~density) %>%
       layer_points(fill = ~Season,prop("size",80)) %>%
@@ -71,27 +85,15 @@ shinyServer(function(input, output) {
       add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
-        title=list(fontSize=13))) } else {
-          time_data() %>% ggvis(~Year,~Season) %>%
-            layer_points(~text) %>%
-            scale_numeric("y",domain=c(0,NA)) %>%
-            add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
-              title=list(fontSize=13))) %>%
-            add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
-              title=list(fontSize=13)))
-        } }) %>% bind_shiny("time")
-  
-  output$ggvis_time <- renderUI({
-    ggvisOutput("time")
-  })
+        title=list(fontSize=13))) }) %>% bind_shiny("time","ggvis_time")
 
-  #
+  # Reactive CPE plot label
   output$catch_label <- renderText({
     HTML(paste("Mean catch per hectare swept of",tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
     ))
   })
   
-    # Download
+    # Download plot data
   output$downloadCSV_1 <- downloadHandler(
     filename="catch_data",
     content=function(file) {
@@ -142,11 +144,7 @@ shinyServer(function(input, output) {
         add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
           title=list(fontSize=13))) %>%
         add_tooltip(tooltip2, "hover")
-  }) %>% bind_shiny("ftg")
-  
-  output$ggvis_ftg <- renderUI({
-    ggvisOutput("ftg")
-  })
+  }) %>% bind_shiny("ftg","ggvis_ftg")
   
   # Download
   output$downloadCSV_2 <- downloadHandler(
@@ -188,6 +186,9 @@ shinyServer(function(input, output) {
                 long=mean(long),
                 lat=mean(lat)
       )
+
+    c %<>% filter(NperHA > 0 && KgperHA > 0)
+      
   })
 
   # Function for generating map tooltip text
@@ -231,15 +232,21 @@ shinyServer(function(input, output) {
         add_axis("y",orient="right",title="",ticks="",tick_size_end="")
   }) %>% bind_shiny("map","ggvis_map")
     
-  #
+  # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
           Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
     ))
   })
+    
+  # Reactive label for life stages
+  output$map_ls_label <- renderText({
+    HTML(paste0("<p><h5>","Available Life Stages for ",tbl_species()$species,":","</h5></p>","(",map_ls()$vars,")")
+    )
+  })
   
-  # Download
+  # Download plot data
   output$downloadCSV_3 <- downloadHandler(
     filename="map_data",
     content=function(file) {
@@ -276,19 +283,9 @@ shinyServer(function(input, output) {
     m <- as.data.frame(m)
   })
  
-  # Make a dynamic slider
-  output$slider <- renderUI({
-    sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
-  })
-  
-  # A reactive expression with the lenght-weight plot
-  reactive({
-    
-    if (input$datatrans == "Linear") {
-      plot_lw <- length_weight() %>% transmute(tl=logl,wt=logw)
-      xvar_name <- names(axis_vars)[3]
-      yvar_name <- names(axis_vars)[4]
-      
+  #
+  reg_fit <- reactive({
+    if(input$datatrans == "Linear") {
       result <- try({
         model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
@@ -303,10 +300,6 @@ shinyServer(function(input, output) {
         reg_fit <- data.frame(fit_tl = 0, fit_wt = 0)
       }
     } else {
-      plot_lw <- length_weight() %>% transmute(tl=tl,wt=wt)
-      xvar_name <- names(axis_vars)[1]
-      yvar_name <- names(axis_vars)[2]
-      
       result <- try({
         model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
@@ -320,27 +313,42 @@ shinyServer(function(input, output) {
         reg_fit <- data.frame(fit_tl = 0, fit_wt = 0)
       }
     }
+  })
+    
+  # Make a dynamic slider
+  output$slider <- renderUI({
+    sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
+  })
+  
+  # A reactive expression with the lenght-weight plot
+  reactive({
+    
+    if (input$datatrans == "Linear") {
+      plot_lw <- length_weight() %>% transmute(tl=logl,wt=logw)
+      xvar_name <- names(axis_vars)[3]
+      yvar_name <- names(axis_vars)[4]
+    } else {
+      plot_lw <- length_weight()
+      xvar_name <- names(axis_vars)[1]
+      yvar_name <- names(axis_vars)[2]
+    }
     
     plot_lw %>%
       ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
-      layer_paths(data=reg_fit,~fit_tl,~fit_wt) %>%
+      layer_paths(data=reg_fit(),~fit_tl,~fit_wt) %>%
       add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
-        title=list(fontSize=13))) }) %>% bind_shiny("lw_plot")
-  
-  output$ggvis_lw_plot <- renderUI({
-    ggvisOutput("lw_plot")
-  })
+        title=list(fontSize=13))) }) %>% bind_shiny("lw_plot","ggvis_lw_plot")
   
   # Reactive label for regression plot
   output$reg_plot_label <- renderText({
     if (input$datatrans == "Linear") {
-      HTML(paste("Fitted line plot for the regression of natural-log transformed weight on natural-log transformed total length of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
+      HTML(paste("Fitted line plot for the regression of natural-log transformed weight on natural-log transformed total length of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
       Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie."))
       } else {
-      HTML(paste("Fitted line plot for the regression of weight (g) on  total length (mm) of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
+      HTML(paste("Fitted line plot for the regression of weight (g) on  total length (mm) of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
       Total lengths and weights collected from a size-mode specific subsample on board the R/V Muskie."))
     }
   })
@@ -348,10 +356,10 @@ shinyServer(function(input, output) {
   # Reactive label for regression summary table label
   output$reg_tbl_label <- renderText({
     if (input$datatrans == "Linear") {
-      HTML(paste("Parameters for the regression of natural-log transformed weight on natural-log transformed total length from",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
+      HTML(paste("Parameters for the regression of natural-log transformed weight on natural-log transformed total length from",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
       Non-linear and log-transformed versions of the model are listed below."))
     } else {
-      HTML(paste("Parameters for the regression of weight (g) on  total length (mm) from",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
+      HTML(paste("Parameters for the regression of weight (g) on  total length (mm) from",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
       Non-linear and log-transformed versions of the model are listed below."))
     }
   })
@@ -424,10 +432,10 @@ shinyServer(function(input, output) {
     # filter by species
       len <- len[len$species == input$species,]
     
-    if(nrow(len) > 1) {
-      len <- as.data.frame(len)
+    if(nrow(len) == 1) {
+      len <- data_frame(tl_exp=0)
     } else {
-      len <- data_frame(tl_exp = 0)
+      len %<>% as.data.frame()
     }
   })
 
@@ -450,15 +458,11 @@ shinyServer(function(input, output) {
       add_axis("y", title = yvar_name, title_offset = 55, properties = axis_props(
         title=list(fontSize=13))) %>%
       layer_histograms(width = input$slider1)
-    }) %>% bind_shiny("len_freq_plot")
+    }) %>% bind_shiny("hist","ggvis_hist")
   
-  output$ggvis_hist <- renderUI({
-    ggvisOutput("len_freq_plot")
-  })
-  
-  #
+  # Reactive label for length frequency plot
   output$len_freq_label <- renderText({
-    HTML(paste("Length frequency of",tags$b(tbl_year()$year),tags$b(tbl_species()$species),"from the western basin of Lake Erie. 
+    HTML(paste("Length frequency of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"from the western basin of Lake Erie. 
           Lengths were expanded from measured total lengths collected on board the R/V Muskie."))
   })
   

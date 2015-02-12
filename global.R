@@ -29,9 +29,10 @@ axis_vars <- c(
 
 # Variables that can be selected for life stages
 life_vars <- c(
-  "Young of the Year" = "YOY",
+  "Young of the Year (YOY)" = "YOY",
   "Age 1" = "Age_1",
-  "Age 2+" = "Age_2+")
+  "Age 2+" = "Age_2+",
+  "Yearling and Older (YAO)" = "YAO")
 
 # Variables that can be selected for years
 year_vars <- lw %>% distinct(year) %>%
