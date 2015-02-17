@@ -291,7 +291,7 @@ shinyServer(function(input, output) {
       },silent=TRUE)
       
       if(class(result) != "try-error" && length(result$fitted.values) >1) {
-        model <- data_frame(fitted.values(lm(logw~logl,data=length_weight())))
+        model <- data_frame(fitted.values(result))
         colnames(model) <- "fit_wt"
         cf <- bind_cols(length_weight(),model)
         reg_fit <- cf %>% mutate(fit_tl = logl) %>%
@@ -303,10 +303,9 @@ shinyServer(function(input, output) {
       result <- try({
         model <- lm(logw~logl,data=length_weight())
       },silent=TRUE)
-      
       if(class(result) != "try-error" && length(result$fitted.values) >1) {
-        model <- coef(lm(logw~logl,data=length_weight()))
-        nlm <- data.frame(tl=seq(min(length_weight()$tl), max(length_weight()$tl), 0.5))
+        model <- coef(result)
+        nlm <- data.frame(tl=seq(min(length_weight()$tl), max(length_weight()$tl), 5))
         reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl^model[2], fit_tl = tl) %>%
           arrange(fit_tl)
       } else {
