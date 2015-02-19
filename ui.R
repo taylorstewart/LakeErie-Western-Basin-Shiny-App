@@ -1,6 +1,6 @@
 # Define user interface required
 shinyUI(fluidPage(
-  tags$head(includeScript("www/google-analytics.js")),
+  #tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
            tags$img(src="usgs_banner_gr.jpg",height="110px",width="100%")
@@ -49,6 +49,7 @@ shinyUI(fluidPage(
            HTML("<h5>Catch</h5>"),
            wellPanel(
              selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
+             selectInput("life_stage2",h5("Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
@@ -93,7 +94,7 @@ shinyUI(fluidPage(
                                        selectInput("year",label=h5("Year"),year_vars,selected="2014")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Spring")
+                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Autumn")
                               ),
                               tags$div(class="col-sm-4",
                                        selectInput("species",label=h5("Species"),species_vars,selected="Yellow Perch")
@@ -111,7 +112,7 @@ shinyUI(fluidPage(
              radioButtons("density",h5("Value:"),
                           c("Density (N/ha)" = "NperHA",
                             "Biomass (Kg/ha)" = "KgperHA")),
-             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
              htmlOutput("map_ls_label"),
              HTML("<br>"),
              downloadButton("downloadCSV_3","Download Plot Data")
@@ -122,8 +123,7 @@ shinyUI(fluidPage(
            ggvisOutput("map"),
            uiOutput("ggvis_map"),
            htmlOutput("map_label"),
-           HTML("<br>"),
-           HTML("<br>Biomass values for 2014 are still being calculated. They will be added as soon as possible.")
+           HTML("<br>")
     )
   ),
   

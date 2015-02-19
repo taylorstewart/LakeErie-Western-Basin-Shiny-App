@@ -13,10 +13,22 @@ shinyServer(function(input, output) {
     tbl_year <- distinct(filter(tbl,year == input$year),year)
   })
   
+  # Reactive life stage input for labels
+  tbl_ls <- reactive({
+    tbl <- catchHA
+    tbl_ls <- distinct(filter(tbl,life_stage == input$life_stage),life_stage)
+  })
+  
   # Reactive species input for CPE plot label
   catch_species <- reactive({
     tbl <- lw
     tbl_species <- distinct(filter(tbl,species == input$species2),species)
+  })
+  
+  # Reactive life stage input for CPE plot label
+  catch_ls <- reactive({
+    tbl <- catchHA
+    tbl_ls <- distinct(filter(tbl,life_stage == input$life_stage2),life_stage)
   })
   
   # Reactive life stage input for label
@@ -48,10 +60,15 @@ shinyServer(function(input, output) {
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- select(catchHA,species=species,Year=year,Season=season,NperHA=NperHA)
+    l <- select(catchHA,species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA)
     
     # filter by species
       l %<>% filter(species == input$species2)
+    
+    # Optional: filter by life stage
+    if (!is.null(input$life_stage2) && input$life_stage2 != "All Life Stages") {
+      l <- l[l$life_stage == input$life_stage2,]
+    }
 
     if (length(l$NperHA) > 0) {
     l %<>% group_by(Year,Season) %>%
@@ -89,7 +106,7 @@ shinyServer(function(input, output) {
 
   # Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean catch per hectare swept of",tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
+    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
     ))
   })
   
@@ -234,7 +251,7 @@ shinyServer(function(input, output) {
     
   # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
           Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
     ))
