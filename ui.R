@@ -3,7 +3,7 @@ shinyUI(fluidPage(
   #tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr.jpg",height="110px",width="100%")
+           tags$img(src="usgs_banner_gr_name.jpg",height="110px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -49,7 +49,7 @@ shinyUI(fluidPage(
            HTML("<h5>Catch</h5>"),
            wellPanel(
              selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
-             selectInput("life_stage2",h5("Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
+             selectInput("life_stage2",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
@@ -80,7 +80,7 @@ shinyUI(fluidPage(
            ggvisOutput("ftg"),
            uiOutput("ggvis_ftg"),
            HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
-                and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling.<br><br><br>")
+                and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling. Dashed lines indicate long-term means for each functional group.<br><br><br>")
     )
   ),
 
@@ -112,7 +112,7 @@ shinyUI(fluidPage(
              radioButtons("density",h5("Value:"),
                           c("Density (N/ha)" = "NperHA",
                             "Biomass (Kg/ha)" = "KgperHA")),
-             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
+             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              htmlOutput("map_ls_label"),
              HTML("<br>"),
              downloadButton("downloadCSV_3","Download Plot Data")
