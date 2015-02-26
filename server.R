@@ -70,19 +70,43 @@ shinyServer(function(input, output) {
       l <- l[l$life_stage == input$life_stage2,]
     }
 
-    if (length(l$NperHA) > 0) {
     l %<>% group_by(Year,Season) %>%
       summarise(density=round(mean(NperHA),2)) %>%
-      tbl_df() } else {
-        data_frame(Year = 0, Season = 0, density = 0, text = "No Data")
-      }
+      tbl_df() %>% 
+        arrange(Year)
+  })
+  
+  # Filter catch, returning the means
+  time_mean <- reactive({
     
+    l <- select(catchHA,species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA) %>%
+      arrange(Year)
+    
+    # filter by species
+    l %<>% filter(species == input$species2)
+    
+    # Optional: filter by life stage
+    if (!is.null(input$life_stage2) && input$life_stage2 != "All Life Stages") {
+      l <- l[l$life_stage == input$life_stage2,]
+    }
+
+      l_rep <- l$Year %>% n_distinct()
+      
+      l_seas_year <- l %>% distinct(Season,Year)
+
+      l <- time_data() %>% group_by(Season) %>%
+        summarise(density=round(mean(density),2)) %>%
+        tbl_df()
+    
+      l_mean_rep <- lapply(l,rep,l_rep)
+      l_mean_rep <- as.data.frame(do.call(cbind,l_mean_rep)) %>%
+        select(density)
+      l_mean_rep <- bind_cols(l_mean_rep,l_seas_year)
   })
 
   # Function for generating map tooltip text
   tooltip <- function(x) {
-    if (is.null(x)) return(NULL)    
-    
+
     # Pick out the individual with this ID
     wb <- isolate(time_data())
     time_data <- wb[wb$Season == x$Season,]
@@ -93,20 +117,22 @@ shinyServer(function(input, output) {
   # A reactive expression with the historical time series plot
   reactive({
 
-    time_data() %>% group_by(Season) %>%
-    ggvis(~factor(Year),~density) %>%
+    ggvis(time_data,~factor(Year),~density) %>%
+      group_by(Season) %>%
       layer_points(fill = ~Season,prop("size",80)) %>%
       layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
+      layer_paths(data=filter(time_mean,Season=="Spring"),~factor(Year),~density,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(time_mean,Season=="Autumn"),~factor(Year),~density,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
       add_tooltip(tooltip,"hover") %>%
       scale_numeric("y",domain=c(0,NA)) %>%
       add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
         title=list(fontSize=13))) }) %>% bind_shiny("time","ggvis_time")
-
+  
   # Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
+    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
     ))
   })
   
@@ -134,6 +160,28 @@ shinyServer(function(input, output) {
       summarise(NperHA=round(mean(NperHA),2)
       )
   })
+  
+  # Filter catch, returning the means
+  ftg_mean <- reactive({
+    
+    p <- ftg_data %>% arrange(year)
+    
+    p_rep <- p$year %>% n_distinct()
+    
+    p_class <- p %>% distinct(class,year) %>% 
+      select(class,year)
+    
+    # Summarize density by year and season
+    ftg_Rdata2 <- ftg_Rdata() %>%
+      group_by(class) %>%
+      summarise(NperHA=round(mean(NperHA),2)
+      )
+    
+    p_mean_rep <- lapply(ftg_Rdata2,rep,p_rep)
+    p_mean_rep <- as.data.frame(do.call(cbind,p_mean_rep)) %>%
+      select(NperHA)
+    p_mean_rep <- bind_cols(p_mean_rep,p_class)
+  })
 
   # Function for generating map tooltip text
   tooltip2 <- function(x2) {
@@ -149,18 +197,21 @@ shinyServer(function(input, output) {
   # A reactive expression with the historical time series plot
   reactive({
     
-    ftg_Rdata %<>% group_by(class) %>%
-      ggvis(~factor(year),~NperHA) %>%
-        layer_points(prop("fill",~class),prop("size",80)) %>%
-        layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
-        hide_legend("stroke") %>%
-        add_legend("fill",title="Functional Groups") %>%
-        scale_numeric("y",domain=c(0,NA)) %>%
-        add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
-          title=list(fontSize=13))) %>%
-        add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
-          title=list(fontSize=13))) %>%
-        add_tooltip(tooltip2, "hover")
+    ggvis(ftg_Rdata,~factor(year),~NperHA) %>%
+      group_by(class) %>%
+      layer_points(prop("fill",~class),prop("size",80)) %>%
+      layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~factor(year),~NperHA,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~factor(year),~NperHA,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~factor(year),~NperHA,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
+      hide_legend("stroke") %>%
+      add_legend("fill",title="Functional Groups") %>%
+      scale_numeric("y",domain=c(0,NA)) %>%
+      add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+        title=list(fontSize=13))) %>%
+      add_tooltip(tooltip2, "hover")
   }) %>% bind_shiny("ftg","ggvis_ftg")
   
   # Download
