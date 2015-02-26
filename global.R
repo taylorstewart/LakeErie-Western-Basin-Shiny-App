@@ -2,6 +2,7 @@ library(shiny)
 library(dplyr)
 library(magrittr)
 library(ggvis)
+library(tidyr)
 
 wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
 catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
@@ -10,6 +11,7 @@ catch <- read.csv("data/WB_catch.csv",header=T)
 effort <- read.csv("data/WB_effort.csv",header=T)
 wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
+wb_wq <- read.csv("data/WB_WaterQuality.csv",header=T)
 
 wb_exp %<>% mutate(tl_exp = as.numeric(tl_exp))
 lw %<>% select(serial,fish_id,species,tl,wt,year,season) %>%
@@ -55,7 +57,8 @@ catch2 %<>% group_by(species,life_stage,serial,year,season) %>%
 ## Merge effort and catch data and rename variable names
 catchHA <- right_join(effort,catch2,by="serial") %>%
   filter(!is.na(long_st) & long_st != "#N/A") %>%
-  select(species=species,serial=serial,life_stage=life_stage,NperHA=NperHA,KgperHA=KgperHA,long=long_st,lat=lat_st,year=year,season=season)
+  select(species=species,serial=serial,life_stage=life_stage,NperHA=NperHA,KgperHA=KgperHA,
+         long=long_st,lat=lat_st,year=year,season=season)
 
 ## Filter density values for forage task group classification
 ## Turn off warning for join (different factor levels, coerces to a character vector)
@@ -65,3 +68,18 @@ ftg_data <- bind_rows(filter(ftg_data,life_stage == "YOY", season == "Autumn"),
                    filter(ftg_data,class == "Soft-rayed",season == "Autumn"),
                    filter(ftg_data,species == "Alewife",season == "Autumn"))
 options(warn=1)
+
+wb_wq %<>% select(serial=Serial,Depth=Depth_Mean,Temperature=Temp_Mean,SpConductivity=SpCond_Mean,pH=pH_Mean,
+                  Turbitity=Turbitity_Mean,Chlorophyll=Chlor_Mean,DOpercent=DOpercent_Mean,DOppm=DOppm_Mean,year,season) %>%
+  gather(parameter,value,3:9) %>% 
+  right_join(effort,wb_wq,by="serial")
+
+# Variables that can be selected for water quality
+par_vars <- c(
+  "Temperature (C)" = "Temperature",
+  "Dissolved Oxygen (%)" = "DOpercent",
+  "Dissolved Oxygen (mg/l)" = "DOppm",
+  "Chlorophyll (ug/L)" = "Chlorophyll",
+  "pH" = "pH",
+  "Turbitity (NTU)" = "Turbitity",
+  "Specific Conductitiy (mS/cm)" = "SpConductivity")

@@ -224,6 +224,45 @@ shinyServer(function(input, output) {
   )
 
 ## -----------------------------------------------------------
+## Abiotic Data Manipulation and Table
+## -----------------------------------------------------------
+  
+  # A reactive expression with the western basin map
+  abiotic_data <- reactive({
+    r <- wb_wq
+    
+    # filter by year
+    r %<>% filter(year == input$year2)
+    
+    # filter by season
+    r %<>% filter(season == input$season2)
+    
+    # filter by parameter
+    r %<>% filter(parameter == input$parameter)
+    
+    r %<>% select(serial,Depth,value,lat_st,long_st,year,season) %>% 
+      arrange(serial)
+    
+    colnames(r) <- c("Station","Depth (m)",input$parameter,"Latitude","Longitude","Year","Season")
+    r
+  })
+  
+  output$abiotic_table <- renderDataTable({
+    abiotic_data()
+  },option=list(pageLength=15,autoWidth=FALSE,
+                columnDefs = list(list(sWidth=c("100px"))))
+  )
+  
+  # Download plot data
+  output$downloadCSV_7 <- downloadHandler(
+    filename="abiotic_table",
+    content=function(file) {
+      write.csv(abiotic_data(),file,row.names=FALSE)
+    },
+    contentType="text/csv"
+  )
+  
+## -----------------------------------------------------------
 ## Density and Biomass Data Manipulation and Map
 ## -----------------------------------------------------------
 

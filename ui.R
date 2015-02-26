@@ -1,9 +1,9 @@
 # Define user interface required
 shinyUI(fluidPage(
-  #tags$head(includeScript("www/google-analytics.js")),
+  tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr_name.jpg",height="110px",width="100%")
+           tags$img(src="usgs_banner_gr_name.jpg",height="120px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -81,6 +81,23 @@ shinyUI(fluidPage(
            uiOutput("ggvis_ftg"),
            HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
                 and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling. Dashed lines indicate long-term means for each functional group.<br><br><br>")
+    )
+  ),
+  
+  HTML("<h5>Abiotic Water Quality Parameters</h5>"),
+  fluidRow(
+    column(3,
+           wellPanel(
+             selectInput("parameter",h5("Parameters:"),par_vars),
+             selectInput("year2",label=h5("Year"),year_vars,selected="2014"),
+             selectInput("season2",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
+             HTML("<br>"),
+             downloadButton("downloadCSV_7","Download Table Data")
+           )
+    ),
+    column(9,align="center",
+           dataTableOutput("abiotic_table"),
+           HTML("<br>")
     )
   ),
 
