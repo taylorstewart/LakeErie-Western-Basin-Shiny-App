@@ -78,8 +78,7 @@ wb_wq %<>% select(serial=Serial,Depth=Depth_Mean,Temperature=Temp_Mean,SpConduct
 par_vars <- c(
   "Temperature (C)" = "Temperature",
   "Dissolved Oxygen (%)" = "DOpercent",
-  "Dissolved Oxygen (mg/l)" = "DOppm",
+  "Dissolved Oxygen (mg/L)" = "DOppm",
   "Chlorophyll (ug/L)" = "Chlorophyll",
   "pH" = "pH",
-  "Turbitity (NTU)" = "Turbitity",
   "Specific Conductitiy (mS/cm)" = "SpConductivity")

@@ -1,9 +1,9 @@
 # Define user interface required
 shinyUI(fluidPage(
-  tags$head(includeScript("www/google-analytics.js")),
+  #tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr_name.jpg",height="120px",width="100%")
+           tags$img(src="usgs_banner_gr_name.jpg",height="140px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -61,6 +61,23 @@ shinyUI(fluidPage(
            HTML("<br>")
     )
   ),
+  
+  HTML("<h5>Bar Plot</h5>"),
+  fluidRow(
+    column(3,
+           wellPanel(
+             selectInput("year2",label=h5("Year"),year_vars,selected="2014"),
+             selectInput("season2",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
+             HTML("<br>"),
+             downloadButton("downloadCSV_7","Download Table Data")
+           )
+    ),
+    column(9,align="center",
+           ggvisOutput("density_bar"),
+           uiOutput("ggvis_density_bar"),
+           HTML("<br>")
+    )
+  ),
 
   HTML("<h5>Forage Density</h5>"),
   fluidRow(
@@ -89,8 +106,8 @@ shinyUI(fluidPage(
     column(3,
            wellPanel(
              selectInput("parameter",h5("Parameters:"),par_vars),
-             selectInput("year2",label=h5("Year"),year_vars,selected="2014"),
-             selectInput("season2",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
+             selectInput("year3",label=h5("Year"),year_vars,selected="2014"),
+             selectInput("season3",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
              HTML("<br>"),
              downloadButton("downloadCSV_7","Download Table Data")
            )
@@ -126,9 +143,6 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
-             radioButtons("density",h5("Value:"),
-                          c("Density (N/ha)" = "NperHA",
-                            "Biomass (Kg/ha)" = "KgperHA")),
              selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              htmlOutput("map_ls_label"),
              HTML("<br>"),
@@ -136,9 +150,11 @@ shinyUI(fluidPage(
            )
     ),
     column(9,align="center",
-           HTML("Hover over point to display station number and detailed density and biomass values."),
-           ggvisOutput("map"),
-           uiOutput("ggvis_map"),
+           HTML("Hover over point to display station number and detailed value for each plot."),
+           ggvisOutput("density_map"),
+           uiOutput("ggvis_denisty_map"),
+           ggvisOutput("biomass_map"),
+           uiOutput("ggvis_biomass_map"),
            htmlOutput("map_label"),
            HTML("<br>")
     )

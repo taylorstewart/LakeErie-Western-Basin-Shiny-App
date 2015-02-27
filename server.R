@@ -79,7 +79,7 @@ shinyServer(function(input, output) {
   # Filter catch, returning the means
   time_mean <- reactive({
     
-    l <- select(catchHA,species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA) %>%
+    l <- catchHA %>% select(species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA) %>%
       arrange(Year)
     
     # filter by species
@@ -144,6 +144,44 @@ shinyServer(function(input, output) {
     },
     contentType="text/csv"
   )
+
+## -----------------------------------------------------------
+## Historical Time Series Data Manipulation and Plot
+## -----------------------------------------------------------
+  # Filter density and biomass, returning a data frame
+  bar_data <- reactive({
+    
+    w <- catchHA
+    
+    # filter by year
+    w %<>% filter(year2 == input$year2)
+    
+    # filter by season
+    w %<>% filter(season2 == input$season2)
+    
+    w_rank <- w %>% group_by(species) %>% 
+      summarise(NperHA=sum(NperHA))
+    w_rank$rank <- dense_rank(desc(w_rank$NperHA))
+    w_rank %<>% filter(rank %in% 1:10) %>%
+      select(species)
+    
+    w %<>% filter(species %in% w_rank$species)
+    
+    # Summarize density and biomass values
+    w %<>%
+      group_by(species) %>%
+      summarise(NperHA=mean(NperHA),
+                KgperHA=mean(KgperHA),
+                long=mean(long),
+                lat=mean(lat))
+  })
+  
+  # A reactive expression with the density bar plot
+  reactive({
+    
+  ggvis(bar_data,~factor(species),~NperHA) %>% 
+    layer_bars()
+  )} %>% bind_shiny("density_bar","ggvis_density_bar")
 
 ## -----------------------------------------------------------
 ## Forage Task Group Data Manipulation and Plot
@@ -232,10 +270,10 @@ shinyServer(function(input, output) {
     r <- wb_wq
     
     # filter by year
-    r %<>% filter(year == input$year2)
+    r %<>% filter(year == input$year3)
     
     # filter by season
-    r %<>% filter(season == input$season2)
+    r %<>% filter(season == input$season3)
     
     # filter by parameter
     r %<>% filter(parameter == input$parameter)
@@ -307,13 +345,24 @@ shinyServer(function(input, output) {
       wb3 <- isolate(map_data())
       map_data <- wb3[unique(wb3$serial) == unique(x3$serial),]
       
-      paste0("<b>","Station: ",map_data$serial,"<br>","Density (N/ha): ",map_data$NperHA,"<br>","Biomass (Kg/ha): ",map_data$KgperHA)
+      paste0("<b>","Station: ",map_data$serial,"<br>","Density (N/ha): ",map_data$NperHA)
     }
+    
+  # Function for generating map tooltip text
+  tooltip4 <- function(x4) {
+    if (is.null(x4)) return(NULL)
+    if (is.null(unique(x4$serial))) return(NULL)
+      
+    # Pick out the individual with this ID
+    wb4 <- isolate(map_data())
+    map_data <- wb4[unique(wb4$serial) == unique(x4$serial),]
+    
+    paste0("<b>","Station: ",map_data$serial,"<br>","Biomass (Kg/ha): ",map_data$KgperHA)
+  }
 
   # A reactive expression with the western basin map
   reactive({
-    sizevar <- prop("size",as.symbol(input$density))
-      
+
         ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
         layer_paths() %>%
         layer_paths(data=filter(wb_shore,piece=="2"),~long,~lat) %>%
@@ -321,29 +370,51 @@ shinyServer(function(input, output) {
         layer_paths(data=filter(wb_shore,piece=="4"),~long,~lat) %>%
         layer_paths(data=filter(wb_shore,piece=="5"),~long,~lat) %>%
         layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
-        layer_points(data=effort,~long_st,~lat_st,size=6,
+        layer_points(data=effort,~long_st,~lat_st,size=10,
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
-        layer_points(data=map_data,~long,~lat,size:=sizevar,key:=~serial,
+        layer_points(data=map_data,~long,~lat,size=~NperHA,key:=~serial,
                      fillOpacity:=0.6) %>% #, fillOpacity.hover:=1) %>%
-        add_legend("size","fill",title="Value",
-                   values=factor(c(25,50,100,250,500,1000,1500,2000),labels=c("25","50","100","250","500","1000","1500","2000")),
-                   properties=legend_props(
-                     symbol=list(fill="black"))) %>%
         add_tooltip(tooltip3, "hover") %>%
+        hide_legend("size") %>%
         scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
         scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
-        scale_numeric("size",domain=c(25,2000),range=c(25,2000),clamp=TRUE) %>%
+        scale_numeric("size",domain=c(0.0001,2000),range=c(0.0001,2000),clamp=TRUE) %>%
         add_axis("x",title="",ticks="",tick_size_end="") %>%
         add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
         add_axis("y",title="",ticks="",tick_size_end="") %>%
         add_axis("y",orient="right",title="",ticks="",tick_size_end="")
-  }) %>% bind_shiny("map","ggvis_map")
+  }) %>% bind_shiny("density_map","ggvis_density_map")
+    
+  # A reactive expression with the western basin map
+  reactive({
+      
+    ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
+      layer_paths() %>%
+      layer_paths(data=filter(wb_shore,piece=="2"),~long,~lat) %>%
+      layer_paths(data=filter(wb_shore,piece=="3"),~long,~lat) %>%
+      layer_paths(data=filter(wb_shore,piece=="4"),~long,~lat) %>%
+      layer_paths(data=filter(wb_shore,piece=="5"),~long,~lat) %>%
+      layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
+      layer_points(data=effort,~long_st,~lat_st,size=10,
+                   fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
+      layer_points(data=map_data,~long,~lat,size=~KgperHA*10,key:=~serial,
+                   fillOpacity:=0.6) %>% #, fillOpacity.hover:=1) %>%
+      add_tooltip(tooltip4, "hover") %>%
+      hide_legend("size") %>%
+      scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
+      scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
+      scale_numeric("size",domain=c(0.0001,2000),range=c(0.0001,2000),clamp=TRUE) %>%
+      add_axis("x",title="",ticks="",tick_size_end="") %>%
+      add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
+      add_axis("y",title="",ticks="",tick_size_end="") %>%
+      add_axis("y",orient="right",title="",ticks="",tick_size_end="")
+  }) %>% bind_shiny("biomass_map","ggvis_biomass_map")
     
   # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),tags$b(map_value()),"from bottom trawl samples in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
-          Symbol sizes are directly proportional to the values plotted, except for the smallest and largest symbols which are inclusive of all values less than or greater than the categories, respectively."
+          Symbol sizes are directly proportional to the values plotted, except for symbol sizes that exceed 2000, which are inclusive of all values greater than 2000."
     ))
   })
     
