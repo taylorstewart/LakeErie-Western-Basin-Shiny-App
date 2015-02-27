@@ -13,6 +13,18 @@ shinyServer(function(input, output) {
     tbl_year <- distinct(filter(tbl,year == input$year),year)
   })
   
+  # Reactive year input for labels
+  tbl_year2 <- reactive({
+    tbl <- lw
+    tbl_year <- distinct(filter(tbl,year == input$year2),year)
+  })
+  
+  # Reactive year input for labels
+  tbl_year3 <- reactive({
+    tbl <- lw
+    tbl_year <- distinct(filter(tbl,year == input$year3),year)
+  })
+  
   # Reactive life stage input for labels
   tbl_ls <- reactive({
     tbl <- catchHA
@@ -29,6 +41,12 @@ shinyServer(function(input, output) {
   catch_ls <- reactive({
     tbl <- catchHA
     tbl_ls <- distinct(filter(tbl,life_stage == input$life_stage2),life_stage)
+  })
+  
+  # Reactive parameter input for water quality table label
+  tbl_par <- reactive({
+    tbl <- wb_wq
+    tbl_wq <- distinct(filter(tbl,parameter == input$parameter),parameter)
   })
   
   # Reactive life stage input for label
@@ -117,7 +135,7 @@ shinyServer(function(input, output) {
   # A reactive expression with the historical time series plot
   reactive({
 
-    ggvis(time_data,~factor(Year),~density) %>%
+    ggvis(time_data(),~factor(Year),~density) %>%
       group_by(Season) %>%
       layer_points(fill = ~Season,prop("size",80)) %>%
       layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
@@ -127,12 +145,13 @@ shinyServer(function(input, output) {
       scale_numeric("y",domain=c(0,NA)) %>%
       add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
         title=list(fontSize=13))) %>%
-      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+      add_axis("y",title="Mean Catch per Hectare Swept",title_offset=65,properties = axis_props(
         title=list(fontSize=13))) }) %>% bind_shiny("time","ggvis_time")
   
   # Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),"by season in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
+    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),
+               "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
     ))
   })
   
@@ -146,7 +165,7 @@ shinyServer(function(input, output) {
   )
 
 ## -----------------------------------------------------------
-## Historical Time Series Data Manipulation and Plot
+## Ranked Catch Data Manipulation and Plot
 ## -----------------------------------------------------------
   # Filter density and biomass, returning a data frame
   bar_data <- reactive({
@@ -154,10 +173,10 @@ shinyServer(function(input, output) {
     w <- catchHA
     
     # filter by year
-    w %<>% filter(year2 == input$year2)
+    w %<>% filter(year == input$year2)
     
     # filter by season
-    w %<>% filter(season2 == input$season2)
+    w %<>% filter(season == input$season2)
     
     w_rank <- w %>% group_by(species) %>% 
       summarise(NperHA=sum(NperHA))
@@ -171,18 +190,47 @@ shinyServer(function(input, output) {
     w %<>%
       group_by(species) %>%
       summarise(NperHA=mean(NperHA),
-                KgperHA=mean(KgperHA),
-                long=mean(long),
-                lat=mean(lat))
+                KgperHA=mean(KgperHA))
   })
   
   # A reactive expression with the density bar plot
   reactive({
     
-  ggvis(bar_data,~factor(species),~NperHA) %>% 
-    layer_bars()
-  )} %>% bind_shiny("density_bar","ggvis_density_bar")
+    ggvis(bar_data(),~factor(species),~NperHA) %>% 
+      layer_bars() %>% 
+      add_axis("x",title="",ticks=0,properties = axis_props(
+        labels = list(angle = 45,align = "left"))) %>%
+      add_axis("y",title="Mean Catch per Hectare Swept",title_offset=65,properties = axis_props(
+        title=list(fontSize=13)))
+  }) %>% bind_shiny("density_bar","ggvis_density_bar")
 
+  # A reactive expression with the biomass bar plot
+  reactive({
+    
+    ggvis(bar_data(),~factor(species),~KgperHA) %>% 
+      layer_bars() %>% 
+      add_axis("x",title="",ticks=0,properties = axis_props(
+        labels = list(angle = 45,align = "left"))) %>%
+      add_axis("y",title="Mean Biomass per Hectare Swept",title_offset=65,properties = axis_props(
+        title=list(fontSize=13)))
+  }) %>% bind_shiny("biomass_bar","ggvis_biomass_bar")
+  
+  # Reactive Ranked CPUE plot label
+  output$rank_label <- renderText({
+    HTML(paste("Mean density (N/ha) (top) and biomass (Kg/ha) (bottom) of the 10 most abundant species in",
+               tags$b(tbl_year2()$year),tags$b(input$season),"collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
+    ))
+  })
+  
+  # Download plot data
+  output$downloadCSV_8 <- downloadHandler(
+    filename="ranked_catch_data",
+    content=function(file) {
+      write.csv(bar_data(),file,row.names=FALSE)
+    },
+    contentType="text/csv"
+  )
+  
 ## -----------------------------------------------------------
 ## Forage Task Group Data Manipulation and Plot
 ## -----------------------------------------------------------
@@ -247,7 +295,7 @@ shinyServer(function(input, output) {
       scale_numeric("y",domain=c(0,NA)) %>%
       add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
         title=list(fontSize=13))) %>%
-      add_axis("y",title="Mean Catch Per Hectare Swept",title_offset=65,properties = axis_props(
+      add_axis("y",title="Mean Catch per Hectare Swept",title_offset=65,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_tooltip(tooltip2, "hover")
   }) %>% bind_shiny("ftg","ggvis_ftg")
@@ -291,6 +339,11 @@ shinyServer(function(input, output) {
                 columnDefs = list(list(sWidth=c("100px"))))
   )
   
+  # Reactive label for spatial map
+  output$wq_table_label <- renderText({
+    HTML(paste(tags$b(tbl_year3()$year),tags$b(input$season),"water column parameters at bottom trawl sampling locations in the western basin of Lake Erie."))
+  })
+  
   # Download plot data
   output$downloadCSV_7 <- downloadHandler(
     filename="abiotic_table",
@@ -310,17 +363,17 @@ shinyServer(function(input, output) {
     c <- catchHA
     
     # filter by year
-      c <- c[c$year == input$year,]
+      c %<>% filter(year == input$year)
     
     # filter by season
-      c <- c[c$season == input$season,]
+      c %<>% filter(season == input$season)
     
     # filter by species
-      c <- c[c$species == input$species,]
+      c %<>% filter(species == input$species)
     
     # Optional: filter by life stage
     if (!is.null(input$life_stage) && input$life_stage != "All Life Stages") {
-      c <- c[c$life_stage == input$life_stage,]
+      c %<>% filter(life_stage == input$life_stage)
     }
     
     # Summarize density and biomass values
@@ -373,14 +426,14 @@ shinyServer(function(input, output) {
         layer_points(data=effort,~long_st,~lat_st,size=10,
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
         layer_points(data=map_data,~long,~lat,size=~NperHA,key:=~serial,
-                     fillOpacity:=0.6) %>% #, fillOpacity.hover:=1) %>%
+                     fillOpacity:=0.6,fillOpacity.hover:=1) %>%
         add_tooltip(tooltip3, "hover") %>%
         hide_legend("size") %>%
         scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
         scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
         scale_numeric("size",domain=c(0.0001,2000),range=c(0.0001,2000),clamp=TRUE) %>%
         add_axis("x",title="",ticks="",tick_size_end="") %>%
-        add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
+        add_axis("x",orient="top",title="Number per Hectare Swept",title_offset=-12,ticks="",tick_size_end="") %>%
         add_axis("y",title="",ticks="",tick_size_end="") %>%
         add_axis("y",orient="right",title="",ticks="",tick_size_end="")
   }) %>% bind_shiny("density_map","ggvis_density_map")
@@ -398,23 +451,23 @@ shinyServer(function(input, output) {
       layer_points(data=effort,~long_st,~lat_st,size=10,
                    fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
       layer_points(data=map_data,~long,~lat,size=~KgperHA*10,key:=~serial,
-                   fillOpacity:=0.6) %>% #, fillOpacity.hover:=1) %>%
+                   fillOpacity:=0.6) %>% #,fillOpacity.hover:=1) %>%
       add_tooltip(tooltip4, "hover") %>%
       hide_legend("size") %>%
       scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
       scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
       scale_numeric("size",domain=c(0.0001,2000),range=c(0.0001,2000),clamp=TRUE) %>%
       add_axis("x",title="",ticks="",tick_size_end="") %>%
-      add_axis("x",orient="top",title="",ticks="",tick_size_end="") %>%
+      add_axis("x",orient="top",title="Kilogram per Hectare Swept",title_offset=-12,ticks="",tick_size_end="") %>%
       add_axis("y",title="",ticks="",tick_size_end="") %>%
       add_axis("y",orient="right",title="",ticks="",tick_size_end="")
   }) %>% bind_shiny("biomass_map","ggvis_biomass_map")
     
   # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
           Hollow circles represent station localities. 
-          Symbol sizes are directly proportional to the values plotted, except for symbol sizes that exceed 2000, which are inclusive of all values greater than 2000."
+          Symbol sizes are directly proportional to the values plotted, except for symbol sizes where values are truncated at 2000 (N/ha) or 200 (Kg/ha)."
     ))
   })
     
@@ -450,15 +503,13 @@ shinyServer(function(input, output) {
         tl <= maxlength)
     
     # filter by year
-      m <- m[m$year == input$year,]
+      m %<>% filter(year == input$year)
     
     # filter by season
-      m <- m[m$season == input$season,]
+      m %<>% filter(season == input$season)
     
     # filter by species
-      m <- m[m$species == input$species,]
-    
-    m <- as.data.frame(m)
+      m %<>% filter(species == input$species)
   })
  
   #
@@ -601,13 +652,13 @@ shinyServer(function(input, output) {
         tl_exp <= maxlength2)
     
     # filter by year
-      len <- len[len$year == input$year,]
+      len %<>% filter(year == input$year)
     
     # filter by season
-      len <- len[len$season == input$season,]
+      len %<>% filter(season == input$season)
     
     # filter by species
-      len <- len[len$species == input$species,]
+      len %<>% filter(species == input$species)
     
     if(nrow(len) == 1) {
       len <- data_frame(tl_exp=0)
