@@ -1,9 +1,9 @@
 # Define user interface required
 shinyUI(fluidPage(
-  #tags$head(includeScript("www/google-analytics.js")),
+  tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr_name.jpg",height="140px",width="100%")
+           tags$img(src="usgs_banner_gr_name.jpg",height="120px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -43,13 +43,13 @@ shinyUI(fluidPage(
        The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
   
   # Create a new panel for the historical time series plot and table.
-  HTML("<h3>Historical Time Series</h3>"),
+  HTML("<h3>Abundance</h3>"),
   fluidRow(
     column(3,
-           HTML("<h5>Catch</h5>"),
+           HTML("<h5>Historical Time-Series Abundance</h5>"),
            wellPanel(
              selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
-             selectInput("life_stage2",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life_stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
@@ -57,29 +57,31 @@ shinyUI(fluidPage(
            HTML("Hover over points to display detailed density values."),
            ggvisOutput("time"),
            uiOutput("ggvis_time"),
-           htmlOutput("catch_label"),
-           HTML("<br>")
+           htmlOutput("catch_label")
     )
   ),
+  HTML("<br><br>"),
   
-  HTML("<h5>Bar Plot</h5>"),
+  HTML("<h5>Dominant Species Abundance</h5>"),
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("year2",label=h5("Year"),year_vars,selected="2014"),
-             selectInput("season2",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
-             HTML("<br>"),
-             downloadButton("downloadCSV_7","Download Table Data")
+             selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2014"),
+             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Autumn"),
+             downloadButton("downloadCSV_8","Download Plot Data")
            )
     ),
     column(9,align="center",
            ggvisOutput("density_bar"),
            uiOutput("ggvis_density_bar"),
-           HTML("<br>")
+           ggvisOutput("biomass_bar"),
+           uiOutput("ggvis_biomass_bar"),
+           htmlOutput("rank_label")
     )
   ),
+  HTML("<br><br>"),
 
-  HTML("<h5>Forage Density</h5>"),
+  HTML("<h5>Historical Forage Abundance</h5>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -97,26 +99,29 @@ shinyUI(fluidPage(
            ggvisOutput("ftg"),
            uiOutput("ggvis_ftg"),
            HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
-                and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling. Dashed lines indicate long-term means for each functional group.<br><br><br>")
+                and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling. Dashed lines indicate long-term means for each functional group.")
     )
   ),
+  HTML("<br><br>"),
   
-  HTML("<h5>Abiotic Water Quality Parameters</h5>"),
+  HTML("<h3>Abiotic</h3>"),
+  HTML("<h5>Water Quality Parameters</h5>"),
   fluidRow(
     column(3,
            wellPanel(
              selectInput("parameter",h5("Parameters:"),par_vars),
-             selectInput("year3",label=h5("Year"),year_vars,selected="2014"),
-             selectInput("season3",label=h5("Season"),c("Spring","Autumn"),selected="Autumn"),
-             HTML("<br>"),
+             selectInput("year3",label=h5("Year:"),year_vars,selected="2014"),
+             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
              downloadButton("downloadCSV_7","Download Table Data")
            )
     ),
     column(9,align="center",
-           dataTableOutput("abiotic_table"),
-           HTML("<br>")
+           htmlOutput("wq_table_label"),
+           HTML("<br>"),
+           dataTableOutput("abiotic_table")
     )
   ),
+  HTML("<br><br>"),
 
   # Create a new panel for input selectors.
   HTML("<h3>Dynamic Plots</h3><h6>Please allow adequate time for browser to update plots.</h6>"),
@@ -137,9 +142,10 @@ shinyUI(fluidPage(
            )
     )
   ),
+  HTML("<br>"),
   
   # Create a new panel for the western basin map.
-  HTML("<br><br><h5>Lake Erie Western Basin Map</h5>"),
+  HTML("<h5>Lake Erie Western Basin Map</h5>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -155,13 +161,13 @@ shinyUI(fluidPage(
            uiOutput("ggvis_denisty_map"),
            ggvisOutput("biomass_map"),
            uiOutput("ggvis_biomass_map"),
-           htmlOutput("map_label"),
-           HTML("<br>")
+           htmlOutput("map_label")
     )
   ),
+  HTML("<br><br>"),
   
   # Create a new panel for lenght-weight plot and summarys.
-  HTML("<br><br><br><br><h5>Weight-Length</h5>"),
+  HTML("<h5>Weight-Length</h5>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -191,9 +197,10 @@ shinyUI(fluidPage(
            )
     )
   ),
+  HTML("<br><br>"),
   
   # Create a new panel for the length-frequency.
-  HTML("<br><br><br><br><h5>Length Frequency</h5>"),
+  HTML("<h5>Length Frequency</h5>"),
   fluidRow(
     column(3,
            wellPanel(
@@ -218,9 +225,10 @@ shinyUI(fluidPage(
            )
     )
   ),
+  HTML("<br><br>"),
   
   ## USGS Reference and Disclaimer
-  HTML("<br><br><p>Written by Taylor R. Stewart"),
+  HTML("<p>Written by Taylor R. Stewart"),
   tags$a(href="mailto:trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
          HTML(paste0(tags$span(style="color:black","("),
                     tags$span(style="color:royalblue","trstewart@usgs.gov"),
