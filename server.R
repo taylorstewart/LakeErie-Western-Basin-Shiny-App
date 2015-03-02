@@ -122,14 +122,12 @@ shinyServer(function(input, output) {
       l_mean_rep <- bind_cols(l_mean_rep,l_seas_year)
   })
 
-  # Function for generating map tooltip text
+  # Function for generating historical abundance tooltip text
   tooltip <- function(x) {
-
-    # Pick out the individual with this ID
     wb <- isolate(time_data())
     time_data <- wb[wb$Season == x$Season,]
-    
-    paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
+
+        paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
   }
   
   # A reactive expression with the historical time series plot
@@ -192,7 +190,7 @@ shinyServer(function(input, output) {
       summarise(NperHA=mean(NperHA),
                 KgperHA=mean(KgperHA))
   })
-  
+
   # A reactive expression with the density bar plot
   reactive({
     
@@ -271,11 +269,8 @@ shinyServer(function(input, output) {
 
   # Function for generating map tooltip text
   tooltip2 <- function(x2) {
-    if (is.null(x2)) return(NULL)
-    
-    # Pick out the individual with this ID
-    wb2 <- isolate(ftg_Rdata())
-    ftg_Rdata <- wb2[wb2$class == x2$class,]
+    wb <- isolate(ftg_Rdata())
+    ftg_Rdata <- wb[wb$class == x2$class,]
     
     paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$NperHA," (N/ha)","<br>")
   }
@@ -391,24 +386,16 @@ shinyServer(function(input, output) {
 
   # Function for generating map tooltip text
     tooltip3 <- function(x3) {
-      if (is.null(x3)) return(NULL)
-      if (is.null(unique(x3$serial))) return(NULL)
-      
-    # Pick out the individual with this ID
-      wb3 <- isolate(map_data())
-      map_data <- wb3[unique(wb3$serial) == unique(x3$serial),]
+      wb <- isolate(map_data())
+      map_data <- wb[unique(wb$serial) == unique(x3$serial),]
       
       paste0("<b>","Station: ",map_data$serial,"<br>","Density (N/ha): ",map_data$NperHA)
     }
     
   # Function for generating map tooltip text
   tooltip4 <- function(x4) {
-    if (is.null(x4)) return(NULL)
-    if (is.null(unique(x4$serial))) return(NULL)
-      
-    # Pick out the individual with this ID
-    wb4 <- isolate(map_data())
-    map_data <- wb4[unique(wb4$serial) == unique(x4$serial),]
+    wb <- isolate(map_data())
+    map_data <- wb[unique(wb$serial) == unique(x4$serial),]
     
     paste0("<b>","Station: ",map_data$serial,"<br>","Biomass (Kg/ha): ",map_data$KgperHA)
   }
@@ -425,7 +412,7 @@ shinyServer(function(input, output) {
         layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
         layer_points(data=effort,~long_st,~lat_st,size=10,
                     fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
-        layer_points(data=map_data,~long,~lat,size=~NperHA,key:=~serial,
+        layer_points(data=map_data(),~long,~lat,size=~NperHA,key:=~serial,
                      fillOpacity:=0.6,fillOpacity.hover:=1) %>%
         add_tooltip(tooltip3, "hover") %>%
         hide_legend("size") %>%
@@ -450,8 +437,8 @@ shinyServer(function(input, output) {
       layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
       layer_points(data=effort,~long_st,~lat_st,size=10,
                    fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
-      layer_points(data=map_data,~long,~lat,size=~KgperHA*10,key:=~serial,
-                   fillOpacity:=0.6) %>% #,fillOpacity.hover:=1) %>%
+      layer_points(data=map_data(),~long,~lat,size=~KgperHA*10,key:=~serial,
+                   fillOpacity:=0.6,fillOpacity.hover:=1) %>%
       add_tooltip(tooltip4, "hover") %>%
       hide_legend("size") %>%
       scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
@@ -466,8 +453,8 @@ shinyServer(function(input, output) {
   # Reactive label for spatial map
   output$map_label <- renderText({
     HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
-          Hollow circles represent station localities. 
-          Symbol sizes are directly proportional to the values plotted, except for symbol sizes where values are truncated at 2000 (N/ha) or 200 (Kg/ha)."
+               Symbol sizes are directly proportional to the values plotted, but are truncated at 2000 (N/ha) or 200 (Kg/ha) to be inclusive of all values greater. 
+               Hollow circles represent station localities."
     ))
   })
     
@@ -565,6 +552,7 @@ shinyServer(function(input, output) {
       ggvis(~tl, ~wt) %>%
       layer_points(size := 50,fillOpacity := 0.2) %>%
       layer_paths(data=reg_fit(),~fit_tl,~fit_wt) %>%
+      add_tooltip(tooltip7,"hover") %>%
       add_axis("x", title = xvar_name, title_offset = 35,properties = axis_props(
         title=list(fontSize=13))) %>%
       add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
