@@ -3,7 +3,7 @@ shinyUI(fluidPage(
   tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr_name.jpg",height="120px",width="100%")
+           tags$img(src="usgs_banner_gr.jpg",height="120px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
@@ -40,7 +40,15 @@ shinyUI(fluidPage(
        Typical area swept was 0.5 hectares. 
        Individual lengths and weights were obtained from a subsample of each species’ size group. 
        Total counts for each species and size group were obtained by expansions of mean individual weight by the aggregate weight. 
-       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br><br>"),
+       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br>"),
+  
+  HTML("<h5>Data Download Disclaimer:</h5>"),
+  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;In order to maintain a record of where this data is being used, we ask that you click the link below to send a quick email notifying us of what data you are downloading. 
+       We will keep a personal record of this in order to notify you of any errors or changes in the data.  
+       Thank you for your cooperation and participation in this endeavor.</p>"),
+  tags$a(href="mailto:trstewart@usgs.gov?Subject=Data Downloaded",style="text-decoration:none !important;",
+         HTML(paste(tags$span("Send Notification Email")))),
+  HTML("<br><br>"),
   
   # Create a new panel for the historical time series plot and table.
   HTML("<h3>Abundance</h3>"),
