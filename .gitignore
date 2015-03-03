@@ -11,7 +11,7 @@ ui.R
 server.R
 
 # Shiny files
-shinyapps/
+rsconnect/
 .Rproj.user
 
 # Data files
