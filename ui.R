@@ -1,9 +1,9 @@
 # Define user interface required
 shinyUI(fluidPage(
-  tags$head(includeScript("www/google-analytics.js")),
+  #tags$head(includeScript("www/google-analytics.js")),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr.jpg",height="120px",width="100%")
+           tags$img(src="usgs_banner_gr_name.jpg",height="130px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
