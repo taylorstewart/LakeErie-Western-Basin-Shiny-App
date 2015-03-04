@@ -47,7 +47,7 @@ shinyUI(fluidPage(
        We will keep a personal record of this in order to notify you of any errors or changes in the data.  
        Thank you for your cooperation and participation in this endeavor.</p>"),
   tags$a(href="mailto:trstewart@usgs.gov?Subject=Data Downloaded",style="text-decoration:none !important;",
-         HTML(paste(tags$span("Send Notification Email")))),
+         HTML(paste(tags$span(style="color:royalblue","Send Notification Email")))),
   HTML("<br><br>"),
   
   # Create a new panel for the historical time series plot and table.

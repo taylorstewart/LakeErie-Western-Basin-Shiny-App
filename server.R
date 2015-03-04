@@ -29,6 +29,8 @@ shinyServer(function(input, output) {
   tbl_ls <- reactive({
     tbl <- catchHA
     tbl_ls <- distinct(filter(tbl,life_stage == input$life_stage),life_stage)
+    tbl_ls <- as.character(tbl_ls$life_stage)
+    tbl_ls <- paste(gsub("_","-",tbl_ls),collapse=" ")
   })
   
   # Reactive species input for CPE plot label
@@ -41,6 +43,8 @@ shinyServer(function(input, output) {
   catch_ls <- reactive({
     tbl <- catchHA
     tbl_ls <- distinct(filter(tbl,life_stage == input$life_stage2),life_stage)
+    tbl_ls <- as.character(tbl_ls$life_stage)
+    tbl_ls <- paste(gsub("_","-",tbl_ls),collapse=" ")
   })
   
   # Reactive parameter input for water quality table label
@@ -146,7 +150,7 @@ shinyServer(function(input, output) {
   
   # Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()$life_stage),tags$b(catch_species()$species),
+    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()),tags$b(catch_species()$species),
                "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
     ))
   })
@@ -323,7 +327,7 @@ shinyServer(function(input, output) {
   
   # Reactive label for spatial map
   output$wq_table_label <- renderText({
-    HTML(paste(tags$b(tbl_year3()$year),tags$b(input$season),"water column parameters at bottom trawl sampling locations in the western basin of Lake Erie."))
+    HTML(paste("Water column parameters from",tags$b(tbl_year3()$year),tags$b(input$season),"at bottom trawl sampling locations in the western basin of Lake Erie."))
   })
   
   # Download plot data
@@ -435,7 +439,7 @@ shinyServer(function(input, output) {
     
   # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()$life_stage),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
                Symbol sizes are directly proportional to the values plotted, but are truncated at 2000 (N/ha) or 200 (Kg/ha) to be inclusive of all values greater. 
                Hollow circles represent station localities."
     ))
