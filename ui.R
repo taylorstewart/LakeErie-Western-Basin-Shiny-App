@@ -1,13 +1,14 @@
 # Define user interface required
 shinyUI(fluidPage(
-  #tags$head(includeScript("www/google-analytics.js")),
+  tags$head(includeScript("www/google-analytics.js")),
+  HTML("<p>"),
   fluidRow(
     column(12,
-           tags$img(src="usgs_banner_gr_name.jpg",height="130px",width="100%")
+           tags$img(src="usgs_banner_gr.jpg",height="120px",width="100%")
            )
     ),
   HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
-  HTML("<i>BETA VERSION STATEMENT:"),
+  HTML("</p><i>BETA VERSION STATEMENT:"),
   HTML("This data exploration tool is intended for use by Lake Erie fisheries managers, academia, the fishing industry and the public. 
        The data presented here have been checked for accuracy, but are still considered provisional at this time. 
        You may request a subset of the data by contacting us directly via email. 

@@ -3,11 +3,11 @@ library(dplyr)
 library(magrittr)
 library(ggvis)
 library(tidyr)
+library(DT)
 
 wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
 catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
 lw <- read.csv("data/WB_lw.csv",header=T)
-catch <- read.csv("data/WB_catch.csv",header=T)
 effort <- read.csv("data/WB_effort.csv",header=T)
 wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
@@ -20,7 +20,6 @@ lw %<>% select(serial,fish_id,species,tl,wt,year,season) %>%
          wt = as.numeric(wt),
          logl = log(tl),
          logw = log(wt))
-catch %<>% select(serial,species,count_final,year,season)
 
 # Variables that can be put on the x and y axes
 axis_vars <- c(
