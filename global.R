@@ -6,14 +6,15 @@ library(tidyr)
 library(DT)
 
 wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
-catch2 <- read.csv("data/WB_CatchperHA.csv",header=T)
+catch2 <- read.csv("data/WB_CatchperHA_All_LS.csv",header=T)
 lw <- read.csv("data/WB_lw.csv",header=T)
 effort <- read.csv("data/WB_effort.csv",header=T)
 wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
 ftg <- read.csv("data/forage_task_group_classifications.csv",header=T)
 wb_wq <- read.csv("data/WB_WaterQuality.csv",header=T)
 
-wb_exp %<>% mutate(tl_exp = as.numeric(tl_exp))
+wb_exp %<>% mutate(tl_exp = as.numeric(tl_exp)) %>% 
+  select(-X)
 lw %<>% select(serial,fish_id,species,tl,wt,year,season) %>%
   filter(!is.na(wt) & !is.na(tl)) %>%
   mutate(tl = as.numeric(tl),
