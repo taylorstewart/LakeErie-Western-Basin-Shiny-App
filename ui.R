@@ -57,7 +57,7 @@ shinyUI(fluidPage(
     column(3,
            HTML("<h5>Historical Time-Series Abundance</h5>"),
            wellPanel(
-             selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
+             selectInput("species2",h5("Select a Species:"),species_vars,selected="Walleye"),
              selectInput("life_stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
@@ -76,7 +76,7 @@ shinyUI(fluidPage(
     column(3,
            wellPanel(
              selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2015"),
-             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Spring"),
+             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Autumn"),
              downloadButton("downloadCSV_8","Download Plot Data")
            )
     ),
@@ -142,10 +142,10 @@ shinyUI(fluidPage(
                                        selectInput("year",label=h5("Year"),year_vars,selected="2015")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Spring")
+                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Autumn")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("species",label=h5("Species"),species_vars,selected="Yellow Perch")
+                                       selectInput("species",label=h5("Species"),species_vars,selected="Walleye")
                               )
                      )
            )
@@ -182,7 +182,7 @@ shinyUI(fluidPage(
            wellPanel(
              #Numeric Inputs
              numericInput("min_val",h5("Enter Minimum Length (mm):"),0),
-             numericInput("max_val",h5("Enter Maximum Length (mm):"),1000),
+             numericInput("max_val",h5("Enter Maximum Length (mm):"),1500),
              #display dynamic UI
              uiOutput("inSlider"),
              radioButtons("datatrans",h5("Transformation:"),
@@ -215,7 +215,7 @@ shinyUI(fluidPage(
            wellPanel(
              #Numeric Inputs
              numericInput("min_val2",h5("Enter Minimum Length (mm):"),0),
-             numericInput("max_val2",h5("Enter Maximum Length (mm):"),1000),
+             numericInput("max_val2",h5("Enter Maximum Length (mm):"),1500),
              #display dynamic UI
              uiOutput("inSlider2"),
              sliderInput("slider1",label=h5("Bin Width (mm):"),ticks=F,min=5,max=25,step=5,value=10),

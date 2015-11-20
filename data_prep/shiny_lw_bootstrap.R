@@ -8,7 +8,7 @@ library(magrittr)
 
 ## Set survey name
 #   Season: Autumn, Spring
-se <- "Spring"
+se <- "Autumn"
 yr <- 2015
 
 ### Read in data

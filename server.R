@@ -480,7 +480,7 @@ shinyServer(function(input, output) {
   output$map_label <- renderText({
     HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
                Symbol sizes are directly proportional to the values plotted, but are truncated at 2000 (N/ha) or 200 (Kg/ha) to be inclusive of all values greater. 
-               Hollow circles represent respective total abundance for all species."
+               Hollow circles represent total density and biomass for all species, respectively."
     ))
   })
     

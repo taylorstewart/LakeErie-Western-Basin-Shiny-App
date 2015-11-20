@@ -4,10 +4,10 @@ library(magrittr)
 ## Set year
 yr <- 2015
 ## Set season
-se <- "Spring"
+se <- "Autumn"
 
 ## Load data
-catch <- read.csv("data_prep/WB_catchperHA_raw.csv",header=T)
+catch <- read.csv("data_prep/WB_catchperHA_raw.csv",header=TRUE)
 
 ## Creata character string of life stages for true/false test
 life_stage <- c("YOY","Age_1","Age_2+","YAO","ALL")
@@ -61,11 +61,11 @@ output2 <- data.frame(do.call(rbind,output1)) %>%
 all_ls <- bind_rows(catch,output2) %>% 
   arrange(year,season,serial,species)
 ## Ignore warning
+## Should be 6150 observations, unless additional species have been added
 
-## Read in previous data to bind to
-data <- read.csv("data/WB_catchperHA_All_LS.csv",header=T) %>% 
+## Read in previous data to bind to new
+data <- read.csv("data/WB_catchperHA_All_LS.csv",header=TRUE) %>% 
   select(-X)
-
 ## Bind new data with all years
 final_ls <- bind_rows(data,all_ls)
 
