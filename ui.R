@@ -14,13 +14,13 @@ shinyUI(fluidPage(
        You may request a subset of the data by contacting us directly via email. 
        Please send questions, comments, suggestions for improvements, and error reports via email to USGS - Lake Erie Biological Station c/o "),
   tags$a(href="mailto:rkraus@usgs.gov, trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
-         HTML(paste(tags$span(style="color:black","Richard Kraus ("),
+         HTML(paste0(tags$span(style="color:black","Richard Kraus ("),
                     tags$span(style="color:royalblue","rkraus@usgs.gov"),
                     tags$span(style="color:black",")"),
                     tags$span(style="color:black"," and/or Taylor Stewart "),
                     tags$span(style="color:black","("),
                     tags$span(style="color:royalblue","trstewart@usgs.gov"),
-                    tags$span(style="color:black",")."),sep=""))), 
+                    tags$span(style="color:black",").")))), 
   HTML("The current web location for this tool is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.</i><br><br>"),
   
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
