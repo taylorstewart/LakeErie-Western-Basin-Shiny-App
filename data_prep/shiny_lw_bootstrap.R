@@ -15,7 +15,7 @@ yr <- 2015
 lw <- read.csv("data/WB_lw.csv",header=T) %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
-catch <- read.csv("data/WB_catch.csv",header=T) %>% 
+catch <- read.csv("data_prep/WB_catch.csv",header=T) %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
 
