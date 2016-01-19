@@ -120,7 +120,7 @@ shinyUI(fluidPage(
            wellPanel(
              selectInput("parameter",h5("Parameters:"),par_vars),
              selectInput("year3",label=h5("Year:"),year_vars,selected="2015"),
-             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Spring"),
+             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
              downloadButton("downloadCSV_7","Download Table Data")
            )
     ),
