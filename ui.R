@@ -7,7 +7,7 @@ shinyUI(fluidPage(
            tags$img(src="usgs_banner_gr.jpg",height="120px",width="100%")
            )
     ),
-  HTML("<h2>Lake Erie Biological Station - Western Basin Trawl Survey</h2>"),
+  HTML("<h2>Western Basin Trawl Survey, Lake Erie</h2>"),
   HTML("</p><i>BETA VERSION STATEMENT:"),
   HTML("This data exploration tool is intended for use by Lake Erie fisheries managers, academia, the fishing industry and the public. 
        The data presented here have been checked for accuracy, but are still considered provisional at this time. 
@@ -20,7 +20,7 @@ shinyUI(fluidPage(
                     tags$span(style="color:black"," and/or Taylor Stewart "),
                     tags$span(style="color:black","("),
                     tags$span(style="color:royalblue","trstewart@usgs.gov"),
-                    tags$span(style="color:black",").")))), 
+                    tags$span(style="color:black",").")))),
   HTML("The current web location for this tool is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.</i><br><br>"),
   
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
@@ -236,12 +236,18 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
+  ## Metadata Link
+  HTML("A link to the metadata for completed surveys and data files can be found"),
+  tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+         HTML(paste0(tags$span(style="color:royalblue","here"),"."))),
+  HTML("<br><br>"),
+  
   ## USGS Reference and Disclaimer
   HTML("<p>Written by Taylor R. Stewart"),
   tags$a(href="mailto:trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
          HTML(paste0(tags$span(style="color:black","("),
                     tags$span(style="color:royalblue","trstewart@usgs.gov"),
-                    tags$span(style="color:black",")."),sep=""))),
+                    tags$span(style="color:black",").")))),
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
        Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
     tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
