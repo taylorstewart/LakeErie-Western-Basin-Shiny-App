@@ -7,10 +7,10 @@ library(tidyr)
 library(DT)
 
 ## Load data
-wb_exp <- read.csv("data/WB_expLengths.csv",header=T)
-catch2 <- read.csv("data/WB_CatchperHA_All_LS.csv",header=T)
-lw <- read.csv("data/WB_lw.csv",header=T)
-wb_shore <- read.csv("data/lake_erie_western_basin_shoreline.csv",header=T)
+wb_exp <- read.csv("data/WB_ExpandedLengths.csv",header=T)
+catch2 <- read.csv("data/WB_Catch.csv",header=T)
+lw <- read.csv("data/WB_LengthWeight.csv",header=T)
+wb_shore <- read.csv("data/LakeErieShoreline.csv",header=T)
 wb_wq <- read.csv("data/WB_WaterQuality.csv",header=T)
 
 ## Define standard effort coordinates
