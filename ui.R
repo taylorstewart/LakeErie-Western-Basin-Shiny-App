@@ -64,8 +64,10 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
-           ggvisOutput("time"),
-           uiOutput("ggvis_time"),
+           ggvisOutput("time_n"),
+           uiOutput("ggvis_n_time"),
+           ggvisOutput("time_kg"),
+           uiOutput("ggvis_kg_time"),
            htmlOutput("catch_label")
     )
   ),
@@ -105,9 +107,11 @@ shinyUI(fluidPage(
     ),
     column(9,align="center",
            HTML("Hover over points to display detailed density values."),
-           ggvisOutput("ftg"),
-           uiOutput("ggvis_ftg"),
-           HTML("Mean catch per hectare swept by functional group in Ontario, Michigan, 
+           ggvisOutput("ftg_n"),
+           uiOutput("ggvis_n_ftg"),
+           ggvisOutput("ftg_kg"),
+           uiOutput("ggvis_kg_ftg"),
+           HTML("Mean density (N/ha; top) and biomass (Kg/ha; bottom) by functional group in Ontario, Michigan, 
                 and Ohio waters in the western basin of Lake Erie. Restricted to Autumn sampling. Dashed lines indicate long-term means for each functional group.")
     )
   ),

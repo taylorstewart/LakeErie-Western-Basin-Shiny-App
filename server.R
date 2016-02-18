@@ -74,7 +74,7 @@ shinyServer(function(input, output) {
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- select(catchHA,species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA) %>% 
+    l <- select(catchHA,species,life_stage,Year=year,Season=season,NperHA,KgperHA) %>% 
     # filter by species
     filter(species == input$species2)
     
@@ -84,7 +84,8 @@ shinyServer(function(input, output) {
     }
 
     l %<>% group_by(Year,Season) %>%
-      summarise(density=round(mean(NperHA),2)) %>%
+      summarise(density=round(mean(NperHA),2),
+                biomass=round(mean(KgperHA),2)) %>%
       tbl_df() %>% 
         arrange(Year)
   })
@@ -92,7 +93,7 @@ shinyServer(function(input, output) {
   # Filter catch, returning the means
   time_mean <- reactive({
     
-    l <- catchHA %>% select(species=species,life_stage=life_stage,Year=year,Season=season,NperHA=NperHA) %>%
+    l <- catchHA %>% select(species,life_stage,Year=year,Season=season,NperHA,KgperHA) %>%
       arrange(Year) %>% 
     # filter by species
     filter(species == input$species2)
@@ -107,12 +108,13 @@ shinyServer(function(input, output) {
       l_seas_year <- l %>% distinct(Season,Year)
 
       l <- time_data() %>% group_by(Season) %>%
-        summarise(density=round(mean(density),2)) %>%
+        summarise(density=round(mean(density),2),
+                  biomass=round(mean(biomass),2)) %>%
         tbl_df()
     
       l_mean_rep <- lapply(l,rep,l_rep)
       l_mean_rep <- as.data.frame(do.call(cbind,l_mean_rep)) %>%
-        select(density)
+        select(density,biomass)
       l_mean_rep <- bind_cols(l_mean_rep,l_seas_year)
   })
 
@@ -125,7 +127,16 @@ shinyServer(function(input, output) {
         paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
   }
   
-  # A reactive expression with the historical time series plot
+  # Function for generating historical abundance tooltip text
+  tooltip1 <- function(x1) {
+    wb <- isolate(time_data())
+    time_data <- wb[wb$Season == x1$Season,] %>% 
+      arrange(desc(Year))
+    
+    paste0("<b>",time_data$Year," Biomass: ",time_data$biomass," (Kg/ha)","<br>")
+  }
+  
+  # A reactive expression with the historical density time series plot
   reactive({
 
     ggvis(time_data(),~factor(Year),~density) %>%
@@ -141,11 +152,29 @@ shinyServer(function(input, output) {
         labels=list(fontSize=13))) %>%
       add_axis("y",title="Mean Number per Hectare Swept",title_offset=55,properties = axis_props(
         title=list(fontSize=16),
-        labels=list(fontSize=13))) }) %>% bind_shiny("time","ggvis_time")
+        labels=list(fontSize=13))) }) %>% bind_shiny("time_n","ggvis_kg_time")
+  
+  # A reactive expression with the historical biomass time series plot
+  reactive({
+    
+    ggvis(time_data(),~factor(Year),~biomass) %>%
+      group_by(Season) %>%
+      layer_points(fill = ~Season,prop("size",80)) %>%
+      layer_lines(stroke = ~Season,prop("strokeWidth",2)) %>%
+      layer_paths(data=filter(time_mean,Season=="Spring"),~factor(Year),~biomass,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(time_mean,Season=="Autumn"),~factor(Year),~biomass,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
+      add_tooltip(tooltip1,"hover") %>%
+      scale_numeric("y",domain=c(0,NA)) %>%
+      add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+        title=list(fontSize=16),
+        labels=list(fontSize=13))) %>%
+      add_axis("y",title="Mean Kilogram per Hectare Swept",title_offset=55,properties = axis_props(
+        title=list(fontSize=16),
+        labels=list(fontSize=13))) }) %>% bind_shiny("time_kg","ggvis_kg_time")
   
   # Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean catch per hectare swept of",tags$b(catch_ls()),tags$b(catch_species()$species),
+    HTML(paste("Mean density (N/Ha; top) and biomass (Kg/ha; bottom) of",tags$b(catch_ls()),tags$b(catch_species()$species),
                "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
     ))
   })
@@ -211,7 +240,7 @@ shinyServer(function(input, output) {
   
   # Reactive Ranked CPUE plot label
   output$rank_label <- renderText({
-    HTML(paste("Mean density (N/ha) (top) and biomass (Kg/ha) (bottom) of the 10 most abundant species in",
+    HTML(paste("Mean density (N/ha; top) and biomass (Kg/ha; bottom) of the 10 most abundant species in",
                tags$b(tbl_year2()$year),tags$b(input$season2),"collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
     ))
   })
@@ -234,7 +263,8 @@ shinyServer(function(input, output) {
     
     # Summarize density by year and season
     p <- ftg_data %>% group_by(year,class) %>%
-      summarise(NperHA=round(mean(NperHA),2)) %>% 
+      summarise(NperHA=round(mean(NperHA),2),
+                KgperHA=round(mean(KgperHA),2)) %>% 
       ungroup() %>% 
       mutate(year=factor(year))
   })
@@ -252,12 +282,13 @@ shinyServer(function(input, output) {
     # Summarize density by year and season
     ftg_Rdata2 <- ftg_Rdata() %>%
       group_by(class) %>%
-      summarise(NperHA=round(mean(NperHA),2)
+      summarise(NperHA=round(mean(NperHA),2),
+                KgperHA=round(mean(KgperHA),2)
       )
     
     p_mean_rep <- lapply(ftg_Rdata2,rep,p_rep)
     p_mean_rep <- as.data.frame(do.call(cbind,p_mean_rep)) %>%
-      select(NperHA)
+      select(NperHA,KgperHA)
     p_mean_rep <- bind_cols(p_mean_rep,p_class)
     p_mean_rep %<>% mutate(year=factor(year))
   })
@@ -270,8 +301,17 @@ shinyServer(function(input, output) {
     
     paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$NperHA," (N/ha)","<br>")
   }
+  
+  # Function for generating map tooltip text
+  tooltip3 <- function(x3) {
+    wb <- isolate(ftg_Rdata())
+    ftg_Rdata <- wb[wb$class == x3$class,] %>% 
+      arrange(desc(year))
+    
+    paste0("<b>",ftg_Rdata$year," Biomass: ",ftg_Rdata$KgperHA," (Kg/ha)","<br>")
+  }
 
-  # A reactive expression with the historical time series plot
+  # A reactive expression with the historical density time series plot
   reactive({
     
     ggvis(ftg_Rdata,~year,~NperHA) %>%
@@ -291,7 +331,29 @@ shinyServer(function(input, output) {
         title=list(fontSize=16),
         labels=list(fontSize=13))) %>%
       add_tooltip(tooltip2, "hover")
-  }) %>% bind_shiny("ftg","ggvis_ftg")
+  }) %>% bind_shiny("ftg_n","ggvis_n_ftg")
+  
+  # A reactive expression with the historical biomass time series plot
+  reactive({
+    
+    ggvis(ftg_Rdata,~year,~KgperHA) %>%
+      group_by(class) %>%
+      layer_points(prop("fill",~class),prop("size",80)) %>%
+      layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~year,~KgperHA,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~year,~KgperHA,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~year,~KgperHA,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
+      hide_legend("stroke") %>%
+      add_legend("fill",title="Functional Groups") %>%
+      scale_numeric("y",domain=c(0,NA)) %>%
+      add_axis("x",title="Year",ticks=1,title_offset=35,properties = axis_props(
+        title=list(fontSize=16),
+        labels=list(fontSize=13))) %>%
+      add_axis("y",title="Mean Kilogram per Hectare Swept",title_offset=55,properties = axis_props(
+        title=list(fontSize=16),
+        labels=list(fontSize=13))) %>%
+      add_tooltip(tooltip3, "hover")
+  }) %>% bind_shiny("ftg_kg","ggvis_kg_ftg")
   
   # Download
   output$downloadCSV_2 <- downloadHandler(
@@ -393,9 +455,9 @@ shinyServer(function(input, output) {
   })
 
   # Function for generating map tooltip text
-    tooltip3 <- function(x3) {
+    tooltip4 <- function(x4) {
       wb <- isolate(map_data())
-      map_data <- wb[unique(wb$serial) == unique(x3$serial),]
+      map_data <- wb[unique(wb$serial) == unique(x4$serial),]
       
       species <- unique(map_data$species)
       paste0("<b>","Station: ",map_data$serial,"<br>",species," Density (N/ha): ",map_data$NperHA,
@@ -403,9 +465,9 @@ shinyServer(function(input, output) {
     }
     
   # Function for generating map tooltip text
-  tooltip4 <- function(x4) {
+  tooltip5 <- function(x5) {
     wb <- isolate(map_data())
-    map_data <- wb[unique(wb$serial) == unique(x4$serial),]
+    map_data <- wb[unique(wb$serial) == unique(x5$serial),]
     
     species <- unique(map_data$species)
     paste0("<b>","Station: ",map_data$serial,"<br>",species," Biomass (Kg/ha): ",map_data$KgperHA,
@@ -435,7 +497,7 @@ shinyServer(function(input, output) {
                    fillOpacity:=0.6,fillOpacity.hover:=1) %>%
       layer_text(data=map_species,~long,~lat,text:=~text,fontSize:= 13,fontWeight:="bold",fill:="black",
                  baseline:="middle", align:="center") %>%
-      add_tooltip(tooltip3, "hover") %>%
+      add_tooltip(tooltip4, "hover") %>%
       hide_legend("size") %>%
       scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
       scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
@@ -463,7 +525,7 @@ shinyServer(function(input, output) {
                    fillOpacity:=0.6,fillOpacity.hover:=1) %>%
       layer_text(data=map_species,~long,~lat,text:=~text,fontSize:= 13,fontWeight:="bold",fill:="black",
                  baseline:="middle", align:="center") %>%
-      add_tooltip(tooltip4, "hover") %>%
+      add_tooltip(tooltip5, "hover") %>%
       hide_legend("size") %>%
       scale_numeric("x",domain=c(-83.514,-82.12),nice=FALSE) %>%
       scale_numeric("y",domain=c(41.306,42.103),nice=FALSE) %>%
@@ -478,7 +540,7 @@ shinyServer(function(input, output) {
     
   # Reactive label for spatial map
   output$map_label <- renderText({
-    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()),tags$b(tbl_species()$species),"density (N/ha) (top) and biomass (Kg/ha) (bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
+    HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()),tags$b(tbl_species()$species),"density (N/ha; top) and biomass (Kg/ha; bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
                Symbol sizes are directly proportional to the values plotted, but are truncated at 2000 (N/ha) or 200 (Kg/ha) to be inclusive of all values greater. 
                Hollow circles represent total density and biomass for all species, respectively."
     ))
