@@ -12,17 +12,17 @@ se <- "Autumn"
 yr <- 2015
 
 ### Read in data
-lw <- read.csv("data/WB_lw.csv",header=T) %>% 
+lw <- read.csv("data/WB_LengthWeight.csv",header=T) %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
-catch <- read.csv("data_prep/WB_catch.csv",header=T) %>% 
+catch <- read.csv("data_prep/WB_CatchCounts.csv",header=T) %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
 
 ########################################################################################
 ########################################################################################
 ## Set TL variable as a numeric and round the final counts to a whole number
-catch$count_final <- round(catch$count_final,digits=0)
+catch$count.final <- round(catch$count.final,digits=0)
 
 ## Set fixed bin widths and bin labels. Using fixed bin widths allows for "zeros" to 
 ##  appear (for testing purposes) and flexibility to run over multiple species.
@@ -35,7 +35,7 @@ spec_list <- unique(lw$species)
 
 len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ## Filter out size modes from length data
-  df <- filter(lw,species == i & tl != "NA" & !is.na(size))
+  df <- filter(lw,species == i & tl.mm != "NA" & !is.na(size))
   df_xs <- filter(df,size == "XS")
   df_sm <- filter(df,size=="S")
   df_md <- filter(df,size=="M")
@@ -55,12 +55,12 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ## Determine sample size of total catch in each size mode. Subtract the number of
   ##  measured lengths from total catch to prevent overestimating the total number 
   ##  of fish caught.
-  n_xs <- (sum(df3_xs$count_final))-(nrow(df_xs))
-  n_sm <- (sum(df3_sm$count_final))-(nrow(df_sm))
-  n_md <- (sum(df3_md$count_final))-(nrow(df_md))
-  n_lg <- (sum(df3_lg$count_final))-(nrow(df_lg))
-  n_xl <- (sum(df3_xl$count_final))-(nrow(df_xl))
-  n_all <- (sum(df3_all$count_final))-(nrow(df_all))
+  n_xs <- (sum(df3_xs$count.final))-(nrow(df_xs))
+  n_sm <- (sum(df3_sm$count.final))-(nrow(df_sm))
+  n_md <- (sum(df3_md$count.final))-(nrow(df_md))
+  n_lg <- (sum(df3_lg$count.final))-(nrow(df_lg))
+  n_xl <- (sum(df3_xl$count.final))-(nrow(df_xl))
+  n_all <- (sum(df3_all$count.final))-(nrow(df_all))
   samplesize <- data.frame(n_xs,n_sm,n_md,n_lg,n_xl,n_all)
   rm(n_xs,n_sm,n_md,n_lg,n_xl,n_all)
   
@@ -78,7 +78,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of extra small size class fish.
   sample_xs_fun <- function(sample_xs) {
-    df_xs_subvector <- sample(df_xs$tl,as.numeric(samplesize[1,1]),replace=TRUE)
+    df_xs_subvector <- sample(df_xs$tl.mm,as.numeric(samplesize[1,1]),replace=TRUE)
   }
   sample_xs <- sample_xs_fun(sample_xs)
   
@@ -86,8 +86,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_xs <- lapply(1:boot,
                     function(boot_xs2) {
                       data <- as.data.frame(as.numeric(sample_xs_fun(sample_xs)))
-                      colnames(data) <- c("tl")
-                      data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                      colnames(data) <- c("tl.mm")
+                      data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                       data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                       lcat <- as.numeric(data3$data2)
                       freq <- as.numeric(data3$Freq)
@@ -111,7 +111,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of small size class fish.
   sample_sm_fun <- function(sample_sm) {
-    df_sm_subvector <- sample(df_sm$tl,as.numeric(samplesize[1,2]),replace=TRUE)
+    df_sm_subvector <- sample(df_sm$tl.mm,as.numeric(samplesize[1,2]),replace=TRUE)
   }
   sample_sm <- sample_sm_fun(sample_sm)
   
@@ -119,8 +119,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_sm <- lapply(1:boot,
                     function(boot_sm2) {
                       data <- as.data.frame(as.numeric(sample_sm_fun(sample_sm)))
-                      colnames(data) <- c("tl")
-                      data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                      colnames(data) <- c("tl.mm")
+                      data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                       data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                       lcat <- as.numeric(data3$data2)
                       freq <- as.numeric(data3$Freq)
@@ -144,7 +144,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of medium size class fish.
   sample_md_fun <- function(sample_md) {
-    df_md_subvector <- sample(df_md$tl,samplesize[1,3],replace=TRUE)
+    df_md_subvector <- sample(df_md$tl.mm,samplesize[1,3],replace=TRUE)
   }
   sample_md <- sample_md_fun(sample_md)
   
@@ -152,8 +152,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_md <- lapply(1:boot,
                     function(boot_md2) {
                       data <- as.data.frame(as.numeric(sample_md_fun(sample_md)))
-                      colnames(data) <- c("tl")
-                      data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                      colnames(data) <- c("tl.mm")
+                      data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                       data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                       lcat <- as.numeric(data3$data2)
                       freq <- as.numeric(data3$Freq)
@@ -177,7 +177,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of large size class fish.
   sample_lg_fun <- function(sample_lg) {
-    df_lg_subvector <- sample(df_lg$tl,samplesize[1,4],replace=TRUE)
+    df_lg_subvector <- sample(df_lg$tl.mm,samplesize[1,4],replace=TRUE)
   }
   sample_lg <- sample_lg_fun(sample_lg)
   
@@ -185,8 +185,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_lg <- lapply(1:boot,
                     function(boot_lg2) {
                       data <- as.data.frame(as.numeric(sample_lg_fun(sample_lg)))
-                      colnames(data) <- c("tl")
-                      data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                      colnames(data) <- c("tl.mm")
+                      data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                       data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                       lcat <- as.numeric(data3$data2)
                       freq <- as.numeric(data3$Freq)
@@ -210,7 +210,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of extra large size class fish.
   sample_xl_fun <- function(sample_xl) {
-    df_xl_subvector <- sample(df_xl$tl,samplesize[1,5],replace=TRUE)
+    df_xl_subvector <- sample(df_xl$tl.mm,samplesize[1,5],replace=TRUE)
   }
   sample_xl <- sample_xl_fun(sample_xl)
   
@@ -218,8 +218,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_xl <- lapply(1:boot,
                     function(boot_xl2) {
                       data <- as.data.frame(as.numeric(sample_xl_fun(sample_xl)))
-                      colnames(data) <- c("tl")
-                      data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                      colnames(data) <- c("tl.mm")
+                      data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                       data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                       lcat <- as.numeric(data3$data2)
                       freq <- as.numeric(data3$Freq)
@@ -243,7 +243,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   ##  Create a function to select a random sample of lengths with a sample size of 
   ##    the total number of all size class fish.
   sample_all_fun <- function(sample_all) {
-    df_all_subvector <- sample(df_all$tl,samplesize[1,6],replace=TRUE)
+    df_all_subvector <- sample(df_all$tl.mm,samplesize[1,6],replace=TRUE)
   }
   sample_all <- sample_all_fun(sample_all)
   
@@ -251,8 +251,8 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   boot_all <- lapply(1:boot,
                      function(boot_all2) {
                        data <- as.data.frame(as.numeric(sample_all_fun(sample_all)))
-                       colnames(data) <- c("tl")
-                       data2 <- cut(data$tl,breaks=binpar,right=F,ordered.results=T)
+                       colnames(data) <- c("tl.mm")
+                       data2 <- cut(data$tl.mm,breaks=binpar,right=F,ordered.results=T)
                        data3 <- as.data.frame(table(data2),stringAsFactors=TRUE,optional=FALSE)
                        lcat <- as.numeric(data3$data2)
                        freq <- as.numeric(data3$Freq)
@@ -280,7 +280,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_xs[j,1])) {
       xs_n <- (mean_xs[j,1])*(samplesize[1])
       xs_n <- sum(round(xs_n,digits=0))
-      final_xs_len <- sample(df_xs$tl,xs_n,replace=TRUE) } else {
+      final_xs_len <- sample(df_xs$tl.mm,xs_n,replace=TRUE) } else {
         final_xs_len <- as.numeric(NULL)
       }
     final_len_xs <- if((exists("final_len_xs"))==F) {
@@ -296,7 +296,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_sm[j,1])) {
       sm_n <- (mean_sm[j,1])*(samplesize[2])
       sm_n <- sum(round(sm_n,digits=0))
-      final_sm_len <- sample(df_sm$tl,sm_n,replace=TRUE) } else {
+      final_sm_len <- sample(df_sm$tl.mm,sm_n,replace=TRUE) } else {
         final_sm_len <- as.numeric(NULL)
       }
     final_len_sm <- if((exists("final_len_sm"))==F) {
@@ -312,7 +312,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_md[j,1])) {
       md_n <- (mean_md[j,1])*(samplesize[3])
       md_n <- sum(round(md_n,digits=0))
-      final_md_len <- sample(df_md$tl,md_n,replace=TRUE) } else {
+      final_md_len <- sample(df_md$tl.mm,md_n,replace=TRUE) } else {
         final_md_len <- as.numeric(NULL)
       }
     final_len_md <- if((exists("final_len_md"))==F) {
@@ -328,7 +328,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_lg[j,1])) {
       lg_n <- (mean_lg[j,1])*(samplesize[4])
       lg_n <- sum(round(lg_n,digits=0))
-      final_lg_len <- sample(df_lg$tl,lg_n,replace=TRUE) } else {
+      final_lg_len <- sample(df_lg$tl.mm,lg_n,replace=TRUE) } else {
         final_lg_len <- as.numeric(NULL)
       }
     final_len_lg <- if((exists("final_len_lg"))==F) {
@@ -344,7 +344,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_xl[j,1])) {
       xl_n <- (mean_xl[j,1])*(samplesize[5])
       xl_n <- sum(round(xl_n,digits=0))
-      final_xl_len <- sample(df_xl$tl,xl_n,replace=TRUE) } else {
+      final_xl_len <- sample(df_xl$tl.mm,xl_n,replace=TRUE) } else {
         final_xl_len <- as.numeric(NULL)
       }
     final_len_xl <- if((exists("final_len_xl"))==F) {
@@ -360,7 +360,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
     if (!is.na(mean_all[j,1])) {
       all_n <- (mean_all[j,1])*(samplesize[6])
       all_n <- sum(round(all_n,digits=0))
-      final_all_len <- sample(df_all$tl,all_n,replace=TRUE) } else {
+      final_all_len <- sample(df_all$tl.mm,all_n,replace=TRUE) } else {
         final_all_len <- as.numeric(NULL)
       }
     final_len_all <- if((exists("final_len_all"))==F) {
@@ -373,7 +373,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   #####################################################################################
   
   ## Measured lengths
-  obs_len <- df$tl
+  obs_len <- df$tl.mm
   
   ## Expanded lengths
   est_len <- c(final_len_xs,final_len_sm,final_len_md,final_len_lg,
@@ -385,23 +385,22 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
   
   est_len_final <- if(exists("est_len_final")==F) {
     est_len } else {
-      data.frame(c(est_len$tl,est_len_final$tl),
+      data.frame(c(est_len$tl.mm,est_len_final$tl.mm),
                  c(est_len$species,est_len_final$species))
     }
-  colnames(est_len_final) <- c("tl_exp","species","year","season")
+  colnames(est_len_final) <- c("tl.mm","species","year","season")
   est_len_final
 }))
 
 ## Read in all previous year's expanded LW data
-lw_all <- read.csv("data/WB_expLengths.csv",header=T) %>% 
-  filter(species != "Unidentified Species") %>% 
-  select(-X)
+lw_all <- read.csv("data/WB_ExpandedLengths.csv",header=T) %>% 
+  filter(species != "Unidentified Species")
 
 ## Bind new data with previous data set
-final_exp_lw <- bind_rows(lw_all,len_final)
+final_exp_lw <- bind_rows(lw_all,len_final) ## ignore warning
 
 ## Create and save the lengths into an excel file
-write.csv(final_exp_lw,"data/WB_expLengths.csv")
+write.csv(final_exp_lw,"data/WB_ExpandedLengths.csv",row.names = FALSE)
 
 ## End processing time
 end <- Sys.time()
