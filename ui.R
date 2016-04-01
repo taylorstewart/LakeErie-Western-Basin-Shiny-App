@@ -58,7 +58,7 @@ shinyUI(fluidPage(
            HTML("<h5>Historical Time-Series Abundance</h5>"),
            wellPanel(
              selectInput("species2",h5("Select a Species:"),species_vars,selected="Walleye"),
-             selectInput("life_stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life.stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
@@ -162,7 +162,7 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("life_stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life.stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
              htmlOutput("map_ls_label"),
              HTML("<br>"),
              downloadButton("downloadCSV_3","Download Plot Data")

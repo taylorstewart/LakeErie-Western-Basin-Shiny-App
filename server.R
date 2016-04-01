@@ -23,8 +23,8 @@ shinyServer(function(input, output) {
   
   # Reactive life stage input for labels
   tbl_ls <- reactive({
-    ls <- distinct(filter(catchHA,life_stage == input$life_stage),life_stage)
-    ls <- as.character(ls$life_stage)
+    ls <- distinct(filter(catch,life.stage == input$life.stage),life.stage)
+    ls <- as.character(ls$life.stage)
     ls <- paste(gsub("_","-",ls),collapse=" ")
   })
   
@@ -35,8 +35,8 @@ shinyServer(function(input, output) {
   
   # Reactive life stage input for CPE plot label
   catch_ls <- reactive({
-    ls <- distinct(filter(catchHA,life_stage == input$life_stage2),life_stage)
-    ls <- as.character(ls$life_stage)
+    ls <- distinct(filter(catch,life.stage == input$life.stage2),life.stage)
+    ls <- as.character(ls$life.stage)
     ls <- paste(gsub("_","-",ls),collapse=" ")
   })
   
@@ -47,10 +47,10 @@ shinyServer(function(input, output) {
   
   # Reactive life stage input for label
   map_ls <- reactive({
-    ls_vars <- distinct(filter(catchHA,species == input$species,year == input$year,season == input$season,NperHA > 0,KgperHA > 0,life_stage != "ALL"),life_stage)%>%
-      select(life_stage) %>%
-      arrange(life_stage)
-    ls_vars <- as.character(ls_vars$life_stage)
+    ls_vars <- distinct(filter(catch,species == input$species,year == input$year,season == input$season,n.per.ha > 0,kg.per.ha > 0,life.stage != "ALL"),life.stage)%>%
+      select(life.stage) %>%
+      arrange(life.stage)
+    ls_vars <- as.character(ls_vars$life.stage)
     if(length(ls_vars) > 0) {
       ls_vars <- paste(gsub("_"," ",ls_vars),collapse=", ")
       ls_vars <- paste0("All Life Stages, ",ls_vars) } else {
@@ -61,7 +61,7 @@ shinyServer(function(input, output) {
   
   # Reactive value input for spatial map label
   map_value <- renderText({
-    if(input$density == "NperHA") {
+    if(input$density == "n.per.ha") {
       "density" } else {
         "biomass"
       }
@@ -74,18 +74,18 @@ shinyServer(function(input, output) {
   # Filter catch, returning a data frame
   time_data <- reactive({
     
-    l <- select(catchHA,species,life_stage,Year=year,Season=season,NperHA,KgperHA) %>% 
+    l <- select(catch,species,life.stage,Year=year,Season=season,n.per.ha,kg.per.ha) %>% 
     # filter by species
     filter(species == input$species2)
     
     # Optional: filter by life stage
-    if (!is.null(input$life_stage2) && input$life_stage2 != "All Life Stages") {
-      l %<>% filter(life_stage == input$life_stage2)
+    if (!is.null(input$life.stage2) && input$life.stage2 != "All Life Stages") {
+      l %<>% filter(life.stage == input$life.stage2)
     }
 
     l %<>% group_by(Year,Season) %>%
-      summarise(density=round(mean(NperHA),2),
-                biomass=round(mean(KgperHA),2)) %>%
+      summarise(density=round(mean(n.per.ha),2),
+                biomass=round(mean(kg.per.ha),2)) %>%
       tbl_df() %>% 
         arrange(Year)
   })
@@ -93,14 +93,14 @@ shinyServer(function(input, output) {
   # Filter catch, returning the means
   time_mean <- reactive({
     
-    l <- catchHA %>% select(species,life_stage,Year=year,Season=season,NperHA,KgperHA) %>%
+    l <- catch %>% select(species,life.stage,Year=year,Season=season,n.per.ha,kg.per.ha) %>%
       arrange(Year) %>% 
     # filter by species
     filter(species == input$species2)
     
     # Optional: filter by life stage
-    if (!is.null(input$life_stage2) && input$life_stage2 != "All Life Stages") {
-      l %<>% filter(life_stage == input$life_stage2)
+    if (!is.null(input$life.stage2) && input$life.stage2 != "All Life Stages") {
+      l %<>% filter(life.stage == input$life.stage2)
     }
 
       l_rep <- l$Year %>% n_distinct()
@@ -181,7 +181,7 @@ shinyServer(function(input, output) {
   
   # Download plot data
   output$downloadCSV_1 <- downloadHandler(
-    filename=reactive(paste(if(input$life_stage2 != "All Life Stages") {catch_ls()} else {"All_Life_Stages"},
+    filename=reactive(paste(if(input$life.stage2 != "All Life Stages") {catch_ls()} else {"All_Life_Stages"},
                             catch_species()$species,"Historical_Abundance_Data",sep="_")),
     content=function(file) {
       write.csv(time_data(),file,row.names=FALSE)
@@ -195,29 +195,29 @@ shinyServer(function(input, output) {
   # Filter density and biomass, returning a data frame
   bar_data <- reactive({
     
-    w <- catchHA %>% 
+    w <- catch %>% 
     # filter by year
     filter(year == input$year2) %>% 
     # filter by season
     filter(season == input$season2)
     
     w_rank <- w %>% group_by(species) %>% 
-      summarise(NperHA=sum(NperHA))
-    w_rank$rank <- dense_rank(desc(w_rank$NperHA))
+      summarise(n.per.ha=sum(n.per.ha))
+    w_rank$rank <- dense_rank(desc(w_rank$n.per.ha))
     w_rank %<>% filter(rank %in% 1:10) %>%
       select(species)
     
     w %<>% filter(species %in% w_rank$species) %>% 
     # Summarize density and biomass values
       group_by(species) %>%
-      summarise(NperHA=mean(NperHA),
-                KgperHA=mean(KgperHA))
+      summarise(n.per.ha=mean(n.per.ha),
+                kg.per.ha=mean(kg.per.ha))
   })
 
   # A reactive expression with the density bar plot
   reactive({
     
-    ggvis(bar_data(),~factor(species),~NperHA) %>% 
+    ggvis(bar_data(),~factor(species),~n.per.ha) %>% 
       layer_bars() %>% 
       add_axis("x",title="",ticks=0,properties = axis_props(
         labels = list(angle = 45,align = "left",fontSize=14))) %>%
@@ -229,7 +229,7 @@ shinyServer(function(input, output) {
   # A reactive expression with the biomass bar plot
   reactive({
     
-    ggvis(bar_data(),~factor(species),~KgperHA) %>% 
+    ggvis(bar_data(),~factor(species),~kg.per.ha) %>% 
       layer_bars() %>% 
       add_axis("x",title="",ticks=0,properties = axis_props(
         labels = list(angle = 45,align = "left",fontSize=14))) %>%
@@ -263,8 +263,8 @@ shinyServer(function(input, output) {
     
     # Summarize density by year and season
     p <- ftg_data %>% group_by(year,class) %>%
-      summarise(NperHA=round(mean(NperHA),2),
-                KgperHA=round(mean(KgperHA),2)) %>% 
+      summarise(n.per.ha=round(mean(n.per.ha),2),
+                kg.per.ha=round(mean(kg.per.ha),2)) %>% 
       ungroup() %>% 
       mutate(year=factor(year))
   })
@@ -282,13 +282,13 @@ shinyServer(function(input, output) {
     # Summarize density by year and season
     ftg_Rdata2 <- ftg_Rdata() %>%
       group_by(class) %>%
-      summarise(NperHA=round(mean(NperHA),2),
-                KgperHA=round(mean(KgperHA),2)
+      summarise(n.per.ha=round(mean(n.per.ha),2),
+                kg.per.ha=round(mean(kg.per.ha),2)
       )
     
     p_mean_rep <- lapply(ftg_Rdata2,rep,p_rep)
     p_mean_rep <- as.data.frame(do.call(cbind,p_mean_rep)) %>%
-      select(NperHA,KgperHA)
+      select(n.per.ha,kg.per.ha)
     p_mean_rep <- bind_cols(p_mean_rep,p_class)
     p_mean_rep %<>% mutate(year=factor(year))
   })
@@ -299,7 +299,7 @@ shinyServer(function(input, output) {
     ftg_Rdata <- wb[wb$class == x2$class,] %>% 
       arrange(desc(year))
     
-    paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$NperHA," (N/ha)","<br>")
+    paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$n.per.ha," (N/ha)","<br>")
   }
   
   # Function for generating map tooltip text
@@ -308,19 +308,19 @@ shinyServer(function(input, output) {
     ftg_Rdata <- wb[wb$class == x3$class,] %>% 
       arrange(desc(year))
     
-    paste0("<b>",ftg_Rdata$year," Biomass: ",ftg_Rdata$KgperHA," (Kg/ha)","<br>")
+    paste0("<b>",ftg_Rdata$year," Biomass: ",ftg_Rdata$kg.per.ha," (Kg/ha)","<br>")
   }
 
   # A reactive expression with the historical density time series plot
   reactive({
     
-    ggvis(ftg_Rdata,~year,~NperHA) %>%
+    ggvis(ftg_Rdata,~year,~n.per.ha) %>%
       group_by(class) %>%
       layer_points(prop("fill",~class),prop("size",80)) %>%
       layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
-      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~year,~NperHA,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
-      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~year,~NperHA,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
-      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~year,~NperHA,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~year,~n.per.ha,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~year,~n.per.ha,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~year,~n.per.ha,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
       hide_legend("stroke") %>%
       add_legend("fill",title="Functional Groups") %>%
       scale_numeric("y",domain=c(0,NA)) %>%
@@ -336,13 +336,13 @@ shinyServer(function(input, output) {
   # A reactive expression with the historical biomass time series plot
   reactive({
     
-    ggvis(ftg_Rdata,~year,~KgperHA) %>%
+    ggvis(ftg_Rdata,~year,~kg.per.ha) %>%
       group_by(class) %>%
       layer_points(prop("fill",~class),prop("size",80)) %>%
       layer_lines(stroke = ~class,prop("strokeWidth",2)) %>%
-      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~year,~KgperHA,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
-      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~year,~KgperHA,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
-      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~year,~KgperHA,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Spiny-rayed"),~year,~kg.per.ha,strokeDash:=6,stroke:="#279627",prop("strokeWidth",1)) %>% 
+      layer_paths(data=filter(ftg_mean,class=="Soft-rayed"),~year,~kg.per.ha,strokeDash:=6,stroke:="#FF7311",prop("strokeWidth",1)) %>%
+      layer_paths(data=filter(ftg_mean,class=="Clupeids"),~year,~kg.per.ha,strokeDash:=6,stroke:="#1C6CAB",prop("strokeWidth",1)) %>%
       hide_legend("stroke") %>%
       add_legend("fill",title="Functional Groups") %>%
       scale_numeric("y",domain=c(0,NA)) %>%
@@ -377,10 +377,10 @@ shinyServer(function(input, output) {
     filter(season == input$season3) %>% 
     # filter by parameter
     filter(parameter == input$parameter) %>% 
-      select(serial,Depth,value,lat_st,long_st,year,season) %>% 
+      select(serial,day,month,year,season,Depth,value,lat,long) %>% 
       arrange(serial)
     
-    colnames(r) <- c("Station","Depth (m)",input$parameter,"Latitude","Longitude","Year","Season")
+    colnames(r) <- c("Station","Day","Month","Year","Season","Depth (m)",input$parameter,"Latitude","Longitude")
     r
   })
   
@@ -410,7 +410,7 @@ shinyServer(function(input, output) {
   map_data <- reactive({
     
   # Individual Species
-    c <- catchHA %>% 
+    c <- catch %>% 
     # filter by year
       filter(year == input$year) %>% 
     # filter by season
@@ -419,34 +419,34 @@ shinyServer(function(input, output) {
       filter(species == input$species)
     
     # Optional: filter by life stage
-    if (!is.null(input$life_stage) && input$life_stage != "All Life Stages") {
-      c %<>% filter(life_stage == input$life_stage)
+    if (!is.null(input$life.stage) && input$life.stage != "All Life Stages") {
+      c %<>% filter(life.stage == input$life.stage)
     }
     
     # Summarize density and biomass values
     c %<>%
       group_by(serial,year,season,species) %>%
-      summarise(NperHA=sum(NperHA),
-                KgperHA=sum(KgperHA),
+      summarise(n.per.ha=sum(n.per.ha),
+                kg.per.ha=sum(kg.per.ha),
                 long=mean(long),
                 lat=mean(lat))
     
   # All Species 
-    u <- catchHA %>% 
+    u <- catch %>% 
       # filter by year
       filter(year == input$year) %>% 
       # filter by season
       filter(season == input$season)
     
     # Optional: filter by life stage
-    if (!is.null(input$life_stage) && input$life_stage != "All Life Stages") {
-      u %<>% filter(life_stage == input$life_stage)
+    if (!is.null(input$life.stage) && input$life.stage != "All Life Stages") {
+      u %<>% filter(life.stage == input$life.stage)
     }
     
     u %<>%
       group_by(serial,year,season) %>%
-      summarise(Total_NperHA=sum(NperHA),
-                Total_KgperHA=sum(KgperHA),
+      summarise(Total_NperHA=sum(n.per.ha),
+                Total_KgperHA=sum(kg.per.ha),
                 long=mean(long),
                 lat=mean(lat))
     
@@ -460,7 +460,7 @@ shinyServer(function(input, output) {
       map_data <- wb[unique(wb$serial) == unique(x4$serial),]
       
       species <- unique(map_data$species)
-      paste0("<b>","Station: ",map_data$serial,"<br>",species," Density (N/ha): ",map_data$NperHA,
+      paste0("<b>","Station: ",map_data$serial,"<br>",species," Density (N/ha): ",map_data$n.per.ha,
              "<br>","All Species Density (N/ha): ",map_data$Total_NperHA)
     }
     
@@ -470,7 +470,7 @@ shinyServer(function(input, output) {
     map_data <- wb[unique(wb$serial) == unique(x5$serial),]
     
     species <- unique(map_data$species)
-    paste0("<b>","Station: ",map_data$serial,"<br>",species," Biomass (Kg/ha): ",map_data$KgperHA,
+    paste0("<b>","Station: ",map_data$serial,"<br>",species," Biomass (Kg/ha): ",map_data$kg.per.ha,
            "<br>","All Species Biomass (Kg/ha): ",map_data$Total_KgperHA)
   }
 
@@ -493,7 +493,7 @@ shinyServer(function(input, output) {
       layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
       layer_points(data=map_data(),~long,~lat,size=~Total_NperHA,
                    fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
-      layer_points(data=map_data(),~long,~lat,size=~NperHA,
+      layer_points(data=map_data(),~long,~lat,size=~n.per.ha,
                    fillOpacity:=0.6,fillOpacity.hover:=1) %>%
       layer_text(data=map_species,~long,~lat,text:=~text,fontSize:= 13,fontWeight:="bold",fill:="black",
                  baseline:="middle", align:="center") %>%
@@ -521,7 +521,7 @@ shinyServer(function(input, output) {
       layer_paths(data=filter(wb_shore,piece=="6"),~long,~lat) %>%
       layer_points(data=map_data(),~long,~lat,size=~Total_KgperHA*10,
                    fill:=NA,stroke:="black",strokeOpacity:=0.1) %>%
-      layer_points(data=map_data(),~long,~lat,size=~KgperHA*10,
+      layer_points(data=map_data(),~long,~lat,size=~kg.per.ha*10,
                    fillOpacity:=0.6,fillOpacity.hover:=1) %>%
       layer_text(data=map_species,~long,~lat,text:=~text,fontSize:= 13,fontWeight:="bold",fill:="black",
                  baseline:="middle", align:="center") %>%
@@ -554,7 +554,7 @@ shinyServer(function(input, output) {
   
   # Download plot data
   output$downloadCSV_3 <- downloadHandler(
-    filename=reactive(paste(tbl_year()$year,input$season,if(input$life_stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
+    filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Map_Data",sep="_")),
     content=function(file) {
       write.csv(map_data(),file,row.names=FALSE)
@@ -575,8 +575,8 @@ shinyServer(function(input, output) {
     
     m <- lw %>% 
       filter(
-        tl >= minlength,
-        tl <= maxlength) %>% 
+        tl.mm >= minlength,
+        tl.mm <= maxlength) %>% 
     # filter by year
       filter(year == input$year) %>% 
     # filter by season
@@ -607,8 +607,8 @@ shinyServer(function(input, output) {
       },silent=TRUE)
       if(class(result) != "try-error" && length(result$fitted.values) >1) {
         model <- coef(result)
-        nlm <- data.frame(tl=seq(min(length_weight()$tl), max(length_weight()$tl), 5))
-        reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl^model[2], fit_tl = tl) %>%
+        nlm <- data.frame(tl.mm=seq(min(length_weight()$tl.mm), max(length_weight()$tl.mm), 5))
+        reg_fit <- nlm %>% mutate(fit_wt = exp(model[1])*tl.mm^model[2], fit_tl = tl.mm) %>%
           arrange(fit_tl)
       } else {
         reg_fit <- data.frame(fit_tl = 0, fit_wt = 0)
@@ -624,7 +624,7 @@ shinyServer(function(input, output) {
   # A reactive expression with the lenght-weight plot
   reactive({
     if (input$datatrans == "Linear") {
-      plot_lw <- length_weight() %>% transmute(tl=logl,wt=logw)
+      plot_lw <- length_weight() %>% transmute(tl.mm=logl,wt.g=logw)
       xvar_name <- names(axis_vars)[3]
       yvar_name <- names(axis_vars)[4]
     } else {
@@ -633,7 +633,7 @@ shinyServer(function(input, output) {
       yvar_name <- names(axis_vars)[2]
     }
   
-  ggvis(data=plot_lw,~tl, ~wt) %>%
+  ggvis(data=plot_lw,~tl.mm, ~wt.g) %>%
     layer_points(size := 50,fillOpacity := 0.2) %>%
     layer_paths(data=reg_fit,~fit_tl,~fit_wt) %>%
     add_axis("x", title = xvar_name, title_offset = 40,properties = axis_props(
@@ -701,7 +701,7 @@ shinyServer(function(input, output) {
 
   # Download
   output$downloadCSV_4 <- downloadHandler(
-    filename=reactive(paste(tbl_year()$year,input$season,if(input$life_stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
+    filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Weight_Length_Data",sep="_")),
     content=function(file) {
       write.csv(length_weight(),file,row.names=FALSE)
@@ -722,8 +722,8 @@ shinyServer(function(input, output) {
     
     len <- wb_exp %>% 
       filter(
-        tl_exp >= minlength2,
-        tl_exp <= maxlength2) %>% 
+        tl.mm >= minlength2,
+        tl.mm <= maxlength2) %>% 
     # filter by year
       filter(year == input$year) %>% 
     # filter by season
@@ -732,7 +732,7 @@ shinyServer(function(input, output) {
       filter(species == input$species)
     
     if(nrow(len) == 1) {
-      len <- data_frame(tl_exp=0)
+      len <- data_frame(tl.mm=0)
     } else {
       len %<>% as.data.frame()
     }
@@ -751,7 +751,7 @@ shinyServer(function(input, output) {
     yvar_name <- "Frequency"
     
     len_freq %>%
-      ggvis(~tl_exp) %>%
+      ggvis(~tl.mm) %>%
       add_axis("x", title = xvar_name, title_offset = 40, properties = axis_props(
         title=list(fontSize=16),
         labels=list(fontSize=13))) %>%
@@ -777,7 +777,7 @@ shinyServer(function(input, output) {
 
   # Download
   output$downloadCSV_5 <- downloadHandler(
-    filename=reactive(paste(tbl_year()$year,input$season,if(input$life_stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
+    filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Length_Frequency_Data",sep="_")),
     content=function(file) {
       write.csv(len_freq(),file,row.names=FALSE)
