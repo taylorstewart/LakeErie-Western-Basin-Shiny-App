@@ -7,10 +7,10 @@ yr <- 2015
 se <- "Autumn"
 
 ## Load data
-catch <- read.csv("data_prep/WB_catchperHA_raw.csv",header=TRUE)
+catch <- read.csv("data_prep/WB_CatchHA.csv",header=TRUE)
 
 ## Creata character string of life stages for true/false test
-life_stage <- c("YOY","Age_1","Age_2+","YAO","ALL")
+life.stage <- c("YOY","Age_1","Age_2+","YAO","ALL")
 
 ## Create a factor string of species names for loop
 ## Needs to be before the catch fiter in order to maintain consistency between years and seasons
@@ -23,6 +23,10 @@ catch %<>% filter(year==yr & season==se)
 ## Needs to be after the catch filter becasue serial numbers change between seasons
 serial <- unique(catch$serial)
 
+## Create a data frame with effort info to add to created data frame below
+effort <- catch %>% distinct(serial) %>% 
+  select(serial,time,day,month,fishing.depth.m,wingspread.m,tow.dist.m,area.m2,hectare.ha,lat,long)
+
 ## Apply first loop function
 output1 <- lapply(serial,function(i) {
   ## Filter catch by each serial
@@ -33,12 +37,29 @@ output1 <- lapply(serial,function(i) {
     catch3 <- catch2 %>% filter(species==spec[j]) %>% 
       droplevels()
     ## True/false output if life stages does not exist (zero value life stages)
-    ls <- life_stage[!life_stage %in% catch3$life_stage]
+    ls <- life.stage[!life.stage %in% catch3$life.stage]
     ## Determine the number of life stages to be added
     n <- length(ls)
     ## Create data frame with all zero value life stages, repeat by "n"
-    tmp <- data.frame(serial=rep(i,n),species=rep(spec[j],n),
-                      life_stage=ls,NperHA=rep(0,n),KgperHA=rep(0,n),year=rep(yr,n),season=rep(se,n))
+    tmp <- data.frame(serial=rep(i,n),
+                      time=rep(as.numeric(filter(effort,serial==i)[2]),n),
+                      day=rep(as.numeric(filter(effort,serial==i)[3]),n),
+                      month=rep(as.numeric(filter(effort,serial==i)[4]),n),
+                      year=rep(yr,n),
+                      season=rep(se,n),
+                      fishing.depth.m=rep(as.numeric(filter(effort,serial==i)[5]),n),
+                      wingspread.m=rep(as.numeric(filter(effort,serial==i)[6]),n),
+                      tow.dist.m=rep(as.numeric(filter(effort,serial==i)[7]),n),
+                      area.m2=rep(as.numeric(filter(effort,serial==i)[8]),n),
+                      hectare.ha=rep(as.numeric(filter(effort,serial==i)[9]),n),
+                      species=rep(spec[j],n),
+                      life.stage=ls,
+                      count=rep(0,n),
+                      kg=rep(0,n),
+                      n.per.ha=rep(0,n),
+                      kg.per.ha=rep(0,n),
+                      lat=rep(as.numeric(filter(effort,serial==i)[10]),n),
+                      long=rep(as.numeric(filter(effort,serial==i)[11]),n))
   })
   
   ## Bind list into data frame
@@ -64,10 +85,9 @@ all_ls <- bind_rows(catch,output2) %>%
 ## Should be 6150 observations, unless additional species have been added
 
 ## Read in previous data to bind to new
-data <- read.csv("data/WB_catchperHA_All_LS.csv",header=TRUE) %>% 
-  select(-X)
+data <- read.csv("data/WB_Catch.csv",header=TRUE)
 ## Bind new data with all years
 final_ls <- bind_rows(data,all_ls)
 
 ## Save file
-write.csv(final_ls,file="data/WB_CatchperHA_All_LS.csv")
+write.csv(final_ls,file="data/WB_Catch.csv",row.names = FALSE)
