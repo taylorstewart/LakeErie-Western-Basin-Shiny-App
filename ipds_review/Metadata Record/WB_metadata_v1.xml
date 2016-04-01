@@ -1,0 +1,1770 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<metadata>
+  <idinfo>
+    <citation>
+      <citeinfo>
+        <origin>Taylor R. Stewart</origin>
+        <pubdate>Unknown</pubdate>
+        <title>Lake Erie Fish Community Data</title>
+        <geoform>Comma Separated Values, CSV</geoform>
+        <onlink>http://dx.doi.org/xxxxxxx</onlink>
+      </citeinfo>
+    </citation>
+    <descript>
+      <abstract>Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC). LEBS is the primary federal agency for applied fisheries science excellence in Lake Erie. Since 2004, LEBS has participated in a collaborative, multiagency effort to assess forage fish populations in the western basin of Lake Erie. Assessing the distribution and abundance of both predator and prey (forage) fish species is a cornerstone of ecosystem-based based fishery management, and supports decision making that considers food-web interactions. The objectives of this survey were to provide estimates of densities of key forage and predator species in the western basin of Lake Erie, to assess seasonal and spatial distributions of fishes, and to assess year class strength. In 2012, the original vessel used since 2004, the R/V Musky II, was retired and replaced with the R/V Muskie. The change in vessel necessitated changing the gear used to capture fish. Previous surveys used a different catch processing protocol that did not include measurements of biomass or lengths of all species; thus, those historical data are not compatible with the current data format. Under the new protocol, 41 stations were sampled during June (Spring) and September (Autumn). The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. Thus, we present data starting from 2013. The data sets will automatically update with new data as surveys are completed in future years.</abstract>
+      <purpose>This data is intended for use by Lake Erie fisheries managers, academia, the fishing industry, and the public. The data sets are annually evaluated to provide estimates of abundance of key forage and predator species, to assess seasonal and spatial distributions of fishes, and assess year class strength of key forage and predator species in the western basin of Lake Erie. The data sets are then presented in an interactive, online format in which this metadata supports. Details about the vessel and gear descriptions, sampling protocols, and catch processing protocols can be found in the methods section of this metadata. The data will automatically update as surveys are completed in future years.</purpose>
+    </descript>
+    <timeperd>
+      <timeinfo>
+        <rngdates>
+          <begdate>20130617</begdate>
+          <enddate>20150918</enddate>
+        </rngdates>
+      </timeinfo>
+      <current>observed</current>
+    </timeperd>
+    <status>
+      <progress>Complete</progress>
+      <update>Annually</update>
+    </status>
+    <spdom>
+      <descgeog>Surveys conducted in the western basin of Lake Erie.</descgeog>
+      <bounding>
+        <westbc>-83.514</westbc>
+        <eastbc>-82.12</eastbc>
+        <northbc>42.103</northbc>
+        <southbc>41.306</southbc>
+      </bounding>
+    </spdom>
+    <keywords>
+      <theme>
+        <themekt>None</themekt>
+        <themekey>GLSC science theme</themekey>
+        <themekey>Forage fish</themekey>
+        <themekey>Population assessment</themekey>
+        <themekey>Lake Erie</themekey>
+        <themekey>Western Basin</themekey>
+      </theme>
+    </keywords>
+    <taxonomy>
+      <keywtax>
+        <taxonkt>None</taxonkt>
+        <taxonkey>Freshwater fishes</taxonkey>
+      </keywtax>
+      <taxonsys>
+        <classsys>
+          <classcit>
+            <citeinfo>
+              <origin>Integrated Taxonomic Information System</origin>
+              <pubdate>Unknown</pubdate>
+              <title>Integrated Taxonomic Information System</title>
+              <geoform>Online repository of taxonomic information (Downloaded April, 2004)</geoform>
+              <onlink>http://www.itis.gov/</onlink>
+            </citeinfo>
+          </classcit>
+        </classsys>
+        <taxonpro>Identified in the field by scientists.</taxonpro>
+      </taxonsys>
+      <taxoncl>
+        <taxonrn>Kingdom</taxonrn>
+        <taxonrv>Animalia</taxonrv>
+        <common>Animal</common>
+        <common>animaux</common>
+        <common>animals</common>
+        <taxoncl>
+          <taxonrn>Subkingdom</taxonrn>
+          <taxonrv>Bilateria</taxonrv>
+          <taxoncl>
+            <taxonrn>Infrakingdom</taxonrn>
+            <taxonrv>Deuterostomia</taxonrv>
+            <taxoncl>
+              <taxonrn>Phylum</taxonrn>
+              <taxonrv>Chordata</taxonrv>
+              <common>cordés</common>
+              <common>cordado</common>
+              <common>chordates</common>
+              <taxoncl>
+                <taxonrn>Subphylum</taxonrn>
+                <taxonrv>Vertebrata</taxonrv>
+                <common>vertebrado</common>
+                <common>vertébrés</common>
+                <common>vertebrates</common>
+                <taxoncl>
+                  <taxonrn>Infraphylum</taxonrn>
+                  <taxonrv>Agnatha</taxonrv>
+                  <taxoncl>
+                    <taxonrn>Class</taxonrn>
+                    <taxonrv>Cephalaspidomorphi</taxonrv>
+                    <common>lampreys</common>
+                    <taxoncl>
+                      <taxonrn>Order</taxonrn>
+                      <taxonrv>Petromyzontiformes</taxonrv>
+                      <common>lampreys</common>
+                      <common>lampreas</common>
+                      <common>lamproies</common>
+                      <taxoncl>
+                        <taxonrn>Family</taxonrn>
+                        <taxonrv>Petromyzontidae</taxonrv>
+                        <common>lamproies</common>
+                        <common>lampreas</common>
+                        <common>lampreys</common>
+                        <taxoncl>
+                          <taxonrn>Genus</taxonrn>
+                          <taxonrv>Ichthyomyzon</taxonrv>
+                          <taxoncl>
+                            <taxonrn>Species</taxonrn>
+                            <taxonrv>Ichthyomyzon unicuspis</taxonrv>
+                            <common>silver lamprey</common>
+                            <common>lamproie argentée</common>
+                          </taxoncl>
+                        </taxoncl>
+                      </taxoncl>
+                    </taxoncl>
+                  </taxoncl>
+                </taxoncl>
+                <taxoncl>
+                  <taxonrn>Infraphylum</taxonrn>
+                  <taxonrv>Gnathostomata</taxonrv>
+                  <taxoncl>
+                    <taxonrn>Superclass</taxonrn>
+                    <taxonrv>Osteichthyes</taxonrv>
+                    <common>bony fishes</common>
+                    <common>poissons osseux</common>
+                    <common>osteíceto</common>
+                    <common>peixe ósseo</common>
+                    <taxoncl>
+                      <taxonrn>Class</taxonrn>
+                      <taxonrv>Actinopterygii</taxonrv>
+                      <common>ray-finned fishes</common>
+                      <common>spiny rayed fishes</common>
+                      <common>poisson épineux</common>
+                      <common>poissons à nageoires rayonnées</common>
+                      <taxoncl>
+                        <taxonrn>Subclass</taxonrn>
+                        <taxonrv>Chondrostei</taxonrv>
+                        <common>paddlefishes</common>
+                        <common>sturgeons</common>
+                        <taxoncl>
+                          <taxonrn>Order</taxonrn>
+                          <taxonrv>Acipenseriformes</taxonrv>
+                          <common>sturgeons</common>
+                          <common>spoonfishes</common>
+                          <common>paddlefishes</common>
+                          <taxoncl>
+                            <taxonrn>Suborder</taxonrn>
+                            <taxonrv>Acipenseroidei</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Family</taxonrn>
+                              <taxonrv>Acipenseridae</taxonrv>
+                              <common>sturgeons</common>
+                              <common>esturgeons</common>
+                              <common>esturiones</common>
+                              <taxoncl>
+                                <taxonrn>Subfamily</taxonrn>
+                                <taxonrv>Acipenserinae</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Genus</taxonrn>
+                                  <taxonrv>Acipenser</taxonrv>
+                                  <common>sturgeons</common>
+                                  <common>greater sturgeons</common>
+                                  <taxoncl>
+                                    <taxonrn>Species</taxonrn>
+                                    <taxonrv>Acipenser fulvescens</taxonrv>
+                                    <common>lake sturgeon</common>
+                                    <common>esturgeon jaune</common>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                        </taxoncl>
+                      </taxoncl>
+                      <taxoncl>
+                        <taxonrn>Subclass</taxonrn>
+                        <taxonrv>Neopterygii</taxonrv>
+                        <common>neopterygians</common>
+                        <taxoncl>
+                          <taxonrn>Infraclass</taxonrn>
+                          <taxonrv>Teleostei</taxonrv>
+                          <taxoncl>
+                            <taxonrn>Superorder</taxonrn>
+                            <taxonrv>Clupeomorpha</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Clupeiformes</taxonrv>
+                              <common>anchois</common>
+                              <common>harengs</common>
+                              <common>anchovies</common>
+                              <common>herrings</common>
+                              <taxoncl>
+                                <taxonrn>Suborder</taxonrn>
+                                <taxonrv>Clupeoidei</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Clupeidae</taxonrv>
+                                  <common>herrings</common>
+                                  <common>aloses</common>
+                                  <common>harengs</common>
+                                  <common>sardines</common>
+                                  <common>sprats</common>
+                                  <common>sardinas</common>
+                                  <common>menhadens</common>
+                                  <common>pilchards</common>
+                                  <common>sardines</common>
+                                  <common>sprats</common>
+                                  <common>shads</common>
+                                  <taxoncl>
+                                    <taxonrn>Subfamily</taxonrn>
+                                    <taxonrv>Alosinae</taxonrv>
+                                    <common>shads</common>
+                                    <taxoncl>
+                                      <taxonrn>Genus</taxonrn>
+                                      <taxonrv>Alosa</taxonrv>
+                                      <common>river herrings</common>
+                                      <taxoncl>
+                                        <taxonrn>Species</taxonrn>
+                                        <taxonrv>Alosa pseudoharengus</taxonrv>
+                                        <common>alewife</common>
+                                        <common>kyak</common>
+                                        <common>gaspareau</common>
+                                        <common>bigeye herring</common>
+                                        <common>branch herring</common>
+                                        <common>freshwater herring</common>
+                                        <common>gray herring</common>
+                                        <common>white herring</common>
+                                        <common>sawbelly</common>
+                                        <common>grayback</common>
+                                      </taxoncl>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Subfamily</taxonrn>
+                                    <taxonrv>Dorosomatinae</taxonrv>
+                                    <common>gizzard shads</common>
+                                    <taxoncl>
+                                      <taxonrn>Genus</taxonrn>
+                                      <taxonrv>Dorosoma</taxonrv>
+                                      <common>gizzard shads</common>
+                                      <taxoncl>
+                                        <taxonrn>Species</taxonrn>
+                                        <taxonrv>Dorosoma cepedianum</taxonrv>
+                                        <common>gizzard shad</common>
+                                        <common>sardina molleja</common>
+                                        <common>alose à gésier</common>
+                                        <common>American gizzard shad</common>
+                                        <common>eastern gizzard shad</common>
+                                        <common>hickory shad</common>
+                                        <common>mud shad</common>
+                                        <common>skipjack</common>
+                                      </taxoncl>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                          <taxoncl>
+                            <taxonrn>Superorder</taxonrn>
+                            <taxonrv>Protacanthopterygii</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Salmoniformes</taxonrv>
+                              <common>saumons</common>
+                              <common>salmons</common>
+                              <taxoncl>
+                                <taxonrn>Family</taxonrn>
+                                <taxonrv>Salmonidae</taxonrv>
+                                <common>salmonids</common>
+                                <common>trouts and salmons</common>
+                                <common>truchas y salmones</common>
+                                <common>truites et saumons</common>
+                                <common>salmons</common>
+                                <common>trouts</common>
+                                <taxoncl>
+                                  <taxonrn>Subfamily</taxonrn>
+                                  <taxonrv>Coregoninae</taxonrv>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Coregonus</taxonrv>
+                                    <common>whitefishes</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Coregonus clupeaformis</taxonrv>
+                                      <common>lake whitefish</common>
+                                      <common>grand corégone</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                                <taxoncl>
+                                  <taxonrn>Subfamily</taxonrn>
+                                  <taxonrv>Salmoninae</taxonrv>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Salvelinus</taxonrv>
+                                    <common>chars</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Salvelinus namaycush</taxonrv>
+                                      <common>lake trout</common>
+                                      <common>touladi</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Esociformes</taxonrv>
+                              <common>mudminnows</common>
+                              <common>pikes</common>
+                              <taxoncl>
+                                <taxonrn>Family</taxonrn>
+                                <taxonrv>Esocidae</taxonrv>
+                                <common>pickerels</common>
+                                <common>pikes</common>
+                                <common>brochets</common>
+                                <common>lucios</common>
+                                <taxoncl>
+                                  <taxonrn>Genus</taxonrn>
+                                  <taxonrv>Esox</taxonrv>
+                                  <common>pikes</common>
+                                  <taxoncl>
+                                    <taxonrn>Species</taxonrn>
+                                    <taxonrv>Esox masquinongy</taxonrv>
+                                    <common>muskellunge</common>
+                                    <common>maskinongé</common>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Osmeriformes</taxonrv>
+                              <common>argentines</common>
+                              <common>éperlans</common>
+                              <common>argentines</common>
+                              <common>smelts</common>
+                              <taxoncl>
+                                <taxonrn>Suborder</taxonrn>
+                                <taxonrv>Osmeroidei</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Superfamily</taxonrn>
+                                  <taxonrv>Osmeroidea</taxonrv>
+                                  <taxoncl>
+                                    <taxonrn>Family</taxonrn>
+                                    <taxonrv>Osmeridae</taxonrv>
+                                    <common>smelts</common>
+                                    <common>capellanes</common>
+                                    <common>éperlans</common>
+                                    <taxoncl>
+                                      <taxonrn>Genus</taxonrn>
+                                      <taxonrv>Osmerus</taxonrv>
+                                      <common>rainbow smelts</common>
+                                      <taxoncl>
+                                        <taxonrn>Species</taxonrn>
+                                        <taxonrv>Osmerus mordax</taxonrv>
+                                        <common>rainbow smelt</common>
+                                        <common>éperlan arc-en-ciel</common>
+                                      </taxoncl>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                          <taxoncl>
+                            <taxonrn>Superorder</taxonrn>
+                            <taxonrv>Ostariophysi</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Cypriniformes</taxonrv>
+                              <common>cyprins</common>
+                              <common>meuniers</common>
+                              <common>minnows</common>
+                              <common>suckers</common>
+                              <taxoncl>
+                                <taxonrn>Superfamily</taxonrn>
+                                <taxonrv>Cyprinoidea</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Cyprinidae</taxonrv>
+                                  <common>carps</common>
+                                  <common>minnows</common>
+                                  <common>carpas y carpitas</common>
+                                  <common>carpes et ménés</common>
+                                  <common>carps and minnows</common>
+                                  <common>carpes</common>
+                                  <common>ménés</common>
+                                  <common>carpitas</common>
+                                  <common>carpas</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Cyprinus</taxonrv>
+                                    <common>common carps</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Cyprinus carpio</taxonrv>
+                                      <common>common carp</common>
+                                      <common>European carp</common>
+                                      <common>carpa común</common>
+                                      <common>carpe</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Carassius</taxonrv>
+                                    <common>Crucian carps</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Carassius auratus</taxonrv>
+                                      <common>goldfish</common>
+                                      <common>carpa dorada</common>
+                                      <common>carassin</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Notropis</taxonrv>
+                                    <common>eastern shiners</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Notropis hudsonius</taxonrv>
+                                      <common>spottail shiner</common>
+                                      <common>queue à tache noire</common>
+                                      <common>queue à tâche noire</common>
+                                    </taxoncl>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Notropis atherinoides</taxonrv>
+                                      <common>emerald shiner</common>
+                                      <common>méné émeraude</common>
+                                    </taxoncl>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Notropis volucellus</taxonrv>
+                                      <common>mimic shiner</common>
+                                      <common>méné pâle</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Macrhybopsis</taxonrv>
+                                    <common>blacktail chubs</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Macrhybopsis storeriana</taxonrv>
+                                      <common>silver chub</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                              <taxoncl>
+                                <taxonrn>Superfamily</taxonrn>
+                                <taxonrv>Cobitoidea</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Catostomidae</taxonrv>
+                                  <common>suckers</common>
+                                  <common>matalotes</common>
+                                  <common>catostomes</common>
+                                  <taxoncl>
+                                    <taxonrn>Subfamily</taxonrn>
+                                    <taxonrv>Ictiobinae</taxonrv>
+                                    <taxoncl>
+                                      <taxonrn>Genus</taxonrn>
+                                      <taxonrv>Carpiodes</taxonrv>
+                                      <common>quillbacks</common>
+                                      <common>carpsuckers</common>
+                                      <taxoncl>
+                                        <taxonrn>Species</taxonrn>
+                                        <taxonrv>Carpiodes cyprinus</taxonrv>
+                                        <common>quillback</common>
+                                        <common>couette</common>
+                                        <common>quillback carpsucker</common>
+                                      </taxoncl>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Subfamily</taxonrn>
+                                    <taxonrv>Catostominae</taxonrv>
+                                    <taxoncl>
+                                      <taxonrn>Tribe</taxonrn>
+                                      <taxonrv>Catostomini</taxonrv>
+                                      <taxoncl>
+                                        <taxonrn>Genus</taxonrn>
+                                        <taxonrv>Catostomus</taxonrv>
+                                        <common>common suckers</common>
+                                        <taxoncl>
+                                          <taxonrn>Species</taxonrn>
+                                          <taxonrv>Catostomus commersonii</taxonrv>
+                                          <common>meunier noir</common>
+                                          <common>white sucker</common>
+                                        </taxoncl>
+                                      </taxoncl>
+                                    </taxoncl>
+                                    <taxoncl>
+                                      <taxonrn>Tribe</taxonrn>
+                                      <taxonrv>Moxostomatini</taxonrv>
+                                      <taxoncl>
+                                        <taxonrn>Genus</taxonrn>
+                                        <taxonrv>Moxostoma</taxonrv>
+                                        <common>redhorse suckers</common>
+                                        <common>redhorses</common>
+                                        <taxoncl>
+                                          <taxonrn>Species</taxonrn>
+                                          <taxonrv>Moxostoma macrolepidotum</taxonrv>
+                                          <common>shorthead redhorse</common>
+                                          <common>chevalier rouge</common>
+                                        </taxoncl>
+                                        <taxoncl>
+                                          <taxonrn>Species</taxonrn>
+                                          <taxonrv>Moxostoma erythrurum</taxonrv>
+                                          <common>golden redhorse</common>
+                                        </taxoncl>
+                                      </taxoncl>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Siluriformes</taxonrv>
+                              <common>silures</common>
+                              <common>catfishes</common>
+                              <taxoncl>
+                                <taxonrn>Family</taxonrn>
+                                <taxonrv>Ictaluridae</taxonrv>
+                                <common>bullhead catfishes</common>
+                                <common>North American freshwater catfishes</common>
+                                <common>barbottes et barbues</common>
+                                <common>barbottes</common>
+                                <common>barbues</common>
+                                <common>bagres de agua dulce</common>
+                                <common>North American catfishes</common>
+                                <taxoncl>
+                                  <taxonrn>Genus</taxonrn>
+                                  <taxonrv>Ictalurus</taxonrv>
+                                  <common>channel catfishes</common>
+                                  <common>forktail catfishes</common>
+                                  <taxoncl>
+                                    <taxonrn>Species</taxonrn>
+                                    <taxonrv>Ictalurus punctatus</taxonrv>
+                                    <common>channel catfish</common>
+                                    <common>graceful catfish</common>
+                                    <common>bagre de canal</common>
+                                    <common>barbue de rivière</common>
+                                  </taxoncl>
+                                </taxoncl>
+                                <taxoncl>
+                                  <taxonrn>Genus</taxonrn>
+                                  <taxonrv>Ameiurus</taxonrv>
+                                  <common>bullheads</common>
+                                  <taxoncl>
+                                    <taxonrn>Species</taxonrn>
+                                    <taxonrv>Ameiurus nebulosus</taxonrv>
+                                    <common>brown bullhead</common>
+                                    <common>barbotte brune</common>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                          <taxoncl>
+                            <taxonrn>Superorder</taxonrn>
+                            <taxonrv>Paracanthopterygii</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Percopsiformes</taxonrv>
+                              <common>percopsiforms</common>
+                              <common>trout-perches</common>
+                              <taxoncl>
+                                <taxonrn>Suborder</taxonrn>
+                                <taxonrv>Percopsoidei</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Percopsidae</taxonrv>
+                                  <common>trout perches</common>
+                                  <common>omiscos</common>
+                                  <common>percas falsas</common>
+                                  <common>trout-perches</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Percopsis</taxonrv>
+                                    <common>trout-perches</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Percopsis omiscomaycus</taxonrv>
+                                      <common>trout-perch</common>
+                                      <common>omisco</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                          <taxoncl>
+                            <taxonrn>Superorder</taxonrn>
+                            <taxonrv>Acanthopterygii</taxonrv>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Atheriniformes</taxonrv>
+                              <common>silversides</common>
+                              <taxoncl>
+                                <taxonrn>Family</taxonrn>
+                                <taxonrv>Atherinopsidae</taxonrv>
+                                <common>charales y pejerreyes</common>
+                                <common>New World silversides</common>
+                                <common>poissons d'argent</common>
+                                <taxoncl>
+                                  <taxonrn>Subfamily</taxonrn>
+                                  <taxonrv>Menidiinae</taxonrv>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Labidesthes</taxonrv>
+                                    <common>brook silversides</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Labidesthes sicculus</taxonrv>
+                                      <common>brook silverside</common>
+                                      <common>crayon d'argent</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                            <taxoncl>
+                              <taxonrn>Order</taxonrn>
+                              <taxonrv>Perciformes</taxonrv>
+                              <common>perch-like fishes</common>
+                              <taxoncl>
+                                <taxonrn>Suborder</taxonrn>
+                                <taxonrv>Percoidei</taxonrv>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Centrarchidae</taxonrv>
+                                  <common>sunfishes</common>
+                                  <common>achigans et crapets</common>
+                                  <common>lobinas</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Ambloplites</taxonrv>
+                                    <common>rock basses</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Ambloplites rupestris</taxonrv>
+                                      <common>rock bass</common>
+                                      <common>crapet de roche</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Micropterus</taxonrv>
+                                    <common>black basses</common>
+                                    <common>largemouth basses</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Micropterus dolomieu</taxonrv>
+                                      <common>achigan à petite bouche</common>
+                                      <common>smallmouth bass</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Percidae</taxonrv>
+                                  <common>true perches</common>
+                                  <common>perches</common>
+                                  <common>percas</common>
+                                  <common>perches et dards</common>
+                                  <common>perches</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Perca</taxonrv>
+                                    <common>yellow perches</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Perca flavescens</taxonrv>
+                                      <common>yellow perch</common>
+                                      <common>perchaude</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Percina</taxonrv>
+                                    <common>roughbelly darters</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Percina caprodes</taxonrv>
+                                      <common>logperch</common>
+                                      <common>fouille-roche zébré</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Sander</taxonrv>
+                                    <common>pikeperches</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Sander vitreus</taxonrv>
+                                      <common>walleye</common>
+                                      <common>doré jaune</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Sciaenidae</taxonrv>
+                                  <common>croakers</common>
+                                  <common>drums</common>
+                                  <common>roncadores</common>
+                                  <common>corbs</common>
+                                  <common>courbines</common>
+                                  <common>maigres</common>
+                                  <common>ombrines</common>
+                                  <common>corvinas y berrugatas</common>
+                                  <common>drums and croakers</common>
+                                  <common>tambours</common>
+                                  <common>coakers</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Aplodinotus</taxonrv>
+                                    <common>river drums</common>
+                                    <common>thunderpumpers</common>
+                                    <common>freshwater drums</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Aplodinotus grunniens</taxonrv>
+                                      <common>freshwater drum</common>
+                                      <common>roncador de agua dulce</common>
+                                      <common>malachigan</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Moronidae</taxonrv>
+                                  <common>temperate basses</common>
+                                  <common>bars</common>
+                                  <common>lobinas norteñas</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Morone</taxonrv>
+                                    <common>striped basses</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Morone americana</taxonrv>
+                                      <common>white perch</common>
+                                      <common>baret</common>
+                                    </taxoncl>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Morone chrysops</taxonrv>
+                                      <common>white bass</common>
+                                      <common>bar blanc</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                              <taxoncl>
+                                <taxonrn>Suborder</taxonrn>
+                                <taxonrv>Gobioidei</taxonrv>
+                                <common>gobies</common>
+                                <common>gobies</common>
+                                <taxoncl>
+                                  <taxonrn>Family</taxonrn>
+                                  <taxonrv>Gobiidae</taxonrv>
+                                  <common>true gobies</common>
+                                  <common>gobies</common>
+                                  <common>gobios</common>
+                                  <common>gobies</common>
+                                  <taxoncl>
+                                    <taxonrn>Genus</taxonrn>
+                                    <taxonrv>Neogobius</taxonrv>
+                                    <common>round gobies</common>
+                                    <taxoncl>
+                                      <taxonrn>Species</taxonrn>
+                                      <taxonrv>Neogobius melanostomus</taxonrv>
+                                      <common>gobie à taches noires</common>
+                                      <common>round goby</common>
+                                    </taxoncl>
+                                  </taxoncl>
+                                </taxoncl>
+                              </taxoncl>
+                            </taxoncl>
+                          </taxoncl>
+                        </taxoncl>
+                      </taxoncl>
+                    </taxoncl>
+                  </taxoncl>
+                </taxoncl>
+              </taxoncl>
+            </taxoncl>
+          </taxoncl>
+        </taxoncl>
+      </taxoncl>
+    </taxonomy>
+    <accconst>None. Please see 'Distribution Info' for details.</accconst>
+    <useconst>Users are advised to read the data set's metadata thoroughly to understand appropriate use and data limitations.</useconst>
+    <ptcontac>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>Lake Erie Biological Station, GLSC</cntorg>
+          <cntper>Taylor R Stewart</cntper>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>mailing address</addrtype>
+          <address>6100 Columbus Avenue</address>
+          <city>Sandusky</city>
+          <state>OH</state>
+          <postal>44870</postal>
+        </cntaddr>
+        <cntvoice>419-625-1976</cntvoice>
+        <cntemail>trstewart@usgs.gov</cntemail>
+      </cntinfo>
+    </ptcontac>
+    <native>Environment as of Metadata Creation: Microsoft Windows 7 Version 6.1 (Build 7601) Service Pack 1; Esri ArcGIS 10.3.1 (Build 4959) Service Pack N/A (Build N/A)</native>
+  </idinfo>
+  <dataqual>
+    <attracc>
+      <attraccr>No formal attribute accuracy tests were conducted.</attraccr>
+    </attracc>
+    <logic>No formal logical accuracy tests were conducted.</logic>
+    <complete>Data set is considered complete for the information presented, as described in the abstract. Users are advised to read the rest of the metadata record carefully for additional details.</complete>
+    <posacc>
+      <horizpa>
+        <horizpar>A formal accuracy assessment of the horizontal positional information in the data set has not been conducted.</horizpar>
+      </horizpa>
+      <vertacc>
+        <vertaccr>A formal accuracy assessment of the vertical positional information in the data set has either not been conducted, or is not applicable.</vertaccr>
+      </vertacc>
+    </posacc>
+    <lineage>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Vessel Information: The R/V Muskie is a 70’ LOA, purpose-built research vessel with an aluminum mono-hull, twin propellor, and a double-warp trawl system.</methdesc>
+      </method>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Trawl Description: The net is a four-seam, three-bridle bottom trawl, with a fishing circle of 200 x 12 (cm) meshes at the mouth of the net. The body of the net transitions from a mesh size of 12 cm to 6 cm and is constructed of polythylene. The cod-end liner is constructed of 14 (mm) knotless dyneema mesh. The head rope length is 11.2 m and the foot rope length is 14.2 m.  To accommodate hard bottom habitats, the sweep was designed with 8” rubber discs interspersed between 2-3/8” rubber discs in a configuration called a “rubber cookie sweep”.  The bridle length is 36.6 m overall with a junction between the top and middle bridle at 18.3 m. The bridle is constructed of wire rope, with 1/2” diameter cable on the bottom bridle, and 3/8” diameter cable on the middle and top bridles.
+To fish this net we used high performance steel doors, Thyboron Type IV, outfitted with heavy-duty ball bearing swivels to reduce asymmetric twisting resistance in the trawl warps.  The headline height was consistently 3.0 m when measured with NOTUS acoustic mensuration gear during trawling. Average wing spread vary both as a function of depth and warp scope. Prescribed trawling time was 10 minutes at a target speed of 3 knots. Area swept for each trawl sample was calculated as the product of the distance towed and the average wingspread. Typical area swept was 0.5 hectares.</methdesc>
+      </method>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Sonde Description: YSI 6600 series multiparameter sonde. Sensors include: Temperature 6560 Sensor, Depth, ROX™ Optical Dissolved Oxygen (% Saturation), ROX™ Optical Dissolved Oxygen (mg/L), Conductivity 6560 Sensor, Salinity, pH 6561 Sensor, Turbidity 6136 Sensor, and Chlorophyll 6025 Sensor.</methdesc>
+      </method>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Sampling Protocol: In 2012, the original vessel used since 2004, the R/V Musky II, was retired and replaced with the R/V Muskie. The change in vessel necessitated changing the gear used to capture fish. Previous surveys used a different catch processing protocol that did not include measurements of biomass or lengths of all species; thus, those historical data are not compatible with this presentation format. Under the new protocol, 41 stations were sampled during June (Spring) and September (Autumn). The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. Thus, we present data starting from 2013.</methdesc>
+      </method>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Catch Processing Protocol: For each trawl sample, fish were sorted by species and size mode (determined by eye) and each of these categories was weighed in aggregate.  A subsample (n=5) from each of these age-size categories was measured for individual lengths and weights (using a motion compensating scale with accuracy of 0.2g).  Total count was calculated by dividing the aggregate weight by the mean individual weight.  Exceptions to this procedure were percids (Yellow Perch and Walleye), for which each individual was counted, and small fish with individual weights that were less than the accuracy of our scale.  For the former situation with percids, on a few occasions the catch of Yellow Perch was so large that we used gravimetric extrapolation.  For the latter situation, the subsample of fish was weighed in aggregate to obtain the average individual weight, but individual total lengths were still obtained for the subsample.  Age-group specific information was determined by identifying modes in estimated length frequencies expanded to the total catch.</methdesc>
+      </method>
+      <method>
+        <methtype>Field</methtype>
+        <methdesc>Catch Subsampling Protocol: For trawl samples with a high catch abundance, a subsampling protocol was used to reduce processing effort. First, all “large” fish were removed from the sample and processed under the normal catch processing protocol. All remaining forage fish were subsampled by dividing the catch into two equal subsamples. Each subsample was weighed in aggregate. Of the two subsamples, one was processed to assess species composition and the other was discarded. Species-specific total counts were calculated by multiplying the sum of the subsample’s aggregate weight by each species compositional proportion from the first subsample.</methdesc>
+      </method>
+      <procstep>
+        <procdesc>Field Notes for Spring 2013:
+No notes to report.</procdesc>
+        <procdate>2013</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Field Notes for Autumn 2013:
+Serial 504: Trawl snagged and ripped. Net repaired.
+Serial 518: Port side trawl door cable broke.
+Serial 517: Trawl snagged 9 minutes into trawl; no rips.
+Serial 509: No secchi reading due to darkness.
+Initial grid of sampling stations was altered from previous surveys, all points shifted south 1 nm to avoid shipping lanes.
+</procdesc>
+        <procdate>2013</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Field Notes for Spring 2014:
+YSI not fucntional for serials 104, 108, 109, 112, 113, 120, 125, 129, and 130.  Surface and Bottom Temp, SpCond, and DO was recorded and thermocline depth noted.
+Serial 107: Rough sea condition affected small range motion compensating; small fish weights may not be accurate.
+Serial 107: First trawl returned with open cod end; retrawled.
+Serial 112: Trawl snagged 8 minutes into trawl; no retrawl.
+Serial 127: Rocky bottom; boulders evident but no snags.</procdesc>
+        <procdate>2014</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Field Notes for Autumn 2014: 
+Trawl catches from serials 510 &amp; 514 were subsampled.
+NOTUS malfunction; no data for serials 501, 502, 503, 505, 506, 507, 510, 511, 515, and 517. Area swept calculations based off of mean wingspread.
+</procdesc>
+        <procdate>2014</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Field Notes for Spring 2015:
+NOTUS malfunction; no data for serials 101 - 116. Area swept calculations based on mean wingspread.
+Serial 125: Caught tree in trawl; swapped out net and retrawled. 
+Serial 113: Cod end open, retrawled.
+Serial 138: Ripped out bottom panel of trawl; retrawl site next day. 
+</procdesc>
+        <procdate>2015</procdate>
+      </procstep>
+      <procstep>
+        <procdesc>Field Notes for Autumn 2015:
+Serial 530: Small tear in net discovered after 2nd trawl but located far enough forward should not have affected catch. Net repaired.
+NOTUS factory calibration conducted; no validation of NOTUS measurements prior to 2015. Hence, measurments prior to this year may be biased.
+YSI 6600 out of commission for entire survey - used handheld YSI optical DO meter to record surface and bottom temps and DO.
+Temprature inversion noted throughout entire survey area - slightly cooler temps at surface. </procdesc>
+        <procdate>2015</procdate>
+      </procstep>
+    </lineage>
+  </dataqual>
+  <eainfo>
+    <detailed>
+      <enttyp>
+        <enttypl>Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the Lake Erie shapefile data set.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>lat</attrlabl>
+        <attrdef>Latitude for station</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>41.36363382</rdommin>
+            <rdommax>42.0459648</rdommax>
+            <attrunit>D.d.</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>long</attrlabl>
+        <attrdef>Longitude for station</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>-83.51157557</rdommin>
+            <rdommax>-82.13013617</rdommax>
+            <attrunit>D.d</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>order</attrlabl>
+        <attrdef>Shapefile ID; Used to arrange attributes in sequentional order for line placement</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>21810</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>piece</attrlabl>
+        <attrdef>Land mass identifier</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>88</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>group</attrlabl>
+        <attrdef>Lake Erie basin identifier</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0.1</rdommin>
+            <rdommax>3.9</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the catch data set.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>serial</attrlabl>
+        <attrdef>USGS assigned ID number</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>101</rdommin>
+            <rdommax>541</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>species</attrlabl>
+        <attrdef>Commmon fish name</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <udom>Common fish name</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>life_stage</attrlabl>
+        <attrdef>Length defined lifestage</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Age_1</edomv>
+            <edomvd>Age-1</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Age_2+</edomv>
+            <edomvd>Age-2 or greater</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>ALL</edomv>
+            <edomvd>All Ages</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>YAO</edomv>
+            <edomvd>Yearling and Older</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>YOY</edomv>
+            <edomvd>Young of the Year</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>NperHA</attrlabl>
+        <attrdef>Number per hectare swept (density)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>66335.12</rdommax>
+            <attrunit>N/Ha</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>KgperHA</attrlabl>
+        <attrdef>Kilogram per hectare swept (biomass)</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>396.43</rdommax>
+            <attrunit>Kg/Ha</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>year</attrlabl>
+        <attrdef>Year sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>2013</rdommin>
+            <rdommax>2015</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>season</attrlabl>
+        <attrdef>Season sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Autumn</edomv>
+            <edomvd>Autumn (September)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Spring</edomv>
+            <edomvd>Spring (June)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the expanded lengths data set.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>tl_exp</attrlabl>
+        <attrdef>total length - nose to tail</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>23</rdommin>
+            <rdommax>1003</rdommax>
+            <attrunit>mm</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>species</attrlabl>
+        <attrdef>Common fish name</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <udom>Common fish name</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>year</attrlabl>
+        <attrdef>Year sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>2013</rdommin>
+            <rdommax>2015</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>season</attrlabl>
+        <attrdef>Season sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Autumn</edomv>
+            <edomvd>Autumn (September)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Spring</edomv>
+            <edomvd>Spring (June)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the length-weight data set.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>serial</attrlabl>
+        <attrdef>USGS assigned ID number</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>101</rdommin>
+            <rdommax>541</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>fish_id</attrlabl>
+        <attrdef>Post hoc assigned fish ID number</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>5466</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>species</attrlabl>
+        <attrdef>Common fish name</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <udom>Common fish name</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>sp_code</attrlabl>
+        <attrdef>RVCat species specific numeric code</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>3</rdommin>
+            <rdommax>999</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>size</attrlabl>
+        <attrdef>Relative size mode within species,  determined visually</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>ALL</edomv>
+            <edomvd>All size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>XS</edomv>
+            <edomvd>Extra-small size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>S</edomv>
+            <edomvd>Small size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>M</edomv>
+            <edomvd>Medium size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>L</edomv>
+            <edomvd>Large size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>XL</edomv>
+            <edomvd>Extra-large size mode</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>O/D</edomv>
+            <edomvd>Otoliths and diets removed; typically within the large or extra-large size class</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>tl</attrlabl>
+        <attrdef>total length - nose to tail</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>1003</rdommax>
+            <attrunit>mm</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>wt</attrlabl>
+        <attrdef>Weight - determined by motion compensation scale or triple beam balance</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>13000</rdommax>
+            <attrunit>g</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>year</attrlabl>
+        <attrdef>Year sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>2013</rdommin>
+            <rdommax>2015</rdommax>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>season</attrlabl>
+        <attrdef>Season sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Autumn</edomv>
+            <edomvd>Autumn (September)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Spring</edomv>
+            <edomvd>Spring (June)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <detailed>
+      <enttyp>
+        <enttypl>Attribute Table</enttypl>
+        <enttypd>Table containing attribute information associated with the water quality data set.</enttypd>
+        <enttypds>Producer defined</enttypds>
+      </enttyp>
+      <attr>
+        <attrlabl>Serial</attrlabl>
+        <attrdef>USGS assigned ID number</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>101</rdommin>
+            <rdommax>541</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>date</attrlabl>
+        <attrdef>date of sampling</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>6/17/2013</rdommin>
+            <rdommax>9/17/2015</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>time_st</attrlabl>
+        <attrdef>Time of sampling; millitary time</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>2005</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Depth_Factor</attrlabl>
+        <attrdef>1-m depth bins; right exclusive</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <udom>Depth bins for values to be summarized within</udom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>n</attrlabl>
+        <attrdef>Number of recorded observation a depth bin</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>1</rdommin>
+            <rdommax>474</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Depth_Mean</attrlabl>
+        <attrdef>Mean depth</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>15</rdommax>
+            <attrunit>m</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Depth_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of depth</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.519</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Depth_CV</attrlabl>
+        <attrdef>Coefficient of variation of depth</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>2.058</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Temp_Mean</attrlabl>
+        <attrdef>Mean water temperature</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>8.794</rdommin>
+            <rdommax>24.3</rdommax>
+            <attrunit>°C</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Temp_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of water temperature</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4.266</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Temp_CV</attrlabl>
+        <attrdef>Coefficient of variation of water temperature</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.337</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>SpCond_Mean</attrlabl>
+        <attrdef>Mean specific conductivity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.429</rdommax>
+            <attrunit>mS/cm</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>SpCond_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of specific conductivity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.142</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>spCond_CV</attrlabl>
+        <attrdef>Coefficient of variation of specific conductivity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>5.286</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>pH_Mean</attrlabl>
+        <attrdef>Mean pH</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>9.172</rdommax>
+            <attrunit>pH</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>pH_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of pH</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.242</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>pH_CV</attrlabl>
+        <attrdef>Coefficient of variation of pH</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.029</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Turbitity_Mean</attrlabl>
+        <attrdef>Mean turbidity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>-215.4</rdommin>
+            <rdommax>1141.2</rdommax>
+            <attrunit>NTU</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Turbitit_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of turbidity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>729.169</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Turbitit_CV</attrlabl>
+        <attrdef>Coefficient of variation of turbidity</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>-3.34</rdommin>
+            <rdommax>3.813</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Chlor_Mean</attrlabl>
+        <attrdef>Mean Chlorophyll</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>-7.7</rdommin>
+            <rdommax>70.06</rdommax>
+            <attrunit>ug/L</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Chlor_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of Chlorophyll</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>92.151</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>Chlor_CV</attrlabl>
+        <attrdef>Coefficient of variation of Chlorophyll</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>-105.4</rdommin>
+            <rdommax>69.24</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOpercent_Mean</attrlabl>
+        <attrdef>Mean dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>62.3</rdommin>
+            <rdommax>136.975</rdommax>
+            <attrunit>%</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOpercent_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>19.778</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOpercent_CV</attrlabl>
+        <attrdef>Coefficient of variation of dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.274</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOppm_Mean</attrlabl>
+        <attrdef>Mean dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>5.68</rdommin>
+            <rdommax>12.201</rdommax>
+            <attrunit>mg/L</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOppm_Std_Dev</attrlabl>
+        <attrdef>Standard deviation of dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>4.398</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>DOppm_CV</attrlabl>
+        <attrdef>Coefficient of variation of dissolved oxygen</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>0</rdommin>
+            <rdommax>0.591</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>year</attrlabl>
+        <attrdef>Year sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <rdom>
+            <rdommin>2013</rdommin>
+            <rdommax>2015</rdommax>
+            <attrunit>-</attrunit>
+          </rdom>
+        </attrdomv>
+      </attr>
+      <attr>
+        <attrlabl>season</attrlabl>
+        <attrdef>Season sampling occured</attrdef>
+        <attrdefs>Producer defined</attrdefs>
+        <attrdomv>
+          <edom>
+            <edomv>Autumn</edomv>
+            <edomvd>Autumn (September)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+        <attrdomv>
+          <edom>
+            <edomv>Spring</edomv>
+            <edomvd>Spring (June)</edomvd>
+            <edomvds>Producer defined</edomvds>
+          </edom>
+        </attrdomv>
+      </attr>
+    </detailed>
+    <overview>
+      <eaover>The entity and attribute information provided here describes the tabular data associated with the data set. Please review the detailed descriptions that are provided (the individual attribute descriptions) for information on the values that appear as fields/table entries of the data set.</eaover>
+      <eadetcit>The entity and attribute information was generated by the individual and/or agency identified as the originator of the data set. Please review the rest of the metadata record for additional details and information.</eadetcit>
+    </overview>
+  </eainfo>
+  <distinfo>
+    <distrib>
+      <cntinfo>
+        <cntorgp>
+          <cntorg>Lake Erie Biological Station, GLSC</cntorg>
+          <cntper>Taylor R Stewart</cntper>
+        </cntorgp>
+        <cntaddr>
+          <addrtype>mailing address</addrtype>
+          <address>6100 Columbus Avenue</address>
+          <city>Sandusky</city>
+          <state>OH</state>
+          <postal>44870</postal>
+        </cntaddr>
+        <cntvoice>419-625-1976</cntvoice>
+        <cntemail>trstewart@usgs.gov</cntemail>
+      </cntinfo>
+    </distrib>
+    <distliab>Distributor assumes no liability for misuse of data.</distliab>
+    <stdorder>
+      <digform>
+        <digtinfo>
+          <formname>Data Application</formname>
+        </digtinfo>
+        <digtopt>
+          <onlinopt>
+            <computer>
+              <networka>
+                <networkr>https://trstewart.shinyapps.io/LEBS_Western_Basin/</networkr>
+              </networka>
+            </computer>
+          </onlinopt>
+        </digtopt>
+      </digform>
+      <fees>None. No fees are applicable for obtaining the data set.</fees>
+    </stdorder>
+  </distinfo>
+  <metainfo>
+    <metd>20160126</metd>
+    <metc>
+      <cntinfo>
+        <cntperp>
+          <cntper>Taylor R Stewart</cntper>
+          <cntorg>Lake Erie Biological Station, GLSC</cntorg>
+        </cntperp>
+        <cntaddr>
+          <addrtype>mailing address</addrtype>
+          <address>6100 Columbus Avenue</address>
+          <city>Sandusky</city>
+          <state>OH</state>
+          <postal>44870</postal>
+        </cntaddr>
+        <cntvoice>419-625-1976</cntvoice>
+        <cntemail>trstewart@usgs.gov</cntemail>
+      </cntinfo>
+    </metc>
+    <metstdn>FGDC Content Standard for Digital Geospatial Metadata</metstdn>
+    <metstdv>FGDC-STD-001-1998</metstdv>
+  </metainfo>
+</metadata>
