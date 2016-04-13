@@ -1,51 +1,62 @@
-# Define server logic required
+##############################################################
+##############################################################
+##
+##  LEBS Shiny Application
+##
+##  SERVER SCRIPT (Functions that build the UI)
+##
+##############################################################
+##############################################################
+## -----------------------------------------------------------
+## Define server logic required (function will end on the last line of code)
+## -----------------------------------------------------------
 shinyServer(function(input, output) {
 
-  # Reactive species input for labels
+  ## Reactive species input for labels
   tbl_species <- reactive({
     distinct(filter(lw,species == input$species),species)
   })
   
-  # Reactive year input for labels
+  ## Reactive year input for labels
   tbl_year <- reactive({
     distinct(filter(lw,year == input$year),year)
   })
   
-  # Reactive year input for labels
+  ## Reactive year input for labels
   tbl_year2 <- reactive({
     distinct(filter(lw,year == input$year2),year)
   })
   
-  # Reactive year input for labels
+  ## Reactive year input for labels
   tbl_year3 <- reactive({
     distinct(filter(lw,year == input$year3),year)
   })
   
-  # Reactive life stage input for labels
+  ## Reactive life stage input for labels
   tbl_ls <- reactive({
     ls <- distinct(filter(catch,life.stage == input$life.stage),life.stage)
     ls <- as.character(ls$life.stage)
     ls <- paste(gsub("_","-",ls),collapse=" ")
   })
   
-  # Reactive species input for CPE plot label
+  ## Reactive species input for CPE plot label
   catch_species <- reactive({
     distinct(filter(lw,species == input$species2),species)
   })
   
-  # Reactive life stage input for CPE plot label
+  ## Reactive life stage input for CPE plot label
   catch_ls <- reactive({
     ls <- distinct(filter(catch,life.stage == input$life.stage2),life.stage)
     ls <- as.character(ls$life.stage)
     ls <- paste(gsub("_","-",ls),collapse=" ")
   })
   
-  # Reactive parameter input for water quality table label
+  ## Reactive parameter input for water quality table label
   tbl_par <- reactive({
     distinct(filter(wb_wq,parameter == input$parameter),parameter)
   })
   
-  # Reactive life stage input for label
+  ## Reactive life stage input for label
   map_ls <- reactive({
     ls_vars <- distinct(filter(catch,species == input$species,year == input$year,season == input$season,n.per.ha > 0,kg.per.ha > 0,life.stage != "ALL"),life.stage)%>%
       select(life.stage) %>%
@@ -59,7 +70,7 @@ shinyServer(function(input, output) {
     ls_vars <- data_frame(vars=ls_vars)
   })
   
-  # Reactive value input for spatial map label
+  ## Reactive value input for spatial map label
   map_value <- renderText({
     if(input$density == "n.per.ha") {
       "density" } else {
@@ -71,14 +82,14 @@ shinyServer(function(input, output) {
 ## Historical Time Series Data Manipulation and Plot
 ## -----------------------------------------------------------
 
-  # Filter catch, returning a data frame
+  ## Filter catch, returning a data frame
   time_data <- reactive({
     
     l <- select(catch,species,life.stage,Year=year,Season=season,n.per.ha,kg.per.ha) %>% 
-    # filter by species
+    ## filter by species
     filter(species == input$species2)
     
-    # Optional: filter by life stage
+    ## Optional: filter by life stage
     if (!is.null(input$life.stage2) && input$life.stage2 != "All Life Stages") {
       l %<>% filter(life.stage == input$life.stage2)
     }
@@ -90,53 +101,53 @@ shinyServer(function(input, output) {
         arrange(Year)
   })
   
-  # Filter catch, returning the means
+  ## Filter catch, returning the means
   time_mean <- reactive({
     
     l <- catch %>% select(species,life.stage,Year=year,Season=season,n.per.ha,kg.per.ha) %>%
       arrange(Year) %>% 
-    # filter by species
+    ## filter by species
     filter(species == input$species2)
     
-    # Optional: filter by life stage
+    ## Optional: filter by life stage
     if (!is.null(input$life.stage2) && input$life.stage2 != "All Life Stages") {
       l %<>% filter(life.stage == input$life.stage2)
     }
-
+      ## Determines length (number of years)
       l_rep <- l$Year %>% n_distinct()
-      
       l_seas_year <- l %>% distinct(Season,Year)
 
+      ## Calculate long-term mean
       l <- time_data() %>% group_by(Season) %>%
         summarise(density=round(mean(density),2),
                   biomass=round(mean(biomass),2)) %>%
         tbl_df()
     
-      l_mean_rep <- lapply(l,rep,l_rep)
-      l_mean_rep <- as.data.frame(do.call(cbind,l_mean_rep)) %>%
+      ## Repeat mean for all years
+      l_mean_rep <- as.data.frame(do.call(cbind,lapply(l,rep,l_rep))) %>%
         select(density,biomass)
       l_mean_rep <- bind_cols(l_mean_rep,l_seas_year)
   })
 
-  # Function for generating historical abundance tooltip text
+  ## Function for generating historical abundance tooltip text
   tooltip <- function(x) {
     wb <- isolate(time_data())
     time_data <- wb[wb$Season == x$Season,] %>% 
       arrange(desc(Year))
-
-        paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
+    ## paste text string
+    paste0("<b>",time_data$Year," Density: ",time_data$density," (N/ha)","<br>")
   }
   
-  # Function for generating historical abundance tooltip text
+  ## Function for generating historical abundance tooltip text
   tooltip1 <- function(x1) {
     wb <- isolate(time_data())
     time_data <- wb[wb$Season == x1$Season,] %>% 
       arrange(desc(Year))
-    
+    ## paste text string
     paste0("<b>",time_data$Year," Biomass: ",time_data$biomass," (Kg/ha)","<br>")
   }
   
-  # A reactive expression with the historical density time series plot
+  ## A reactive expression with the historical density time series plot
   reactive({
 
     ggvis(time_data(),~factor(Year),~density) %>%
@@ -152,9 +163,11 @@ shinyServer(function(input, output) {
         labels=list(fontSize=13))) %>%
       add_axis("y",title="Mean Number per Hectare Swept",title_offset=55,properties = axis_props(
         title=list(fontSize=16),
-        labels=list(fontSize=13))) }) %>% bind_shiny("time_n","ggvis_kg_time")
+        labels=list(fontSize=13))) }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("time_n","ggvis_kg_time")
   
-  # A reactive expression with the historical biomass time series plot
+  ## A reactive expression with the historical biomass time series plot
   reactive({
     
     ggvis(time_data(),~factor(Year),~biomass) %>%
@@ -170,16 +183,18 @@ shinyServer(function(input, output) {
         labels=list(fontSize=13))) %>%
       add_axis("y",title="Mean Kilogram per Hectare Swept",title_offset=55,properties = axis_props(
         title=list(fontSize=16),
-        labels=list(fontSize=13))) }) %>% bind_shiny("time_kg","ggvis_kg_time")
+        labels=list(fontSize=13))) }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("time_kg","ggvis_kg_time")
   
-  # Reactive CPE plot label
+  ## Reactive CPE plot label
   output$catch_label <- renderText({
     HTML(paste("Mean density (N/Ha; top) and biomass (Kg/ha; bottom) of",tags$b(catch_ls()),tags$b(catch_species()$species),
                "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
     ))
   })
   
-  # Download plot data
+  ## Download plot data
   output$downloadCSV_1 <- downloadHandler(
     filename=reactive(paste(if(input$life.stage2 != "All Life Stages") {catch_ls()} else {"All_Life_Stages"},
                             catch_species()$species,"Historical_Abundance_Data",sep="_")),
@@ -192,29 +207,33 @@ shinyServer(function(input, output) {
 ## -----------------------------------------------------------
 ## Ranked Catch Data Manipulation and Plot
 ## -----------------------------------------------------------
-  # Filter density and biomass, returning a data frame
+  ## Filter density and biomass, returning a data frame
   bar_data <- reactive({
     
     w <- catch %>% 
-    # filter by year
+    ## filter by year
     filter(year == input$year2) %>% 
-    # filter by season
+    ## filter by season
     filter(season == input$season2)
     
+    ## Summarize by species
     w_rank <- w %>% group_by(species) %>% 
-      summarise(n.per.ha=sum(n.per.ha))
+      summarize(n.per.ha=sum(n.per.ha))
+    ## rank in descending order
     w_rank$rank <- dense_rank(desc(w_rank$n.per.ha))
+    ## Filter top 10
     w_rank %<>% filter(rank %in% 1:10) %>%
       select(species)
     
+    ## Filter top 10 species
     w %<>% filter(species %in% w_rank$species) %>% 
-    # Summarize density and biomass values
+    ## Summarize density and biomass values
       group_by(species) %>%
       summarise(n.per.ha=mean(n.per.ha),
                 kg.per.ha=mean(kg.per.ha))
   })
 
-  # A reactive expression with the density bar plot
+  ## A reactive expression with the density bar plot
   reactive({
     
     ggvis(bar_data(),~factor(species),~n.per.ha) %>% 
@@ -224,7 +243,9 @@ shinyServer(function(input, output) {
       add_axis("y",title="Mean Number per Hectare Swept",title_offset=55,properties = axis_props(
         title=list(fontSize=16),
         labels=list(fontSize=13)))
-  }) %>% bind_shiny("density_bar","ggvis_density_bar")
+  }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("density_bar","ggvis_density_bar")
 
   # A reactive expression with the biomass bar plot
   reactive({
@@ -236,16 +257,18 @@ shinyServer(function(input, output) {
       add_axis("y",title="Mean Kilogram per Hectare Swept",title_offset=55,properties = axis_props(
         title=list(fontSize=16),
         labels=list(fontSize=13)))
-  }) %>% bind_shiny("biomass_bar","ggvis_biomass_bar")
+  }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("biomass_bar","ggvis_biomass_bar")
   
-  # Reactive Ranked CPUE plot label
+  ## Reactive Ranked CPUE plot label
   output$rank_label <- renderText({
     HTML(paste("Mean density (N/ha; top) and biomass (Kg/ha; bottom) of the 10 most abundant species in",
                tags$b(tbl_year2()$year),tags$b(input$season2),"collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie."
     ))
   })
   
-  # Download plot data
+  ## Download plot data
   output$downloadCSV_8 <- downloadHandler(
     filename=reactive(paste(tbl_year2()$year,input$season2,"Ranked_Catch_Data",sep="_")),
     content=function(file) {
@@ -258,10 +281,10 @@ shinyServer(function(input, output) {
 ## Forage Task Group Data Manipulation and Plot
 ## -----------------------------------------------------------
 
-  # Filter catch, returning a data frame
+  ## Filter catch, returning a data frame
   ftg_Rdata <- reactive({
     
-    # Summarize density by year and season
+    ## Summarize density by year and season
     p <- ftg_data %>% group_by(year,class) %>%
       summarise(n.per.ha=round(mean(n.per.ha),2),
                 kg.per.ha=round(mean(kg.per.ha),2)) %>% 
@@ -269,49 +292,52 @@ shinyServer(function(input, output) {
       mutate(year=factor(year))
   })
   
-  # Filter catch, returning the means
+  ## Filter catch, returning the means
   ftg_mean <- reactive({
     
+    ## Arrange in decending order by year
     p <- ftg_data %>% arrange(desc(year))
     
+    ## Determine length (number of years)
     p_rep <- p$year %>% n_distinct()
     
+    ## Remove duplicates (i.e. retain unique values)
     p_class <- p %>% distinct(class,year) %>% 
       select(class,year)
     
-    # Summarize density by year and season
+    ## Summarize density by year and season
     ftg_Rdata2 <- ftg_Rdata() %>%
       group_by(class) %>%
       summarise(n.per.ha=round(mean(n.per.ha),2),
                 kg.per.ha=round(mean(kg.per.ha),2)
       )
     
-    p_mean_rep <- lapply(ftg_Rdata2,rep,p_rep)
-    p_mean_rep <- as.data.frame(do.call(cbind,p_mean_rep)) %>%
+    ## Repeat mean for number of years
+    p_mean_rep <- as.data.frame(do.call(cbind,lapply(ftg_Rdata2,rep,p_rep))) %>%
       select(n.per.ha,kg.per.ha)
-    p_mean_rep <- bind_cols(p_mean_rep,p_class)
-    p_mean_rep %<>% mutate(year=factor(year))
+    p_mean_rep <- bind_cols(p_mean_rep,p_class) %>% 
+      mutate(year=factor(year))
   })
 
-  # Function for generating map tooltip text
+  ## Function for generating map tooltip text
   tooltip2 <- function(x2) {
     wb <- isolate(ftg_Rdata())
     ftg_Rdata <- wb[wb$class == x2$class,] %>% 
       arrange(desc(year))
-    
+    ## paste text string
     paste0("<b>",ftg_Rdata$year," Density: ",ftg_Rdata$n.per.ha," (N/ha)","<br>")
   }
   
-  # Function for generating map tooltip text
+  ## Function for generating map tooltip text
   tooltip3 <- function(x3) {
     wb <- isolate(ftg_Rdata())
     ftg_Rdata <- wb[wb$class == x3$class,] %>% 
       arrange(desc(year))
-    
+    ## paste text string
     paste0("<b>",ftg_Rdata$year," Biomass: ",ftg_Rdata$kg.per.ha," (Kg/ha)","<br>")
   }
 
-  # A reactive expression with the historical density time series plot
+  ## A reactive expression with the historical density time series plot
   reactive({
     
     ggvis(ftg_Rdata,~year,~n.per.ha) %>%
@@ -331,9 +357,11 @@ shinyServer(function(input, output) {
         title=list(fontSize=16),
         labels=list(fontSize=13))) %>%
       add_tooltip(tooltip2, "hover")
-  }) %>% bind_shiny("ftg_n","ggvis_n_ftg")
+  }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("ftg_n","ggvis_n_ftg")
   
-  # A reactive expression with the historical biomass time series plot
+  ## A reactive expression with the historical biomass time series plot
   reactive({
     
     ggvis(ftg_Rdata,~year,~kg.per.ha) %>%
@@ -353,9 +381,11 @@ shinyServer(function(input, output) {
         title=list(fontSize=16),
         labels=list(fontSize=13))) %>%
       add_tooltip(tooltip3, "hover")
-  }) %>% bind_shiny("ftg_kg","ggvis_kg_ftg")
+  }) %>% 
+  ## Bind reactive plot to a shiny output  
+  bind_shiny("ftg_kg","ggvis_kg_ftg")
   
-  # Download
+  ## Download
   output$downloadCSV_2 <- downloadHandler(
     filename="Forage_Density_Data",
     content=function(file) {
@@ -368,32 +398,34 @@ shinyServer(function(input, output) {
 ## Abiotic Data Manipulation and Table
 ## -----------------------------------------------------------
   
-  # A reactive expression with the western basin map
+  ## A reactive expression with the western basin map
   abiotic_data <- reactive({
     r <- wb_wq %>% 
-    # filter by year
+    ## filter by year
     filter(year == input$year3) %>% 
-    # filter by season
+    ## filter by season
     filter(season == input$season3) %>% 
-    # filter by parameter
+    ## filter by parameter
     filter(parameter == input$parameter) %>% 
       select(serial,day,month,year,season,Depth,value,lat,long) %>% 
       arrange(serial)
     
+    ## rename column headers
     colnames(r) <- c("Station","Day","Month","Year","Season","Depth (m)",input$parameter,"Latitude","Longitude")
     r
   })
   
+  ## Render reactive table
   output$abiotic_table <- renderDataTable({
     datatable(abiotic_data(),rownames=FALSE,extensions="ColVis",options=list(dom='C<"clear">lfrtip',colVis=list(exclude=c(0,1),active="mouseover")))
   })
   
-  # Reactive label for spatial map
+  ## Reactive label for spatial map
   output$wq_table_label <- renderText({
     HTML(paste("Water column parameters from",tags$b(tbl_year3()$year),tags$b(input$season3),"at bottom trawl sampling locations in the western basin of Lake Erie."))
   })
   
-  # Download plot data
+  ## Download plot data
   output$downloadCSV_7 <- downloadHandler(
     filename=reactive(paste(tbl_year3()$year,input$season3,input$parameter,"Abiotic_Table",sep="_")),
     content=function(file) {
@@ -406,24 +438,24 @@ shinyServer(function(input, output) {
 ## Density and Biomass Data Manipulation and Map
 ## -----------------------------------------------------------
 
-  # Filter density and biomass, returning a data frame
+  ## Filter density and biomass, returning a data frame
   map_data <- reactive({
     
-  # Individual Species
+  ## Individual Species
     c <- catch %>% 
-    # filter by year
+    ## filter by year
       filter(year == input$year) %>% 
-    # filter by season
+    ## filter by season
       filter(season == input$season) %>% 
-    # filter by species
+    ## filter by species
       filter(species == input$species)
     
-    # Optional: filter by life stage
+    ## Optional: filter by life stage
     if (!is.null(input$life.stage) && input$life.stage != "All Life Stages") {
       c %<>% filter(life.stage == input$life.stage)
     }
     
-    # Summarize density and biomass values
+    ## Summarize density and biomass values
     c %<>%
       group_by(serial,year,season,species) %>%
       summarise(n.per.ha=sum(n.per.ha),
@@ -431,18 +463,19 @@ shinyServer(function(input, output) {
                 long=mean(long),
                 lat=mean(lat))
     
-  # All Species 
+  ## All Species 
     u <- catch %>% 
-      # filter by year
+      ## filter by year
       filter(year == input$year) %>% 
-      # filter by season
+      ## filter by season
       filter(season == input$season)
     
-    # Optional: filter by life stage
+    ## Optional: filter by life stage
     if (!is.null(input$life.stage) && input$life.stage != "All Life Stages") {
       u %<>% filter(life.stage == input$life.stage)
     }
     
+    ## Summarize density and biomass values
     u %<>%
       group_by(serial,year,season) %>%
       summarise(Total_NperHA=sum(n.per.ha),
@@ -450,31 +483,33 @@ shinyServer(function(input, output) {
                 long=mean(long),
                 lat=mean(lat))
     
-  # Combine
+  ## Combine
   final <- left_join(c,u,by=c("serial", "year", "season", "long", "lat"))
   })
 
-  # Function for generating map tooltip text
+  ## Function for generating map tooltip text
     tooltip4 <- function(x4) {
       wb <- isolate(map_data())
       map_data <- wb[unique(wb$serial) == unique(x4$serial),]
       
       species <- unique(map_data$species)
+      ## Paste text string
       paste0("<b>","Station: ",map_data$serial,"<br>",species," Density (N/ha): ",map_data$n.per.ha,
              "<br>","All Species Density (N/ha): ",map_data$Total_NperHA)
     }
     
-  # Function for generating map tooltip text
+  ## Function for generating map tooltip text
   tooltip5 <- function(x5) {
     wb <- isolate(map_data())
     map_data <- wb[unique(wb$serial) == unique(x5$serial),]
     
     species <- unique(map_data$species)
+    ## Paste text string
     paste0("<b>","Station: ",map_data$serial,"<br>",species," Biomass (Kg/ha): ",map_data$kg.per.ha,
            "<br>","All Species Biomass (Kg/ha): ",map_data$Total_KgperHA)
   }
 
-  # A reactive expression with the western basin map
+  ## A reactive expression with the western basin map
   map_species <- reactive(data_frame(text=paste(as.character(distinct(filter(lw,year == input$year),year)$year),
                                                 input$season,
                                                 tbl_ls(),
@@ -483,6 +518,7 @@ shinyServer(function(input, output) {
                                      long=-82.817)
   )
 
+  ## A reactive expression with the density and biomass spatial data
   reactive({
     ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
       layer_paths() %>%
@@ -508,9 +544,11 @@ shinyServer(function(input, output) {
       add_axis("y",title="",ticks="",tick_size_end="") %>% 
       add_axis("y",orient="right",title="",ticks="",tick_size_end="") %>% 
       set_options(duration=0)
-    }) %>% bind_shiny("density_map","ggvis_density_map")
+    }) %>% 
+  ## bind reactive plot to a shiny output  
+  bind_shiny("density_map","ggvis_density_map")
     
-  # A reactive expression with the western basin map
+  ## A reactive expression with the density and biomass spatial data
   reactive({
     ggvis(data=filter(wb_shore,piece=="1" & group=="3.1"),~long,~lat) %>%
       layer_paths() %>%
@@ -536,9 +574,11 @@ shinyServer(function(input, output) {
       add_axis("y",title="",ticks="",tick_size_end="") %>%
       add_axis("y",orient="right",title="",ticks="",tick_size_end="") %>% 
       set_options(duration=0)
-    }) %>% bind_shiny("biomass_map","ggvis_biomass_map")
+    }) %>% 
+  ## bind reactive plot to a shiny output  
+  bind_shiny("biomass_map","ggvis_biomass_map")
     
-  # Reactive label for spatial map
+  ## Reactive label for spatial map
   output$map_label <- renderText({
     HTML(paste("Spatial distribution of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_ls()),tags$b(tbl_species()$species),"density (N/ha; top) and biomass (Kg/ha; bottom) from bottom trawl samples collected in the western basin of Lake Erie. 
                Symbol sizes are directly proportional to the values plotted, but are truncated at 2000 (N/ha) or 200 (Kg/ha) to be inclusive of all values greater. 
@@ -546,13 +586,13 @@ shinyServer(function(input, output) {
     ))
   })
     
-  # Reactive label for life stages
+  ## Reactive label for life stages
   output$map_ls_label <- renderText({
     HTML(paste0("<p><h5>","Available Life Stages for ",tbl_species()$species,":","</h5></p>","(",map_ls()$vars,")")
     )
   })
   
-  # Download plot data
+  ## Download plot data
   output$downloadCSV_3 <- downloadHandler(
     filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Map_Data",sep="_")),
@@ -566,26 +606,27 @@ shinyServer(function(input, output) {
 ## Lenght-Weight Data Manipulation and Plot
 ## -----------------------------------------------------------
 
-  # Filter, returning a data frame
+  ## Filter, returning a data frame
   length_weight <- reactive({
     
-    # Filter the lengths
+    ## Filter the lengths
     minlength <- input$min_val
     maxlength <- input$max_val
     
+    ## Filter by minimum and maximum lengths
     m <- lw %>% 
       filter(
         tl.mm >= minlength,
         tl.mm <= maxlength) %>% 
-    # filter by year
+    ## filter by year
       filter(year == input$year) %>% 
-    # filter by season
+    ## filter by season
       filter(season == input$season) %>% 
-    # filter by species
+    ## filter by species
       filter(species == input$species)
   })
  
-  #
+  ## Calculate regressions
   reg_fit <- reactive({
     if(input$datatrans == "Linear") {
       result <- try({
@@ -616,12 +657,12 @@ shinyServer(function(input, output) {
     }
   })
     
-  # Make a dynamic slider
+  ## Make a dynamic slider
   output$slider <- renderUI({
     sliderInput("inSlider", "Slider", min=input$min_val, max=input$max_val)
   })
   
-  # A reactive expression with the lenght-weight plot
+  ## A reactive expression with the lenght-weight plot
   reactive({
     if (input$datatrans == "Linear") {
       plot_lw <- length_weight() %>% transmute(tl.mm=logl,wt.g=logw)
@@ -641,9 +682,11 @@ shinyServer(function(input, output) {
       labels=list(fontSize=13))) %>%
     add_axis("y", title = yvar_name, title_offset = 55,properties = axis_props(
       title=list(fontSize=16),
-      labels=list(fontSize=13))) }) %>% bind_shiny("lw_plot","ggvis_lw_plot")
+      labels=list(fontSize=13))) }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("lw_plot","ggvis_lw_plot")
   
-  # Reactive label for regression plot
+  ## Reactive label for regression plot
   output$reg_plot_label <- renderText({
     if (input$datatrans == "Linear") {
       HTML(paste("Fitted line plot for the regression of natural-log transformed weight on natural-log transformed total length of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"from western basin of Lake Erie. 
@@ -654,7 +697,7 @@ shinyServer(function(input, output) {
     }
   })
   
-  # Reactive label for regression summary table label
+  ## Reactive label for regression summary table label
   output$reg_tbl_label <- renderText({
     if (input$datatrans == "Linear") {
       HTML(paste("Parameters for the regression of natural-log transformed weight on natural-log transformed total length from",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"in the western basin of Lake Erie. 
@@ -665,7 +708,7 @@ shinyServer(function(input, output) {
     }
   })
   
-  #  Reactive regression summary table
+  ##  Reactive regression summary table
   output$reg_tbl <- renderTable({
     result <- try({
       model <- lm(logw~logl,data=length_weight())
@@ -691,7 +734,7 @@ shinyServer(function(input, output) {
     }
   },digits=8)
 
-  # Sample size text output
+  ## Sample size text output
   output$n_fish <- renderText({ if(nrow(length_weight()) > 0) {
     nrow(length_weight())
     } else {
@@ -699,7 +742,7 @@ shinyServer(function(input, output) {
     }
   })
 
-  # Download
+  ## Download
   output$downloadCSV_4 <- downloadHandler(
     filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Weight_Length_Data",sep="_")),
@@ -713,22 +756,23 @@ shinyServer(function(input, output) {
 ## Lenght Frequency Data Manipulation and Histogram
 ## -----------------------------------------------------------
   
-  # Filter length frequency, returning a data frame
+  ## Filter length frequency, returning a data frame
   len_freq <- reactive({
     
-    # Filter the lengths
+    ## Define user defined length inputs
     minlength2 <- input$min_val2
     maxlength2 <- input$max_val2
     
+    ## Filter by minimum and maximum lengths
     len <- wb_exp %>% 
       filter(
         tl.mm >= minlength2,
         tl.mm <= maxlength2) %>% 
-    # filter by year
+    ## filter by year
       filter(year == input$year) %>% 
-    # filter by season
+    ## filter by season
       filter(season == input$season) %>% 
-    # filter by species
+    ## filter by species
       filter(species == input$species)
     
     if(nrow(len) == 1) {
@@ -738,15 +782,15 @@ shinyServer(function(input, output) {
     }
   })
 
-  #make dynamic slider
+  ## Make dynamic slider
   output$slider2 <- renderUI({
     sliderInput("inSlider2", "Slider", min=input$min_val2, max=input$max_val2)
   })
 
-  # A reactive expression with the length frequency plot
+  ## A reactive expression with the length frequency plot
   reactive({
     
-    # Lables for axes
+    ## Lables for axes
     xvar_name <- "Total Length (mm)"
     yvar_name <- "Frequency"
     
@@ -759,15 +803,17 @@ shinyServer(function(input, output) {
         title=list(fontSize=16),
         labels=list(fontSize=13))) %>%
       layer_histograms(width = input$slider1)
-    }) %>% bind_shiny("hist","ggvis_hist")
+    }) %>% 
+  ## Bind reactive plot to a shiny output
+  bind_shiny("hist","ggvis_hist")
   
-  # Reactive label for length frequency plot
+  ## Reactive label for length frequency plot
   output$len_freq_label <- renderText({
     HTML(paste("Length frequency of",tags$b(tbl_year()$year),tags$b(input$season),tags$b(tbl_species()$species),"from the western basin of Lake Erie. 
           Lengths were expanded from measured total lengths collected on board the R/V Muskie."))
   })
   
-  # Sample size text output
+  ## Sample size text output
   output$n_size <- renderText({ if(nrow(len_freq()) > 0) {
     nrow(len_freq())
     } else {
@@ -775,7 +821,7 @@ shinyServer(function(input, output) {
     }
   })
 
-  # Download
+  ## Download
   output$downloadCSV_5 <- downloadHandler(
     filename=reactive(paste(tbl_year()$year,input$season,if(input$life.stage != "All Life Stages") {tbl_ls()} else {"All_Life_Stages"},
                             tbl_species()$species,"Length_Frequency_Data",sep="_")),
@@ -785,3 +831,4 @@ shinyServer(function(input, output) {
     contentType="text/csv"
   )
 })
+## The End!

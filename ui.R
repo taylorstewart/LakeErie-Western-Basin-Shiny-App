@@ -1,4 +1,15 @@
-# Define user interface required
+##############################################################
+##############################################################
+##
+##  LEBS Shiny Application
+##
+##  UI SCRIPT (User Interface)
+##
+##############################################################
+##############################################################
+## -----------------------------------------------------------
+## Define user interface required
+## -----------------------------------------------------------
 shinyUI(fluidPage(
   tags$head(includeScript("www/google-analytics.js")),
   HTML("<p>"),
@@ -51,7 +62,9 @@ shinyUI(fluidPage(
          HTML(paste(tags$span(style="color:royalblue","Send Notification Email")))),
   HTML("<br><br>"),
   
-  # Create a new panel for the historical time series plot and table.
+  ## -----------------------------------------------------------
+  ## Create a new panel for the historical time series plot and table.
+  ## -----------------------------------------------------------
   HTML("<h3>Abundance</h3>"),
   fluidRow(
     column(3,
@@ -73,6 +86,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
+  ## -----------------------------------------------------------
+  ## 
+  ## -----------------------------------------------------------
   HTML("<h5>Dominant Species Abundance</h5>"),
   fluidRow(
     column(3,
@@ -92,6 +108,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
 
+  ## -----------------------------------------------------------
+  ## 
+  ## -----------------------------------------------------------
   HTML("<h5>Historical Forage Abundance</h5>"),
   fluidRow(
     column(3,
@@ -117,6 +136,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
+  ## -----------------------------------------------------------
+  ## 
+  ## -----------------------------------------------------------
   HTML("<h3>Abiotic</h3>"),
   HTML("<h5>Water Quality Parameters</h5>"),
   fluidRow(
@@ -136,7 +158,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
 
-  # Create a new panel for input selectors.
+  ## -----------------------------------------------------------
+  ## Create a new panel for input selectors
+  ## -----------------------------------------------------------
   HTML("<h3>Dynamic Plots</h3><h6>Please allow adequate time for browser to update plots.</h6>"),
   fluidRow(
     column(12,align="center",
@@ -157,7 +181,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br>"),
   
-  # Create a new panel for the western basin map.
+  ## -----------------------------------------------------------
+  ## Create a new panel for the western basin map.
+  ## -----------------------------------------------------------
   HTML("<h5>Lake Erie Western Basin Map</h5>"),
   fluidRow(
     column(3,
@@ -179,7 +205,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
-  # Create a new panel for lenght-weight plot and summarys.
+  ## -----------------------------------------------------------
+  ## Create a new panel for lenght-weight plot and summarys.
+  ## -----------------------------------------------------------
   HTML("<h5>Weight-Length</h5>"),
   fluidRow(
     column(3,
@@ -212,7 +240,9 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
-  # Create a new panel for the length-frequency.
+  ## -----------------------------------------------------------
+  ## Create a new panel for the length-frequency.
+  ## -----------------------------------------------------------
   HTML("<h5>Length Frequency</h5>"),
   fluidRow(
     column(3,
@@ -240,13 +270,17 @@ shinyUI(fluidPage(
   ),
   HTML("<br><br>"),
   
+  ## -----------------------------------------------------------
   ## Metadata Link
+  ## -----------------------------------------------------------
   HTML("A link to the metadata for completed surveys and data files can be found"),
   tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
          HTML(paste0(tags$span(style="color:royalblue","here"),"."))),
   HTML("<br><br>"),
   
+  ## -----------------------------------------------------------
   ## USGS Reference and Disclaimer
+  ## -----------------------------------------------------------
   HTML("<p>Written by Taylor R. Stewart"),
   tags$a(href="mailto:trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
          HTML(paste0(tags$span(style="color:black","("),
@@ -262,3 +296,4 @@ shinyUI(fluidPage(
     responsibility is assumed by the USGS in connection therewith.</p>")
 )
 )
+## The End!
