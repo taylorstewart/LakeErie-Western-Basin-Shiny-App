@@ -19,21 +19,6 @@ shinyUI(fluidPage(
            )
     ),
   HTML("<h2>Western Basin Trawl Survey, Lake Erie</h2>"),
-  HTML("</p><i>BETA VERSION STATEMENT:"),
-  HTML("This data exploration tool is intended for use by Lake Erie fisheries managers, academia, the fishing industry and the public. 
-       The data presented here have been checked for accuracy, but are still considered provisional at this time. 
-       You may request a subset of the data by contacting us directly via email. 
-       Please send questions, comments, suggestions for improvements, and error reports via email to USGS - Lake Erie Biological Station c/o "),
-  tags$a(href="mailto:rkraus@usgs.gov, trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
-         HTML(paste0(tags$span(style="color:black","Richard Kraus ("),
-                    tags$span(style="color:royalblue","rkraus@usgs.gov"),
-                    tags$span(style="color:black",")"),
-                    tags$span(style="color:black"," and/or Taylor Stewart "),
-                    tags$span(style="color:black","("),
-                    tags$span(style="color:royalblue","trstewart@usgs.gov"),
-                    tags$span(style="color:black",").")))),
-  HTML("The current web location for this tool is temporary and it will be hosted on a USGS server as soon as a suitable one can be located.</i><br><br>"),
-  
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
        LEBS is the primary federal agency for applied fisheries science excellence in Lake Erie. 
        Since 2004, LEBS has participated in a collaborative, multiagency effort to assess forage fish populations in the western basin of Lake Erie. 
@@ -282,9 +267,9 @@ shinyUI(fluidPage(
   ## USGS Reference and Disclaimer
   ## -----------------------------------------------------------
   HTML("<p>Written by Taylor R. Stewart"),
-  tags$a(href="mailto:trstewart@usgs.gov?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
+  tags$a(href="mailto:taylor.stewart@uvm.edu?Subject=LEBS - Western Basin Site Question/Comment/Report",style="text-decoration:none !important;",
          HTML(paste0(tags$span(style="color:black","("),
-                    tags$span(style="color:royalblue","trstewart@usgs.gov"),
+                    tags$span(style="color:royalblue","taylor.stewart@uvm.edu"),
                     tags$span(style="color:black",").")))),
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
        Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
