@@ -116,7 +116,7 @@ sumdepth %<>% select(serial,bin.min,bin.max,n,mean,sd,CV)
 sumdepth$mean <- round(sumdepth$mean,3)
 sumdepth$sd <- round(sumdepth$sd,3)
 sumdepth$CV <- round(sumdepth$CV,3)
-names(sumdepth) <- c("serial","bin.min.depth","bin.max.depth","n","depth.mean","depth.sd","depth.cv")
+names(sumdepth) <- c("serial","bin.depth.min","bin.depth.max","n","depth.mean","depth.sd","depth.cv")
 
 ## Summarize temp
 sumtmp <- Summarize(Temp.y~serial+fdepth.y,data=newdf,digits=3)
@@ -177,26 +177,38 @@ sondeOutput2 <- merge(sondeOutput,effort,by.x="serial",by.y="serial") %>%
          year=format(date, format="%Y"))
 
 ## Merge Lat/Longs from effort into summary data frame for each serial.
-sondeOutput2 <- merge(sondeOutput2,latlong,by.x="serial",by.y="serial")
+sondeOutput2 <- merge(sondeOutput2,latlong,by.x="serial",by.y="serial") %>% 
+  mutate(season=season)
 
 ## Reorder summary data frame
-sondeOutput2 %<>% select(serial,day,month,year,time,bin.min.depth,bin.max.depth,n,depth.mean,depth.sd,depth.cv,
+sondeOutput2 %<>% select(serial,day,month,year,season,time,bin.depth.min,bin.depth.max,n,depth.mean,depth.sd,depth.cv,
                        temp.mean,temp.sd,temp.cv,cond.mean,cond.sd,cond.cv,
                        ph.mean,ph.sd,ph.cv,turb.mean,turb.sd,turb.cv,chloro.mean,chloro.sd,chloro.cv,do.percent.mean,
                        do.percent.sd,do.percent.cv,do.ppm.mean,do.ppm.sd,do.ppm.cv,lat,long)
 
 ## Order df by serial and depth in descending order
-sondeOutput2 %<>% arrange(serial,depth.mean)
+sondeOutput2 %<>% arrange(serial,depth.mean) %>% 
+  mutate(day=as.integer(day),
+         month=as.integer(month),
+         year=as.integer(year),
+         season=factor(season),
+         season=factor(season),
+         time=as.integer(time),
+         bin.depth.min=as.numeric(bin.depth.min),
+         bin.depth.max=as.numeric(bin.depth.max))
 
 ## Clean up workspace
 rm(importWorksheets,df2,df3,effort,latlong,newdf,sonde,wb2,
    newdf2,sumturb,sumtmp,sumspCond,sumpH,sumdo_1,sumdo_2,sumdepth,
    sumchlor,sondeOutput)
 
-## Save the summary output into an excel file
-WB_SONDE <- paste(c("data_prep/WQ_Summaries/WB_",year,"_",season,"_WQ_SUMMARY.xlsx"),collapse="")
-wb <- loadWorkbook(WB_SONDE,create=T)
-createSheet(wb,name="WB_WQ")
-writeWorksheet(wb,data=sondeOutput2,sheet="WB_WQ",startRow=1,startCol=1,header=TRUE)
-saveWorkbook(wb)
+## Read in previous year's WQ data
+wq_all <- read.csv("data/WB_WaterQuality.csv",header=T) %>% 
+  mutate(serial=factor(serial))
+
+## Bind new data with previous data set
+final_wq <- bind_rows(wq_all,sondeOutput2) ## ignore warning
+
+## Create and save the lengths into an excel file
+write.csv(final_wq,"data/WB_WaterQuality.csv",row.names = FALSE)
 

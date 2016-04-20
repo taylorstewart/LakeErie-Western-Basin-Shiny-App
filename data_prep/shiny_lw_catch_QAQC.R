@@ -1,17 +1,17 @@
 ## Load packages
 library(dplyr)
 library(magrittr)
+library(readxl)
 
-## Set survey name
-#   Season: Autumn, Spring
-se <- "Autumn"
-yr <- 2015
+## Enter the season and year you are summarizing...
+season <- "Spring"
+year <- "2016"
 
 ### Read in data
-lw <- read.csv("data/WB_LengthWeight.csv",header=T) %>% 
+lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
-catch <- read.csv("data_prep/WB_CatchCounts.csv",header=T) %>% 
+catch <- read_excel("data_prep/WB_CatchCounts.xlsx",sheet="Counts") %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
   droplevels()
 

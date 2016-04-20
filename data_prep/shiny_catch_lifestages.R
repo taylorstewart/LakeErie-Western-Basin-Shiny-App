@@ -1,5 +1,6 @@
 library(dplyr)
 library(magrittr)
+library(readxl)
 
 ## Set year
 yr <- 2015
@@ -7,7 +8,10 @@ yr <- 2015
 se <- "Autumn"
 
 ## Load data
-catch <- read.csv("data_prep/WB_CatchHA.csv",header=TRUE)
+catch <- read_excel("data_prep/WB_CatchHA.xlsx",sheet="CatchHA")
+effort <- read_excel("data_prep/WB_Effort.xlsx",sheet="Effort") %>% 
+  filter(year==yr & season==se) %>% 
+  select(serial,time,day,month,fishing.depth.m,wingspread.m,tow.dist.m,area.m2,hectare.ha,lat,long)
 
 ## Creata character string of life stages for true/false test
 life.stage <- c("YOY","Age_1","Age_2+","YAO","ALL")
@@ -19,16 +23,17 @@ spec <- unique(catch$species)
 ## Filter catch data by year and season
 catch %<>% filter(year==yr & season==se)
 
+## Join effort data with catch
+catch %<>% left_join(effort) %>% 
+  select(serial,time,day,month,year,season,fishing.depth.m,wingspread.m,tow.dist.m,area.m2,
+         hectare.ha,species,life.stage,count,weight.kg,n.per.ha,kg.per.ha,lat,long)
+
 ## Create list of serials for loop
 ## Needs to be after the catch filter becasue serial numbers change between seasons
 serial <- unique(catch$serial)
 
-## Create a data frame with effort info to add to created data frame below
-effort <- catch %>% distinct(serial) %>% 
-  select(serial,time,day,month,fishing.depth.m,wingspread.m,tow.dist.m,area.m2,hectare.ha,lat,long)
-
 ## Apply first loop function
-output1 <- lapply(serial,function(i) {
+output <- data.frame(do.call(rbind,lapply(serial,function(i) {
   ## Filter catch by each serial
   catch2 <- catch %>% filter(serial==i)
   ## Apply second loop function
@@ -42,7 +47,7 @@ output1 <- lapply(serial,function(i) {
     n <- length(ls)
     ## Create data frame with all zero value life stages, repeat by "n"
     tmp <- data.frame(serial=rep(i,n),
-                      time=rep(as.numeric(filter(effort,serial==i)[2]),n),
+                      time=rep(as.character(filter(effort,serial==i)[2]),n),
                       day=rep(as.numeric(filter(effort,serial==i)[3]),n),
                       month=rep(as.numeric(filter(effort,serial==i)[4]),n),
                       year=rep(yr,n),
@@ -71,15 +76,11 @@ output1 <- lapply(serial,function(i) {
       rbind(ls_sum,tmp2)
     }
   ls_sum
-})
-## End double loop
-
-## Bind list into data frame
-output2 <- data.frame(do.call(rbind,output1)) %>% 
+}))) %>% ## End double loop
   arrange(serial,species)
 
 ## Bind all zero values with non-zero values
-all_ls <- bind_rows(catch,output2) %>% 
+all_ls <- bind_rows(catch,output) %>% 
   arrange(year,season,serial,species)
 ## Ignore warning
 ## Should be 6150 observations, unless additional species have been added
