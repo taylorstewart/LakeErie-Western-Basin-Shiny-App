@@ -18,32 +18,22 @@ shinyUI(fluidPage(
            tags$img(src="usgs_banner_gr.jpg",height="120px",width="100%")
            )
     ),
-  HTML("<h2>Western Basin Trawl Survey, Lake Erie</h2>"),
-  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Lake Erie Biological Station (LEBS), located in Sandusky, Ohio, is a field station of the USGS Great Lakes Science Center (GLSC).
-       LEBS is the primary federal agency for applied fisheries science excellence in Lake Erie. 
-       Since 2004, LEBS has participated in a collaborative, multiagency effort to assess forage fish populations in the western basin of Lake Erie. 
-       The objectives of this evaluation are to provide estimates of abundance of key forage and predator species, 
-       to assess seasonal and spatial distributions of fishes, and assess year class strength of key forage and predator species in the western basin of Lake Erie. 
-       In 2012, the original vessel used since 2004, the R/V Musky II, was retired and replaced with the R/V Muskie. 
-       The change in vessel necessitated changing the gear used to capture fish. 
-       Previous surveys used a different catch processing protocol that did not include measurements of biomass or lengths of all species; thus, those historical data are not compatible with this presentation format. 
-       Under the new protocol, 41 stations were sampled during June (Spring) and September (Autumn). 
-       The 2013 western basin survey season marked the first year in which the grid sampling design was employed in both spring and autumn. 
-       Thus, we present data starting from 2013. This data presentation tool will automatically update with new data as surveys are completed in future years.</p>"),
-  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;The vessel used for the survey is the R/V Muskie, a 70’ aluminum mono-hull research vessel, with a double-warp trawl system. 
-       The net is a four-seam, three-bridle bottom trawl, with a fishing circle of 200 x 12 (cm) meshes at the mouth of the net, and with ground gear consisting of a rock-hopper with 8” diameter rubber discs. 
-       The cod-end liner is constructed of 14 (mm) knotless dyneema mesh. The net is towed at a target speed of 3 knots, and wingspread estimates are obtained on each tow with an acoustic mensuration system to standardize catches per area swept. 
-       Typical net geometry was a 6 (m) wingspread and 3 (m) headline height on each tow. 
-       Typical area swept was 0.5 hectares. 
-       Individual lengths and weights were obtained from a subsample of each species’ size group. 
-       Total counts for each species and size group were obtained by expansions of mean individual weight by the aggregate weight. 
-       The exceptions to this method of enumeration were percids (Yellow Perch and Walleye), where every fish was counted, and size groups with low numbers (n<10), where each fish was measured.</p><br>"),
-  
-  HTML("<h5>Data Download Disclaimer:</h5>"),
-  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;In order to maintain a record of where this data is being used, we ask that you click the link below to send a quick email notifying us of what data you are downloading. 
-       We will keep a personal record of this in order to notify you of any errors or changes in the data.  
-       Thank you for your cooperation and participation in this endeavor.</p>"),
-  tags$a(href="mailto:trstewart@usgs.gov?Subject=Data Downloaded",style="text-decoration:none !important;",
+  HTML("<h2>Lake Erie Fish Community Data Explorer</h2>"),
+  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;This data exploration tool is intented for use by researchers, resource managers, and the public
+       to better understand the status of the fish community in Lake Erie.  The data were collected as part of a scientific trawl survey
+       to quantify trends in the distribution and abundance of forage and other fish species.  The survey is responsive to the "),
+       tags$a(href="http://www.glfc.org/fishmgmt/jsp97.pdf",HTML(paste0(tags$span(style="color:royalblue","Joint 
+       Strategic Plan for Fishery Management ")))),
+       HTML("in the Great Lakes and to a Memorandum of Understanding between the Great Lakes "),
+            tags$a(href="http://www.glfc.org/boardcomm/clc/clchome.php",HTML(paste0(tags$span(style="color:royalblue",
+            "Council of Lake Committees ")))),
+       HTML("and the US Geological Survey. This tool lets the user explore, plot and download summarized results. 
+             The official data sets with complete descriptions of the methods and metadata 
+             are available in a publically accessible permanent repository on "),tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+         HTML(paste0(tags$span(style="color:royalblue","sciencebase.gov"),".</p>"))),
+  HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Please note the disclaimer and citation of this work at the bottom of this page, and
+         consider providing an email contact (via the link below) that will allow us to notify you of any updates to the data.</p>"),
+  tags$a(href="mailto:rkraus@usgs.gov?Subject=Western Basin Data Downloaded",style="text-decoration:none !important;",
          HTML(paste(tags$span(style="color:royalblue","Send Notification Email")))),
   HTML("<br><br>"),
   
