@@ -6,10 +6,15 @@
 
 # RStudio files
 .Rproj.user/
-global.R
-ui.R
-server.R
+
+# redirect app
+redirect_app/
 
 # Shiny files
 rsconnect/
 .Rproj.user
+
+# data prep
+data_prep/
+ipds_review/
+help/
