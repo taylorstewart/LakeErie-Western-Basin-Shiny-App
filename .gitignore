@@ -14,8 +14,19 @@ redirect_app/
 rsconnect/
 .Rproj.user
 
-# data prep
+# Data Prep
 data_prep/
+
+# IPDS Review
 ipds_review/
+
+# Help Literature
 help/
 Shiny_SOP.docx
+
+# Misc Files
+.DS_Store
+._.DS_Store
+._.gitignore
+._.README.md
+._.Shiny_SOP.docx
