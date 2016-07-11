@@ -14,9 +14,6 @@ redirect_app/
 rsconnect/
 .Rproj.user
 
-# Data Prep
-data_prep/
-
 # IPDS Review
 ipds_review/
 
