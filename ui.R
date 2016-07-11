@@ -19,6 +19,7 @@ shinyUI(fluidPage(
            )
     ),
   HTML("<h2>Lake Erie Fish Community Data Explorer</h2>"),
+  HTML("<h5>NOTE: Autumn 2016 data will have zero values until the app can be updated with new data in October. </h5>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;This data exploration tool is intented for use by researchers, resource managers, and the public
        to better understand the status of the fish community in Lake Erie.  The data were collected as part of a scientific trawl survey
        to quantify trends in the distribution and abundance of forage and other fish species.  The survey is responsive to the "),
