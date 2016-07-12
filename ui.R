@@ -69,8 +69,8 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2015"),
-             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Autumn"),
+             selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2016"),
+             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Spring"),
              downloadButton("downloadCSV_8","Download Plot Data")
            )
     ),
@@ -121,8 +121,8 @@ shinyUI(fluidPage(
     column(3,
            wellPanel(
              selectInput("parameter",h5("Parameters:"),par_vars),
-             selectInput("year3",label=h5("Year:"),year_vars,selected="2015"),
-             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
+             selectInput("year3",label=h5("Year:"),year_vars,selected="2016"),
+             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Spring"),
              downloadButton("downloadCSV_7","Download Table Data")
            )
     ),
@@ -143,10 +143,10 @@ shinyUI(fluidPage(
            wellPanel(HTML("<h4>Select Inputs for Plots Below</h4>"),
                      tags$div(class="row",
                               tags$div(class="col-sm-4",
-                                       selectInput("year",label=h5("Year"),year_vars,selected="2015")
+                                       selectInput("year",label=h5("Year"),year_vars,selected="2016")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Autumn")
+                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Spring")
                               ),
                               tags$div(class="col-sm-4",
                                        selectInput("species",label=h5("Species"),species_vars,selected="Walleye")
