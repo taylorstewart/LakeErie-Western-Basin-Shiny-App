@@ -5,11 +5,11 @@ library(readxl)
 
 ## Enter the season and year you are summarizing...
 se <- "Spring"
-yr <- "2015"
+yr <- "2016"
 
 ### Read in data
 lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 
-  filter(species != "Unidentified Species",year==yr,season==se) %>% 
+  filter(species != "Unidentified Species", !is.na(wt.g), year==yr,season==se) %>% 
   droplevels()
 effort <- read_excel("data_prep/WB_Effort.xlsx",sheet="Effort") %>% 
   filter(year==yr & season==se) %>% 

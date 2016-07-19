@@ -394,6 +394,7 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
 ## Read in all previous year's expanded LW data
 lw_all <- read.csv("data/WB_ExpandedLengths.csv",header=T) %>% 
   filter(species != "Unidentified Species")
+lw_all$year<-as.character(lw_all$year)
 
 ## Bind new data with previous data set
 final_exp_lw <- bind_rows(lw_all,len_final) ## ignore warning

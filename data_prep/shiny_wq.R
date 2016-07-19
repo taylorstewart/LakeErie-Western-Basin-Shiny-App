@@ -13,10 +13,10 @@ library(magrittr)
 
 ## Enter the season and year you are summarizing...
 season <- "Spring"
-year <- "2015"
+year <- "2016"
 
 ## Raw data file
-raw_file <- "data_prep/WQ_raw/WB_2015_Spring_WQ_raw.xlsx"
+raw_file <- "data_prep/WQ_raw/WB_2016_Spring_WQ_raw.xlsx"
 
 ## Effort data file
 effort_file <- "data_prep/WB_Effort.xlsx"
@@ -51,7 +51,7 @@ sonde$DateTime <- as.POSIXct(sonde$DateTime,format="%Y-%m-%d %H:%M:%S")
 wb2 <- loadWorkbook(effort_file)
 effort <- readWorksheet(wb2,sheet="Effort") %>% 
   mutate(date=as.POSIXct(date,format="%Y-%m-%d")) %>% 
-  filter(year==2015,season=='Spring')
+  filter(year==2016,season=='Spring')
 
 ## Create a new df with Serial, Lat, and Longs to merge later.
 latlong <- effort %>% select(serial,lat,long)
