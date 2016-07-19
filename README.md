@@ -11,4 +11,4 @@ http://dx.doi.org/10.5066/F79C6VHJ
 https://lebs.shinyapps.io/western-basin/
 
 ## Citation
-Taylor R. Stewart, 20160419, Lake Erie Fish Community Data: U.S. Geological Survey: Reston, VA, http://dx.doi.org/10.5066/F79C6VHJ.
+Stewart, T.R., 2016, Lake Erie Fish Community Data: U.S. Geological Survey data release, http://dx.doi.org/10.5066/F79C6VHJ.
