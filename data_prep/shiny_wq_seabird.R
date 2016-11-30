@@ -1,0 +1,180 @@
+### COMBINE SEABIRD FILES USING SEABIRD_MERGE R SCRIPT ###
+### SAVE AS CSV IN DATA PREP > WQ RAW FOLDER As WB_YYYY_Season_WQ###
+
+#############################################################################
+## Load packages and set java parameters for XLConnect
+options(java.parameters="-Xmx2g")
+library(FSA)
+library(XLConnect)
+library(ggplot2)
+library(plyr)
+library(dplyr)
+library(magrittr)
+
+#### set your working directory ####
+#### setwd("F:/Western Basin Forage/lebs-western-basin-app")
+#### you don't need to do this when working with projects in RStudio
+
+## Enter the season and year you are summarizing...
+season <- "Fall"
+year <- "2016"
+
+## WQ seabird file
+## NOTE: we need to write code to read/combine the raw seabird files
+## instead of doing this by hand. 
+seabird<-read.csv("data_prep/WQ_raw/WB_2016_Fall_WQ.csv",header=TRUE)
+
+#Effort data file
+effort_file <- "data_prep/WB_Effort.xlsx"
+
+#############################################################################
+#############################################################################
+
+## Subset the Raw DF variables needed for analysis
+data<-seabird %<>% select(serial,Depth,DateTime,Temperature,SpCond,pH,pH_mV,Turbidity,Chlorophyll,DO_percent,DO_ppm,Longitude,Latitude) %>% 
+  arrange(DateTime)
+
+## Make DateTime variable POSIXct
+data$DateTime <- as.POSIXct(data$DateTime,format="%m/%d/%Y %H:%M")
+
+## Read Effort data
+wb2 <- loadWorkbook(effort_file)
+effort <- readWorksheet(wb2,sheet="Effort") %>% 
+  mutate(date=as.POSIXct(date,format="%Y-%m-%d")) %>% 
+  filter(year==2016,season=='Autumn')  ##Why do these need redefined??##
+
+## Factor the depth variable from -0.5 to 25.5 meters by 1 meter intervals.
+## The mean depth of each factor should approximately be equivilent 1-m bins
+data$fdepth <- cut(data$Depth,breaks=seq(-0.5,25.5,1),right=FALSE)
+
+## Create new time variable to calculate difference at maximum depth
+data$DateTime <- as.character(data$DateTime)
+data2 <- strsplit(data$DateTime,split=" ")
+data$Time2 <- unlist(lapply(data2, "[",2))
+data$Time2 <- gsub("[[:punct:]]","",data$Time2)
+data$Time2 <- as.numeric(data$Time2)
+
+## Find maximum depth at each serial, merge maximum values into newdf, 
+## calculate the difference of max depth time by each rows time.
+## (positive value = down cast, negative value = up cast)
+data$serial <- factor(data$serial)
+df2<-ddply(data,c('serial'),function(x) x[which(x$Depth==max(x$Depth)),])
+df3 <- merge(df2,data,by.x="serial",by.y="serial")
+df3$diff <- df3$Time2.x - df3$Time2.y
+
+## Remove all negative time difference values
+data <- filter(df3,diff >= 0)
+
+## Remove any NA depth bins (surface readings)
+data <- filter(data,!is.na(fdepth.y))
+
+## Summarize each variable by mean, std.dev, and CV.
+##  Round variables to the thousandth. Rename headers.
+
+## Summarize Depth
+sumdepth <- Summarize(Depth.y~serial+fdepth.y,data=data,digits=3)
+sumdepth$CV <- sumdepth$sd/sumdepth$mean
+sumdepth$bin.min <- gsub(",.*","", sumdepth$fdepth)
+sumdepth$bin.min <- substring(sumdepth$bin.min,2)
+sumdepth$bin.max <- gsub(".*,","",sumdepth$fdepth)
+sumdepth$bin.max <- substring(sumdepth$bin.max,1,nchar(sumdepth$bin.max)-1)
+sumdepth %<>% select(serial,bin.min,bin.max,n,mean,sd,CV)
+sumdepth$mean <- round(sumdepth$mean,3)
+sumdepth$sd <- round(sumdepth$sd,3)
+sumdepth$CV <- round(sumdepth$CV,3)
+names(sumdepth) <- c("serial","bin.depth.min","bin.depth.max","n","depth.mean","depth.sd","depth.cv")
+
+## Summarize Temperature
+sumtmp <- Summarize(Temperature.y~serial+fdepth.y,data=data,digits=3)
+sumtmp$CV <- sumtmp$sd/sumtmp$mean
+sumtmp %<>% select(mean,sd,CV)
+sumtmp <- round(sumtmp,3)
+names(sumtmp) <- c("temp.mean","temp.sd","temp.cv")
+
+## Summarize SpCond
+sumSpCond <- Summarize(SpCond.y~serial+fdepth.y,data=data,digits=3)
+sumSpCond$CV <- sumSpCond$sd/sumSpCond$mean
+sumSpCond %<>% select(mean,sd,CV)
+sumSpCond <- round(sumSpCond,3)
+names(sumSpCond) <- c("cond.mean","cond.sd","cond.cv")
+
+# ## Summarize pH
+# sumpH <- Summarize(pH.y~serial+fdepth.y,data=data,digits=3)
+# sumpH$CV <- sumpH$sd/sumpH$mean
+# sumpH %<>% select(mean,sd,CV)
+# sumpH <- round(sumpH,3)
+# names(sumpH) <- c("ph.mean","ph.sd","ph.cv")
+
+## Summariaze Turbidity
+sumturb <- Summarize(Turbidity.y~serial+fdepth.y,data=data,digits=3)
+sumturb$CV <- sumturb$sd/sumturb$mean
+sumturb %<>% select(mean,sd,CV)
+sumturb <- round(sumturb,3)
+names(sumturb) <- c("turb.mean","turb.sd","turb.cv")
+
+## Summarize Chlorophyll
+sumchlor <- Summarize(Chlorophyll.y~serial+fdepth.y,data=data,digits=3)
+sumchlor$CV <- sumchlor$sd/sumchlor$mean
+sumchlor %<>% select(mean,sd,CV)
+sumchlor <- round(sumchlor,3)
+names(sumchlor) <- c("chloro.mean","chloro.sd","chloro.cv")
+
+## Summarize DO %
+sumdo_1 <- Summarize(DO_percent.y~serial+fdepth.y,data=data,digits=3)
+sumdo_1$CV <- sumdo_1$sd/sumdo_1$mean
+sumdo_1 %<>% select(mean,sd,CV)
+sumdo_1 <- round(sumdo_1,3)
+names(sumdo_1) <- c("do.percent.mean","do.percent.sd","do.percent.cv")
+
+## Summarize DO ppm
+sumdo_2 <- Summarize(DO_ppm.y~serial+fdepth.y,data=data,digits=3)
+sumdo_2$CV <- sumdo_2$sd/sumdo_2$mean
+sumdo_2 %<>% select(mean,sd,CV)
+sumdo_2 <- round(sumdo_2,3)
+names(sumdo_2) <- c("do.ppm.mean","do.ppm.sd","do.ppm.cv")
+
+## Bind all data frames into one
+Output <- cbind(sumdepth,sumtmp,sumSpCond,sumturb,sumchlor,sumdo_1,sumdo_2)
+
+## Merge the date, time and region variables into the output
+Output2 <- merge(Output,effort,by.x="serial",by.y="serial") %>% 
+  mutate(day=format(date, format="%d"),
+         month=format(date, format="%m"),
+         year=format(date, format="%Y"))
+
+## Add in the missing pH variables
+Output2$ph.mean <- rep(NA,nrow(Output2))
+Output2$ph.sd <- rep(NA,nrow(Output2))
+Output2$ph.cv <- rep(NA,nrow(Output2))
+
+
+## Reorder summary data frame
+Output2 %<>% select(serial,day,month,year,season,time,bin.depth.min,bin.depth.max,n,depth.mean,depth.sd,depth.cv,
+                       temp.mean,temp.sd,temp.cv,cond.mean,cond.sd,cond.cv,
+                       ph.mean,ph.sd,ph.cv,turb.mean,turb.sd,turb.cv,chloro.mean,chloro.sd,chloro.cv,do.percent.mean,
+                       do.percent.sd,do.percent.cv,do.ppm.mean,do.ppm.sd,do.ppm.cv,lat,long)
+
+## Order df by serial and depth in descending order
+Output2 %<>% arrange(serial,depth.mean) %>% 
+  mutate(day=as.integer(day),
+         month=as.integer(month),
+         year=as.integer(year),
+         season=factor(season),
+         season=factor(season),
+         time=as.integer(time),
+         bin.depth.min=as.numeric(bin.depth.min),
+         bin.depth.max=as.numeric(bin.depth.max))
+
+## Clean up workspace
+rm(df2,df3,effort,wb2,sumturb,sumtmp,sumSpCond,sumdo_1,sumdo_2,sumdepth,sumchlor,Output)
+
+## Read in previous year's WQ data
+wq_all <- read.csv("data/WB_WaterQuality.csv",header=T) %>% 
+  mutate(serial=factor(serial))
+
+## Bind new data with previous data set
+final_wq <- bind_rows(wq_all,Output2) ## ignore warning
+
+## Create and save the lengths into an excel file
+write.csv(final_wq,"data/WB_WaterQuality.csv",row.names = FALSE)
+
