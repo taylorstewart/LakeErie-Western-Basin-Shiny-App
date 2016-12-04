@@ -5,14 +5,15 @@ start <- Sys.time()
 options(java.parameters="-Xmx2g")
 library(dplyr)
 library(magrittr)
+library(readxl)
 
 ## Enter the season and year you are summarizing...
-se <- "Spring"
+se <- "Autumn"
 yr <- "2016"
 
 ### Read in data
 lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 
-  filter(species != "Unidentified Species",year==yr,season==se) %>% 
+  filter(species != "Unidentified Species",wt.g !="NA",year==yr,season==se) %>% 
   droplevels()
 catch <- read_excel("data_prep/WB_CatchCounts.xlsx",sheet="Counts") %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 

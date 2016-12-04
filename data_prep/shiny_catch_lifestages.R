@@ -5,7 +5,7 @@ library(readxl)
 ## Set year
 yr <- 2016
 ## Set season
-se <- "Spring"
+se <- "Autumn"
 
 ## Load data
 catch <- read_excel("data_prep/WB_CatchHA.xlsx",sheet="CatchHA")

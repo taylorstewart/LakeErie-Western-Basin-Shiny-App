@@ -4,12 +4,12 @@ library(magrittr)
 library(readxl)
 
 ## Enter the season and year you are summarizing...
-season <- "Spring"
-year <- "2016"
+se <- "Autumn"
+yr <- "2016"
 
 ### Read in data
 lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 
-  filter(species != "Unidentified Species",year==yr,season==se) %>% 
+  filter(species != "Unidentified Species",wt.g !="NA",year==yr,season==se) %>% 
   droplevels()
 catch <- read_excel("data_prep/WB_CatchCounts.xlsx",sheet="Counts") %>% 
   filter(species != "Unidentified Species",year==yr,season==se) %>% 
@@ -18,6 +18,7 @@ catch <- read_excel("data_prep/WB_CatchCounts.xlsx",sheet="Counts") %>%
 ########################################################################################
 ## Set TL variable as a numeric and round the final counts to a whole number
 catch$count.final <- round(catch$count.final,digits=0)
+
 
 ## Create a factor of species names
 spec_list <- unique(lw$species)
