@@ -417,8 +417,7 @@ shinyServer(function(input, output) {
   
   ## Render reactive table
   output$abiotic_table <- renderDataTable({
-  #  datatable(abiotic_data(),rownames=FALSE,extensions="ColVis",options=list(dom='C<"clear">lfrtip',colVis=list(exclude=c(0,1),active="mouseover")))
-    datatable(abiotic_data(),rownames=FALSE,extensions="Buttons",options=list(dom='C<"clear">lfrtip',buttons=I('colvis')))
+    datatable(abiotic_data(),rownames=FALSE,extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = I('colvis'),active="mouseover"))
   })
   
   ## Reactive label for spatial map
