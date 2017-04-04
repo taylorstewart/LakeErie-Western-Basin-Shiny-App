@@ -31,7 +31,7 @@ shinyUI(fluidPage(
             "Council of Lake Committees ")))),
        HTML("and the US Geological Survey. This tool lets the user explore, plot and download summarized results. 
              The official data sets with complete descriptions of the methods and metadata 
-             are available in a publically accessible permanent repository on "),tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+             are available in a publically accessible permanent repository on "),tags$a(href="https://www.sciencebase.gov/catalog/item/58e2940fe4b09da67996a821",
          HTML(paste0(tags$span(style="color:royalblue","sciencebase.gov"),".</p>"))),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Please note the disclaimer and citation of this work at the bottom of this page, and
          consider providing an email contact (via the link below) that will allow us to notify you of any updates to the data.</p>"),
@@ -251,7 +251,7 @@ shinyUI(fluidPage(
   ## Metadata Link
   ## -----------------------------------------------------------
   HTML("A link to the metadata for completed surveys and data files can be found"),
-  tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+  tags$a(href="https://www.sciencebase.gov/catalog/item/58e2940fe4b09da67996a821",
          HTML(paste0(tags$span(style="color:royalblue","here"),"."))),
   HTML("<br><br>"),
   
@@ -264,9 +264,9 @@ shinyUI(fluidPage(
                     tags$span(style="color:royalblue","taylor.stewart@uvm.edu"),
                     tags$span(style="color:black",").")))),
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
-       Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
-    tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
-    HTML("version 3.2.2 (2015-08-14).</p>"),
+       Written in programming language R (R Foundation for Statistical Computing, 2017. Vienna, Austria."),
+    tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.R-project.org"),tags$span(style="color:black",")"),sep=""))), 
+    HTML("version 3.3.3 (2017-03-06).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
     and related program material nor shall the fact of distribution constitute any such warranty, and no 
