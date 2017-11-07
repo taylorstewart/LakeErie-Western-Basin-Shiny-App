@@ -3,7 +3,7 @@ library(magrittr)
 library(readxl)
 
 ## Set year
-yr <- 2016
+yr <- 2017
 ## Set season
 se <- "Autumn"
 
@@ -85,15 +85,19 @@ all_ls <- bind_rows(catch,output) %>%
 ## Ignore warning
 ## Should be 6355 observations, unless additional species have been added
 
-## Read in previous data, if it exists, and bind to new
-final_ls <- if(exists("final_ls")==F) {
-  all_ls } else {
-    data <- read.csv("data/WB_Catch.csv",header=TRUE) %>% 
-      mutate(time = as.character(time))
-    ## Bind new data with all years
-    final_ls <- bind_rows(data,all_ls)
-    final_ls
-  }
+data <- read.csv("data/WB_Catch.csv",header=TRUE) %>% 
+  mutate(time = as.character(time))%>%
+  bind_rows(all_ls)
+
+# ## Read in previous data, if it exists, and bind to new
+# final_ls <- if(exists("final_ls")==F) {
+#   all_ls } else {
+#     data <- read.csv("data/WB_Catch.csv",header=TRUE) %>% 
+#       mutate(time = as.character(time))
+#     ## Bind new data with all years
+#     final_ls <- bind_rows(data,all_ls)
+#     final_ls
+#   }
 
 ## Save file
-write.csv(final_ls,file="data/WB_Catch.csv",row.names = FALSE)
+write.csv(data,file="data/WB_Catch.csv",row.names=F)

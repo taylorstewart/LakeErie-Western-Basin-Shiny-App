@@ -5,7 +5,7 @@ library(readxl)
 
 ## Enter the season and year you are summarizing...
 se <- "Autumn"
-yr <- "2016"
+yr <- "2017"
 
 ### Read in data
 lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 
@@ -27,3 +27,4 @@ final.lw <- bind_rows(lw.all,lw)
 
 ## Create and save the lengths into an excel file
 write.csv(final.lw,"data/WB_LengthWeight.csv",row.names = FALSE)
+

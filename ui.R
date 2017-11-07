@@ -19,8 +19,6 @@ shinyUI(fluidPage(
            )
     ),
   HTML("<h2>Lake Erie Fish Community Data Explorer</h2>"),
-# HTML("<h5>NOTE: Autumn 2016 data will have zero values until the app can be updated with new data in October. 
-#       This will coincide with an official data release for 2016. </h5>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;This data exploration tool is intented for use by researchers, resource managers, and the public
        to better understand the status of the fish community in Lake Erie.  The data were collected as part of a scientific trawl survey
        to quantify trends in the distribution and abundance of forage and other fish species.  The survey is responsive to the "),
@@ -266,7 +264,7 @@ shinyUI(fluidPage(
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
        Written in programming language R (R Foundation for Statistical Computing, 2017. Vienna, Austria."),
     tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.R-project.org"),tags$span(style="color:black",")"),sep=""))), 
-    HTML("version 3.3.3 (2017-03-06).</p>"),
+    HTML("version 3.4.2 (2017-09-28).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
     and related program material nor shall the fact of distribution constitute any such warranty, and no 
