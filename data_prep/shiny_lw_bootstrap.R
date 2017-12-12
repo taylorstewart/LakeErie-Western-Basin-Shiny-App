@@ -8,7 +8,7 @@ library(magrittr)
 library(readxl)
 
 ## Enter the season and year you are summarizing...
-se <- "Autumn"
+se <- "Spring"
 yr <- "2017"
 
 ### Read in data
@@ -394,15 +394,16 @@ len_final <- do.call(rbind,lapply(spec_list,function(i) {
 
 ## Read in all previous year's expanded LW data
 lw_all <- read.csv("data/WB_ExpandedLengths.csv",header=T) %>% 
-  filter(species != "Unidentified Species")
+  filter(species != "Unidentified Species")%>%
+  filter(!(year==yr & season==se))
 lw_all$year<-as.character(lw_all$year)
 
 ## Bind new data with previous data set
 final_exp_lw <- bind_rows(lw_all,len_final) ## ignore warning
+## End processing time
+end <- Sys.time()
+(end-start)
 
 ## Create and save the lengths into an excel file
 write.csv(final_exp_lw,"data/WB_ExpandedLengths.csv",row.names = FALSE)
 
-## End processing time
-end <- Sys.time()
-(end-start)

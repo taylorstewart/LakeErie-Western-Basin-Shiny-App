@@ -4,7 +4,7 @@ library(magrittr)
 library(readxl)
 
 ## Enter the season and year you are summarizing...
-se <- "Autumn"
+se <- "Spring"
 yr <- "2017"
 
 ### Read in data

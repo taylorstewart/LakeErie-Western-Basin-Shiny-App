@@ -20,7 +20,8 @@ lw %<>% left_join(effort) %>%
   select(serial,day,month,year,season,fish.id,species,sp.code,size,tl.mm,wt.g,lat,long)
 
 ## Read in all previous year's expanded LW data
-lw.all <- read.csv("data/WB_LengthWeight.csv",header=T)
+lw.all <- read.csv("data/WB_LengthWeight.csv",header=T)%>%
+  filter(!(year==yr & season==se))
 
 ## Bind new data with previous data set
 final.lw <- bind_rows(lw.all,lw)

@@ -5,7 +5,7 @@ library(readxl)
 ## Set year
 yr <- 2017
 ## Set season
-se <- "Autumn"
+se <- "Spring"
 
 ## Load data
 catch <- read_excel("data_prep/WB_CatchHA.xlsx",sheet="CatchHA")
@@ -83,7 +83,7 @@ output <- data.frame(do.call(rbind,lapply(serial,function(i) {
 all_ls <- bind_rows(catch,output) %>% 
   arrange(year,season,serial,species)
 ## Ignore warning
-## Should be 6355 observations, unless additional species have been added
+
 
 data <- read.csv("data/WB_Catch.csv",header=TRUE) %>% 
   mutate(time = as.character(time))%>%
