@@ -190,7 +190,7 @@ shinyServer(function(input, output) {
   ## Reactive CPE plot label
   output$catch_label <- renderText({
     HTML(paste("Mean density (N/Ha; top) and biomass (Kg/ha; bottom) of",tags$b(catch_ls()),tags$b(catch_species()$species),
-               "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
+               "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means. Note: sampling was not conducted in spring 2018."
     ))
   })
   

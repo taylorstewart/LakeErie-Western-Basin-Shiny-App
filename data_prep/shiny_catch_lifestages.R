@@ -3,9 +3,9 @@ library(magrittr)
 library(readxl)
 
 ## Set year
-yr <- 2017
+yr <- 2018
 ## Set season
-se <- "Spring"
+se <- "Autumn"
 
 ## Load data
 catch <- read_excel("data_prep/WB_CatchHA.xlsx",sheet="CatchHA")
@@ -87,6 +87,7 @@ all_ls <- bind_rows(catch,output) %>%
 
 data <- read.csv("data/WB_Catch.csv",header=TRUE) %>% 
   mutate(time = as.character(time))%>%
+  filter(!(year==yr & season==se))%>%
   bind_rows(all_ls)
 
 # ## Read in previous data, if it exists, and bind to new

@@ -4,8 +4,8 @@ library(magrittr)
 library(readxl)
 
 ## Enter the season and year you are summarizing...
-se <- "Spring"
-yr <- "2017"
+se <- "Autumn"
+yr <- "2018"
 
 ### Read in data
 lw <- read_excel("data_prep/WB_LW.xlsx",sheet="LW") %>% 

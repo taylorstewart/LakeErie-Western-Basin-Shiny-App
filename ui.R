@@ -262,9 +262,9 @@ shinyUI(fluidPage(
                     tags$span(style="color:royalblue","taylor.stewart@uvm.edu"),
                     tags$span(style="color:black",").")))),
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
-       Written in programming language R (R Foundation for Statistical Computing, 2017. Vienna, Austria."),
+       Written in programming language R (R Foundation for Statistical Computing, 2018. Vienna, Austria."),
     tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.R-project.org"),tags$span(style="color:black",")"),sep=""))), 
-    HTML("version 3.4.2 (2017-09-28).</p>"),
+    HTML("version 3.5.1 (2018-07-02).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
     and related program material nor shall the fact of distribution constitute any such warranty, and no 
