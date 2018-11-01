@@ -21,12 +21,10 @@ library(DT)          ## HTML data table
 ## Load data
 ## -----------------------------------------------------------
 wb_exp <- read.csv("data/WB_ExpandedLengths.csv",header=T)
-catch <- read.csv("data/WB_Catch.csv",header=T)%>%filter(species!="Uid Minnows")
-lw <- read.csv("data/WB_LengthWeight.csv",header=T)%>%filter(species!="Uid Minnows")
+catch <- read.csv("data/WB_Catch.csv",header=T)
+lw <- read.csv("data/WB_LengthWeight.csv",header=T)
 wb_shore <- read.csv("data/LakeErieShoreline.csv",header=T)
 wb_wq <- read.csv("data/WB_WaterQuality.csv",header=T)
-
-unique(lw$wp_exp)
 
 ## -----------------------------------------------------------
 ## Define standardized sample location coordinates
@@ -96,16 +94,13 @@ options(warn=1)
 ## -----------------------------------------------------------
 ## "Tidy" water quality data
 ## -----------------------------------------------------------
-wb_wq%<>%mutate(serial=as.numeric(serial),year=as.numeric(year),season=as.character(season),serial=ifelse(serial>200,serial-500,serial-100))%>%filter(!is.na(serial),!(year==2015&season=="Autumn"),!(year==2016&season=="Autumn"))%>%
-  select(year,season,serial,bin.depth.max,temp.mean,do.ppm.mean)
-
-# wb_wq %<>% select(serial,day,month,year,season,BinDepthMin=bin.depth.min,BinDepthMax=bin.depth.max,
-#                            Depth=depth.mean,Temperature=temp.mean,SpConductivity=cond.mean,pH=ph.mean,
-#                            Turbitity=turb.mean,Chlorophyll=chloro.mean,DOpercent=do.percent.mean,DOppm=do.ppm.mean) %>%
-#   gather(parameter,value,9:15) %>% 
-#   right_join(effort,wb_wq,by="serial") %>% 
-#   mutate(Depth=round(Depth,0))
-#   ## You will have NA values for most parameters in 2015 Autumn due to YSI issue; ignore missing values
+wb_wq %<>% select(serial,day,month,year,season,BinDepthMin=bin.depth.min,BinDepthMax=bin.depth.max,
+                           Depth=depth.mean,Temperature=temp.mean,SpConductivity=cond.mean,pH=ph.mean,
+                           Turbitity=turb.mean,Chlorophyll=chloro.mean,DOpercent=do.percent.mean,DOppm=do.ppm.mean) %>%
+  gather(parameter,value,9:15) %>% 
+  right_join(effort,wb_wq,by="serial") %>% 
+  mutate(Depth=round(Depth,0))
+  ## You will have NA values for most parameters in 2015 Autumn due to YSI issue; ignore missing values
 
 ## -----------------------------------------------------------
 ## Create variable lists

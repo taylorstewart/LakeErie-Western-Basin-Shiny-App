@@ -47,7 +47,7 @@ shinyUI(fluidPage(
            wellPanel(
              selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
              selectInput("life.stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
-#             htmlOutput("catch_ls_label"),
+             htmlOutput("catch_ls_label"),
              HTML("<br>"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
@@ -117,40 +117,23 @@ shinyUI(fluidPage(
   ## 
   ## -----------------------------------------------------------
   HTML("<h3>Abiotic</h3>"),
-  HTML("<h5>Depth Profiles: Experimental</h5>"),
+  HTML("<h5>Water Quality Parameters</h5>"),
   fluidRow(
-     column(3,
-            wellPanel(
-              HTML("<p>Depth profiles of temperature and dissolved oxygen from bottom trawl sampling locations in the western basin of Lake Erie.</p>"),
-              HTML("<p>Note that data from Autumn 2015 and 2016 are not included due to equipment malfunctions. Follow the link to the metadata at the bottom of the page for additional information.</p>"),
-              HTML("<p>Additionally, no survey was conducted during Spring 2018.</p>")
-            )
+    column(3,
+           wellPanel(
+             selectInput("parameter",h5("Parameters:"),par_vars),
+             selectInput("year3",label=h5("Year:"),year_vars,selected="2018"),
+             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
+             downloadButton("downloadCSV_7","Download Table Data")
+           )
     ),
     column(9,align="center",
-#           HTML("Hover over points to display detailed density values."),
-           ggvisOutput("wq_dp"),
-           uiOutput("ggvis_wq_dp"),
-           HTML("Station numbers represent the last two digits of the Station Number that can be found using the 'hover over' utility on the maps below. Values were binned by depth and plotted at the bottom of the interval.")
+           htmlOutput("wq_table_label"),
+           HTML("<br>"),
+           dataTableOutput("abiotic_table")
     )
   ),
   HTML("<br><br>"),
-  
-  # fluidRow(
-  #   column(3,
-  #          wellPanel(
-  #            selectInput("parameter",h5("Parameters:"),par_vars),
-  #            selectInput("year3",label=h5("Year:"),year_vars,selected="2018"),
-  #            selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
-  #            downloadButton("downloadCSV_7","Download Table Data")
-  #          )
-  #   ),
-  #   column(9,align="center",
-  #          htmlOutput("wq_table_label"),
-  #          HTML("<br>"),
-  #          dataTableOutput("abiotic_table")
-  #   )
-  # ),
-  # HTML("<br><br>"),
 
   ## -----------------------------------------------------------
   ## Create a new panel for input selectors
