@@ -19,8 +19,6 @@ shinyUI(fluidPage(
            )
     ),
   HTML("<h2>Lake Erie Fish Community Data Explorer</h2>"),
-# HTML("<h5>NOTE: Autumn 2016 data will have zero values until the app can be updated with new data in October. 
-#       This will coincide with an official data release for 2016. </h5>"),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;This data exploration tool is intented for use by researchers, resource managers, and the public
        to better understand the status of the fish community in Lake Erie.  The data were collected as part of a scientific trawl survey
        to quantify trends in the distribution and abundance of forage and other fish species.  The survey is responsive to the "),
@@ -31,7 +29,7 @@ shinyUI(fluidPage(
             "Council of Lake Committees ")))),
        HTML("and the US Geological Survey. This tool lets the user explore, plot and download summarized results. 
              The official data sets with complete descriptions of the methods and metadata 
-             are available in a publically accessible permanent repository on "),tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+             are available in a publically accessible permanent repository on "),tags$a(href="https://www.sciencebase.gov/catalog/item/58e2940fe4b09da67996a821",
          HTML(paste0(tags$span(style="color:royalblue","sciencebase.gov"),".</p>"))),
   HTML("<p>&nbsp;&nbsp;&nbsp;&nbsp;Please note the disclaimer and citation of this work at the bottom of this page, and
          consider providing an email contact (via the link below) that will allow us to notify you of any updates to the data.</p>"),
@@ -47,8 +45,10 @@ shinyUI(fluidPage(
     column(3,
            HTML("<h5>Historical Time-Series Abundance</h5>"),
            wellPanel(
-             selectInput("species2",h5("Select a Species:"),species_vars,selected="Walleye"),
-             selectInput("life.stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("species2",h5("Select a Species:"),species_vars,selected="Yellow Perch"),
+             selectInput("life.stage2",h5("Select a Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
+#             htmlOutput("catch_ls_label"),
+             HTML("<br>"),
              downloadButton("downloadCSV_1","Download Plot Data")
            )
     ),
@@ -70,8 +70,8 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2016"),
-             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Spring"),
+             selectInput("year2",label=h5("Select a Year:"),year_vars,selected="2018"),
+             selectInput("season2",label=h5("Select a Season:"),c("Spring","Autumn"),selected="Autumn"),
              downloadButton("downloadCSV_8","Download Plot Data")
            )
     ),
@@ -117,23 +117,40 @@ shinyUI(fluidPage(
   ## 
   ## -----------------------------------------------------------
   HTML("<h3>Abiotic</h3>"),
-  HTML("<h5>Water Quality Parameters</h5>"),
+  HTML("<h5>Depth Profiles: Experimental</h5>"),
   fluidRow(
-    column(3,
-           wellPanel(
-             selectInput("parameter",h5("Parameters:"),par_vars),
-             selectInput("year3",label=h5("Year:"),year_vars,selected="2016"),
-             selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Spring"),
-             downloadButton("downloadCSV_7","Download Table Data")
-           )
+     column(3,
+            wellPanel(
+              HTML("<p>Depth profiles of temperature and dissolved oxygen from bottom trawl sampling locations in the western basin of Lake Erie.</p>"),
+              HTML("<p>Note that data from Autumn 2015 and 2016 are not included due to equipment malfunctions. Follow the link to the metadata at the bottom of the page for additional information.</p>"),
+              HTML("<p>Additionally, no survey was conducted during Spring 2018.</p>")
+            )
     ),
     column(9,align="center",
-           htmlOutput("wq_table_label"),
-           HTML("<br>"),
-           dataTableOutput("abiotic_table")
+#           HTML("Hover over points to display detailed density values."),
+           ggvisOutput("wq_dp"),
+           uiOutput("ggvis_wq_dp"),
+           HTML("Station numbers represent the last two digits of the Station Number that can be found using the 'hover over' utility on the maps below. Values were binned by depth and plotted at the bottom of the interval.")
     )
   ),
   HTML("<br><br>"),
+  
+  # fluidRow(
+  #   column(3,
+  #          wellPanel(
+  #            selectInput("parameter",h5("Parameters:"),par_vars),
+  #            selectInput("year3",label=h5("Year:"),year_vars,selected="2018"),
+  #            selectInput("season3",label=h5("Season:"),c("Spring","Autumn"),selected="Autumn"),
+  #            downloadButton("downloadCSV_7","Download Table Data")
+  #          )
+  #   ),
+  #   column(9,align="center",
+  #          htmlOutput("wq_table_label"),
+  #          HTML("<br>"),
+  #          dataTableOutput("abiotic_table")
+  #   )
+  # ),
+  # HTML("<br><br>"),
 
   ## -----------------------------------------------------------
   ## Create a new panel for input selectors
@@ -144,13 +161,13 @@ shinyUI(fluidPage(
            wellPanel(HTML("<h4>Select Inputs for Plots Below</h4>"),
                      tags$div(class="row",
                               tags$div(class="col-sm-4",
-                                       selectInput("year",label=h5("Year"),year_vars,selected="2016")
+                                       selectInput("year",label=h5("Year"),year_vars,selected="2018")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Spring")
+                                       selectInput("season",label=h5("Season"),c("Spring","Autumn"),selected="Autumn")
                               ),
                               tags$div(class="col-sm-4",
-                                       selectInput("species",label=h5("Species"),species_vars,selected="Walleye")
+                                       selectInput("species",label=h5("Species"),species_vars,selected="Yellow Perch")
                               )
                      )
            )
@@ -165,7 +182,7 @@ shinyUI(fluidPage(
   fluidRow(
     column(3,
            wellPanel(
-             selectInput("life.stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="All Life Stages"),
+             selectInput("life.stage",h5("Life Stage:"),c("All Life Stages",life_vars),selected="YOY"),
              htmlOutput("map_ls_label"),
              HTML("<br>"),
              downloadButton("downloadCSV_3","Download Plot Data")
@@ -251,7 +268,7 @@ shinyUI(fluidPage(
   ## Metadata Link
   ## -----------------------------------------------------------
   HTML("A link to the metadata for completed surveys and data files can be found"),
-  tags$a(href="https://www.sciencebase.gov/catalog/item/56951c63e4b039675d005ed9",
+  tags$a(href="https://www.sciencebase.gov/catalog/item/58e2940fe4b09da67996a821",
          HTML(paste0(tags$span(style="color:royalblue","here"),"."))),
   HTML("<br><br>"),
   
@@ -264,9 +281,9 @@ shinyUI(fluidPage(
                     tags$span(style="color:royalblue","taylor.stewart@uvm.edu"),
                     tags$span(style="color:black",").")))),
   HTML("U.S. Geological Survey, Great Lakes Science Center, Lake Erie Biological Station, Sandusky, Ohio. 
-       Written in programming language R (R Development Core Team, 2015. Vienna, Austria."),
-    tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.r-project.org"),tags$span(style="color:black",")"),sep=""))), 
-    HTML("version 3.2.2 (2015-08-14).</p>"),
+       Written in programming language R (R Foundation for Statistical Computing, 2018. Vienna, Austria."),
+    tags$a(href="http://www.r-project.org",style="text-decoration:none !important;",HTML(paste(tags$span(style="color:royalblue","www.R-project.org"),tags$span(style="color:black",")"),sep=""))), 
+    HTML("version 3.5.1 (2018-07-02).</p>"),
     HTML("<p><i>Disclaimer:</i> Although this program has been used by the USGS, no warranty, expressed or implied, 
     is made by the USGS or the United States Government as to the accuracy and functioning of the program 
     and related program material nor shall the fact of distribution constitute any such warranty, and no 

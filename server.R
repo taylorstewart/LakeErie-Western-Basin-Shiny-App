@@ -46,9 +46,16 @@ shinyServer(function(input, output) {
   
   ## Reactive life stage input for CPE plot label
   catch_ls <- reactive({
-    ls <- distinct(filter(catch,life.stage == input$life.stage2),life.stage)
-    ls <- as.character(ls$life.stage)
-    ls <- paste(gsub("_","-",ls),collapse=" ")
+    ls_vars <- distinct(filter(catch,species == input$species,year == input$year,season == input$season,n.per.ha > 0,kg.per.ha > 0,life.stage != "ALL"),life.stage)%>%
+      select(life.stage) %>%
+      arrange(life.stage)
+    ls_vars <- as.character(ls_vars$life.stage)
+    if(length(ls_vars) > 0) {
+      ls_vars <- paste(gsub("_"," ",ls_vars),collapse=", ")
+      ls_vars <- paste0("All Life Stages, ",ls_vars) } else {
+        ls_vars <- paste0("All Life Stages",ls_vars)
+      }
+    ls_vars <- data_frame(vars=ls_vars)
   })
   
   ## Reactive parameter input for water quality table label
@@ -147,6 +154,13 @@ shinyServer(function(input, output) {
     paste0("<b>",time_data$Year," Biomass: ",time_data$biomass," (Kg/ha)","<br>")
   }
   
+  # ## Reactive label for life stages
+  # output$catch_ls_label <- renderText({
+  #   HTML(paste0("<p><h5>","Available Life Stages for ",catch_species()$species,":","</h5></p>","(",map_ls()$vars,")")
+  #   )
+  # })
+  
+
   ## A reactive expression with the historical density time series plot
   reactive({
 
@@ -189,8 +203,8 @@ shinyServer(function(input, output) {
   
   ## Reactive CPE plot label
   output$catch_label <- renderText({
-    HTML(paste("Mean density (N/Ha; top) and biomass (Kg/ha; bottom) of",tags$b(catch_ls()),tags$b(catch_species()$species),
-               "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means."
+    HTML(paste("Mean density (N/Ha; top) and biomass (Kg/ha; bottom) of",tags$b(catch_species()$species),
+               "by season collected in Ontario, Michigan, and Ohio waters in the western basin of Lake Erie. Dashed lines indicate long-term seasonal means. Note: sampling was not conducted in spring 2018."
     ))
   })
   
@@ -395,44 +409,61 @@ shinyServer(function(input, output) {
   )
 
 ## -----------------------------------------------------------
-## Abiotic Data Manipulation and Table
+## Abiotic Data Manipulation and Plot
 ## -----------------------------------------------------------
   
-  ## A reactive expression with the western basin map
-  abiotic_data <- reactive({
-    r <- wb_wq %>% 
-    ## filter by year
-    filter(year == input$year3) %>% 
-    ## filter by season
-    filter(season == input$season3) %>% 
-    ## filter by parameter
-    filter(parameter == input$parameter) %>% 
-      select(serial,day,month,year,season,Depth,value,lat,long) %>% 
-      arrange(serial)
-    
-    ## rename column headers
-    colnames(r) <- c("Station","Day","Month","Year","Season","Depth (m)",input$parameter,"Latitude","Longitude")
-    r
-  })
+  # ## A reactive expression with the western basin map
+  # abiotic_data <- reactive({
+  #   r <- wb_wq %>% 
+  #   ## filter by year
+  #   filter(year == input$year3) %>% 
+  #   ## filter by season
+  #   filter(season == input$season3) %>% 
+  #   ## filter by parameter
+  #   filter(parameter == input$parameter) %>% 
+  #     select(serial,day,month,year,season,Depth,value,lat,long) %>% 
+  #     arrange(serial)
+  #   
+  #   ## rename column headers
+  #   colnames(r) <- c("Station","Day","Month","Year","Season","Depth (m)",input$parameter,"Latitude","Longitude")
+  #   r
+  # })
   
-  ## Render reactive table
-  output$abiotic_table <- renderDataTable({
-    datatable(abiotic_data(),rownames=FALSE,extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = I('colvis'),active="mouseover"))
-  })
+  ## A reactive expression with the depth profiles of water quality
+  reactive({
+    ggvis(wb_wq,~temp.mean,~bin.depth.max,fill=~do.ppm.mean,shape=~season)%>%
+    filter(year==eval(input_select(choices=unique(wb_wq$year),selected=2017,label="Year")))%>%
+    filter(serial==eval(input_select(choices=unique(wb_wq$serial),selected=37,label="Station")))%>%
+    layer_points(size:=200)%>%
+    add_axis("x", orient="top",title="Temperature (C) ") %>%
+    scale_numeric("y", reverse=T)%>%
+    scale_numeric("fill", range=c("red","green"))%>%
+    add_axis("y", title="Depth (m)")%>%
+    add_legend("fill",title="Dissolved Oxygen (mg/L)")%>%
+    add_legend(scales="shape",title="Season",properties=legend_props(legend=list(y=150)))%>%
+    set_options(duration = 0)
+  }) %>% 
+    ## Bind reactive plot to a shiny output  
+    bind_shiny("wq_dp","ggvis_wq_dp")
   
-  ## Reactive label for spatial map
-  output$wq_table_label <- renderText({
-    HTML(paste("Water column parameters from",tags$b(tbl_year3()$year),tags$b(input$season3),"at bottom trawl sampling locations in the western basin of Lake Erie."))
-  })
+      
+  # output$abiotic_table <- renderDataTable({
+  #   datatable(abiotic_data(),rownames=FALSE,extensions = 'Buttons', options = list(dom = 'Bfrtip', buttons = I('colvis'),active="mouseover"))
+  # })
   
-  ## Download plot data
-  output$downloadCSV_7 <- downloadHandler(
-    filename=reactive(paste(tbl_year3()$year,input$season3,input$parameter,"Abiotic_Table",sep="_")),
-    content=function(file) {
-      write.csv(abiotic_data(),file,row.names=FALSE)
-    },
-    contentType="text/csv"
-  )
+  # ## label for depth profiles
+  # output$wq_table_label <- renderText({
+  #   HTML(paste("Depth profiles of temperature and dissolved oxygen from bottom trawl sampling locations in the western basin of Lake Erie."))
+  # })
+  
+  # ## Download plot data
+  # output$downloadCSV_7 <- downloadHandler(
+  #   filename=reactive(paste(tbl_year3()$year,input$season3,input$parameter,"Abiotic_Table",sep="_")),
+  #   content=function(file) {
+  #     write.csv(abiotic_data(),file,row.names=FALSE)
+  #   },
+  #   contentType="text/csv"
+  # )
   
 ## -----------------------------------------------------------
 ## Density and Biomass Data Manipulation and Map
